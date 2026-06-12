@@ -1,0 +1,6 @@
+{
+  "name": "Shri Siwanchi Jain Seva Samiti Trust",
+  "description": "The official platform of Shri Siwanchi Jain Seva Samiti Trust, supporting Vihardham and Oswal Palace bookings, donation services, a digital donor wall, and multilingual portals.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
