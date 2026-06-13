@@ -28,7 +28,7 @@ export interface RoomCategory {
   id: string;
   name: TranslationMap;
   description: TranslationMap;
-  type: 'AC' | 'Non-AC' | 'Deluxe' | 'Suite' | 'Vihardham Stay';
+  type: 'AC' | 'Non-AC' | 'Deluxe' | 'Suite' | 'Vihardham Stay' | 'Hall';
   capacity: number;
   ratePerDay: number;
   availableRooms: number;

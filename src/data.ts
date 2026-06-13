@@ -34,6 +34,7 @@ export const staticTranslations = {
     bookings: "बुकिंग",
     donations: "धर्म सहयोग अवसर",
     donorWall: "लाभार्थी पट्ट (Labharthi Wall)",
+    vatsalyaDham: "वात्सल्य धाम",
     events: "आयोजन",
     gallery: "गैलरी और वीडियो",
     community: "समाज",
@@ -84,6 +85,7 @@ export const staticTranslations = {
     bookings: "Bookings",
     donations: "Dharma Sahyog",
     donorWall: "Labharthi Wall",
+    vatsalyaDham: "Vatsalya Dham",
     events: "Events",
     gallery: "Gallery & Videos",
     community: "Community",
@@ -176,37 +178,24 @@ export const seedTrustees: Trustee[] = [
   {
     id: "tr5",
     name: { hi: "शा. भंवरलालजी हरकचंदजी जीरावला", en: "Sha Bhanwarlalji Harakchandji Jirawala" },
-    designation: { hi: "सहकोषाध्यक्ष (Joint Treasurer)", en: "Joint Treasurer" },
-    city: { hi: "पुणे (समदड़ी)", en: "Pune (Samdari)" },
-    message: { 
-      hi: "सामूहिक सहयोग से बड़े से बड़े स्वप्न साकार होते हैं। हमारा विहारधाम जैन संस्कृति का एक अनुपम उदाहरण बनेगा।", 
-      en: "Collective synergy transforms vision into physical reality. Our Vihardham is destined to become a pride of Jain society."
-    },
-    phone: "+91 94219 45411",
-    email: "bhanwar.jirawala@siwanchitrust.org",
-    photoUrl: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=300"
-  },
-  {
-    id: "tr6",
-    name: { hi: "शा. राजेन्द्रकुमारजी केशवलालजी जीरावला", en: "Sha Rajendrakumarji Keshavlalji Jirawala" },
-    designation: { hi: "सहमंत्री (Joint Secretary)", en: "Joint Secretary" },
+    designation: { hi: "ट्रस्टी (Trustee)", en: "Trustee" },
     city: { hi: "पुणे (गढ़ सिवाना)", en: "Pune (Garh Siwana)" },
     message: { 
-      hi: "युवा समाज को धर्म व सेवा पथ पर जोड़ना हमारी अहम भूमिका है। सभी सेवाभावी लोगों का स्वागत है।", 
-      en: "Uniting the young generation on the righteous path of service and spirituality remains our core driving motive."
+      hi: "ट्रस्ट के सेवा कार्य निस्वार्थ रूप से समाज के हर वर्ग तक पहुँचे, यही हमारा ध्येय है।", 
+      en: "Our ultimate goal is to ensure every pilgrim visiting Dungri Pura experiences profound peace."
     },
-    phone: "+91 90289 74569",
-    email: "rajendra.j@siwanchitrust.org",
-    photoUrl: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&q=80&w=300"
+    phone: "+91 94220 54100",
+    email: "bhanwar.jirawala@siwanchitrust.org",
+    photoUrl: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=300"
   },
   {
     id: "tr7",
-    name: { hi: "शा. संघवी मिठालालजी नेमीचंदजी जीरावला", en: "Sanghvi Mithalalji Nemichandji Jirawala" },
+    name: { hi: "शा. मीठालालजी जेठाजी भंसाली", en: "Sha Mithalalji Jethaji Bhansali" },
     designation: { hi: "ट्रस्टी (Trustee)", en: "Trustee" },
-    city: { hi: "समदड़ी डीसा (अहमदाबाद)", en: "Samdari Deesa (Ahmedabad)" },
-    message: { 
-      hi: "साधु-साध्वी भगवंतों के सुखद विहार एवं वैयावृत्य को सुगम बनाना हमारा सर्वोच्च सौभाग्य और कर्तव्य है।", 
-      en: "Providing ultimate comfort and service to traveling Jain monks during their walking pilgrimages is our highest luck."
+    city: { hi: "पुणे", en: "Pune" },
+    message: {
+      hi: "साधु-साध्वी विहार सेवा और पदयात्रियों की भक्ति हमारी संस्कृति का मुख्य स्तंभ है।",
+      en: "Serving the holy monks and walking pilgrimages is our highest luck."
     },
     phone: "+91 94260 12680",
     email: "mithalal.j@siwanchitrust.org",
@@ -232,53 +221,14 @@ export const seedTrustees: Trustee[] = [
     city: { hi: "पुणे (गढ़ सिवाना)", en: "Pune (Garh Siwana)" },
     message: { 
       hi: "हर तीर्थ यात्री डूंगरी पुरा आकर आध्यात्मिक शांति का अनुभव करे, यही हमारा मूल संकल्प है।", 
-      en: "Our ultimate purpose is to ensure every visiting seeker experiences unmatched spiritual tranquility."
+      en: "Our ultimate goal is that every pilgrim visits Dungri Pura and experiences spiritual peace."
     },
-    phone: "+91 92253 1548",
+    phone: "+91 94220 54100",
     email: "suresh.bhansali@siwanchitrust.org",
-    photoUrl: "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&q=80&w=300"
-  },
-  {
-    id: "tr10",
-    name: { hi: "शा. कांतिलालजी चिमनलालजी ढेलडिया मुथा", en: "Sha Kantilalji Chimanlalji Dheldia Mutha" },
-    designation: { hi: "ट्रस्टी (Trustee)", en: "Trustee" },
-    city: { hi: "पुणे (गढ़ सिवाना)", en: "Pune (Garh Siwana)" },
-    message: { 
-      hi: "आदिनाथ भोजनशाला एवं परिसर की उत्तम व्यवस्थाओं को हमेशा शुद्धता के साथ सुचारू रखना हमारा ध्येय है।", 
-      en: "Endeavoring to maintain absolute hygiene and purest swasthya dining schedules across the entire boarding block."
-    },
-    phone: "+91 97644 41857",
-    email: "kantilal.mutha@siwanchitrust.org",
-    photoUrl: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=300"
-  },
-  {
-    id: "tr11",
-    name: { hi: "शा. मांगीलालजी गुलाबचंदजी विनायकिया", en: "Sha Mangilalji Gulabchandji Vinayakiya" },
-    designation: { hi: "ट्रस्टी (Trustee)", en: "Trustee" },
-    city: { hi: "हैदराबाद (धानेरा)", en: "Hyderabad (Dhanera)" },
-    message: { 
-      hi: "राष्ट्रव्यापी समाज जनों से निरंतर संपर्क साधना और सुदृढ़ सहकार स्थापित करना मेरी सेवा का आधार है।", 
-      en: "Fostering long-term cordial associations with nationwide Jain families for unified humanitarian results."
-    },
-    phone: "+91 93476 0209",
-    email: "mangilal.v@siwanchitrust.org",
     photoUrl: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=300"
   },
   {
-    id: "tr12",
-    name: { hi: "शा. सोहनलालजी मिश्रीमलजी जीरावला", en: "Sha Sohanlalji Mishrimalji Jirawala" },
-    designation: { hi: "ट्रस्टी (Trustee)", en: "Trustee" },
-    city: { hi: "सुरत (समदड़ी)", en: "Surat (Samdari)" },
-    message: { 
-      hi: "ओसवाल पैलेस सामाजिक समारोहों को सुखद एवं सुंदर यादों के रूप में विकसित प्रदान करने के प्रति संकल्पित है।", 
-      en: "Committed to delivering world-class hospitality and blissful life events at the majestic Oswal Palace complex."
-    },
-    phone: "+91 99793 09332",
-    email: "sohan.jirawala@siwanchitrust.org",
-    photoUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=300"
-  },
-  {
-    id: "tr13",
+    id: "tr10",
     name: { hi: "शा. संघवी अमृतलालजी धुडाजी भंसाली", en: "Sanghvi Amritlalji Dhudaji Bhansali" },
     designation: { hi: "ट्रस्टी (Trustee)", en: "Trustee" },
     city: { hi: "पुणे (सिवाना)", en: "Pune (Siwana)" },
@@ -327,7 +277,7 @@ export const roomCategories: RoomCategory[] = [
     type: "AC",
     capacity: 3,
     ratePerDay: 1200,
-    availableRooms: 20,
+    availableRooms: 150,
     amenities: [
       { hi: "डबल बेड", en: "Double Bed" },
       { hi: "गीजर", en: "Geyser" },
@@ -338,49 +288,33 @@ export const roomCategories: RoomCategory[] = [
   },
   {
     id: "rc2",
-    name: { hi: "मंगला नॉन-एसी सुपीरियर (Non-A/C Superior)", en: "Mangla Non-A/C Superior Room" },
-    description: { hi: "हवादार और शीतल प्राकृतिक प्रकाश युक्त कमरा, तीन व्यक्तियों के लिए उपर्युक्त।", en: "Well-ventilated comfortable room with private bathroom, designed for pocket-friendly spiritual family stays." },
-    type: "Non-AC",
-    capacity: 3,
-    ratePerDay: 600,
-    availableRooms: 35,
+    name: { hi: "आदिनाथ कम्युनिटी हॉल (Adinath Community Hall)", en: "Adinath Community Hall" },
+    description: { hi: "सामूहिक रहने के लिए उपयुक्त बड़ा हॉल, जिसमें गद्दे और संकुल सुविधाएं उपलब्ध हैं (नॉन-एसी)।", en: "Spacious community hall perfect for large family groups or pilgrim batches, equipped with comfortable bedding." },
+    type: "Hall",
+    capacity: 25,
+    ratePerDay: 1500,
+    availableRooms: 4,
     amenities: [
-      { hi: "डबल बेड + सिंगल सोफा", en: "Double Bed + Sofa" },
-      { hi: "प्रशंसक और वेंटिलेशन", en: "Fan & Ventilation" },
+      { hi: "बिछौने व गद्दे", en: "Mattresses & Bedding" },
+      { hi: "पर्याप्त पंखे व हवादार खिड़कियाँ", en: "Ample Fans & Ventilation" },
       { hi: "साफ बाथरूम", en: "Clean Restroom" }
     ],
-    imageUrl: "https://images.unsplash.com/photo-1598928506311-c55ded91a20c?auto=format&fit=crop&q=80&w=400"
+    imageUrl: "https://images.unsplash.com/photo-1544644181-1484b3fdfc62?auto=format&fit=crop&q=80&w=400"
   },
   {
     id: "rc3",
-    name: { hi: "पारसनाथ सुपर डीलक्स सुइट (Super Deluxe Family Suite)", en: "Parasnath Super Deluxe Family Suite" },
-    description: { hi: "बड़े परिवारों के लिए विशेष प्रीमियम सोफा संलग्न सुइट, जिसमें उत्कृष्ट संगमरमर का फर्श है।", en: "Premium marble-floored family suite featuring comfortable sofas, master beds, refrigerator, and panoramic temple view." },
-    type: "Suite",
-    capacity: 5,
-    ratePerDay: 2500,
-    availableRooms: 8,
+    name: { hi: "महावीर वातानुकूलित हॉल (Mahaveer A/C Hall)", en: "Mahaveer A/C Hall" },
+    description: { hi: "उत्कृष्ट वातानुकूलित हॉल सामूहिक प्रवास एवं धार्मिक चर्चाओं के लिए पूर्ण अनुकूल।", en: "Premium air-conditioned community hall for holy discourses, community discussions, and large group stays." },
+    type: "Hall",
+    capacity: 30,
+    ratePerDay: 3000,
+    availableRooms: 2,
     amenities: [
-      { hi: "किंग साइज बेड", en: "King Size Bed" },
-      { hi: "एलसीडी टीवी (धार्मिक चैनल)", en: "LCD TV with Jain Channels" },
-      { hi: "सिटिंग सोफा सेट", en: "Luxury Living/Sitting Area" },
-      { hi: "पहाड़ और मंदिर का विहंगम दृश्य", en: "Scenic Temple & Hill View" }
+      { hi: "पूर्ण वातानुकूलित", en: "Fully Air Conditioned" },
+      { hi: "पवित्र वातावरण", en: "Holy & Serene Environment" },
+      { hi: "अटैच्ड वाशरूम", en: "Attached Washrooms" }
     ],
-    imageUrl: "https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&q=80&w=400"
-  },
-  {
-    id: "rc4",
-    name: { hi: "साधु-साध्वी विहारधाम कुटीर (Vihardham Holy Stay)", en: "Sadhu-Sadhvi Vihar Kutir" },
-    description: { hi: "पूज्य मुनिराजों और महासतीजी के लिए विशेष रूप से निर्मित, उपधि रहित व सर्वथा अनुकूल साधना स्थल।", en: "Custom built with pristine parameters strictly meeting Jain monastic rules. Dedicated strictly for holy Monks & Nuns." },
-    type: "Vihardham Stay",
-    capacity: 4,
-    ratePerDay: 0, // Free of cost as service
-    availableRooms: 12,
-    amenities: [
-      { hi: "काष्ठ पाट (Wooden Beds)", en: "Wooden Pat (Monastic Beds)" },
-      { hi: "सचित्त-अचित्त जल प्रबंधन", en: "Perfect Water Filtering Management" },
-      { hi: "मौन अनुकूल शांत वातावरण", en: "Vipassana & Silent Environment" }
-    ],
-    imageUrl: "https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?auto=format&fit=crop&q=80&w=400"
+    imageUrl: "https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&q=80&w=400"
   }
 ];
 

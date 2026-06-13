@@ -22,7 +22,7 @@ export default function DonationSystem({ currentLang, onAddDonation }: DonationS
   const [panNumber, setPanNumber] = useState('');
   const [category, setCategory] = useState<'One Time' | 'Monthly' | 'Construction' | 'Temple' | 'Room' | 'Bhojanshala' | 'General'>('General');
   const [paymentMethod, setPaymentMethod] = useState<'UPI' | 'Bank Transfer' | 'Online'>('UPI');
-  const [is80GRequested, setIs80GRequested] = useState(true);
+  const [is80GRequested, setIs80GRequested] = useState(false);
 
   // Simulated Checkout Wizard States
   const [checkingOut, setCheckingOut] = useState(false);
@@ -87,7 +87,7 @@ export default function DonationSystem({ currentLang, onAddDonation }: DonationS
     setPanNumber('');
     setCategory('General');
     setPaymentMethod('UPI');
-    setIs80GRequested(true);
+    setIs80GRequested(false);
     setGeneratedDonation(null);
   };
 
@@ -108,14 +108,7 @@ export default function DonationSystem({ currentLang, onAddDonation }: DonationS
             ? "आपके द्वारा समर्पित धर्म सहयोग राशि का शत-प्रतिशत उपयोग डूंगरी पुरा श्री संघ विहारधाम, जिनालय रख-रखाव व साधु-साध्वी वैयावृत्य में किया जाता है।"
             : "Every rupee committed to the trust is utilized transparently for Vihardham holy stays, temple marble-masonry, and monastic support programs."}
         </p>
-        <div className="flex flex-wrap justify-center gap-3 pt-2 text-xs font-mono font-black uppercase tracking-wider text-charcoal">
-          <span className="bg-green-100 border-2 border-charcoal px-3.5 py-1.5 shadow-flat-sm flex items-center gap-1.5">
-            🛡️ Govt 80G Exempted (धारा 80G छूट)
-          </span>
-          <span className="bg-gold-100 border-2 border-charcoal px-3.5 py-1.5 shadow-flat-sm flex items-center gap-1.5">
-            🕊️ Reg No. E/1802/Barmer
-          </span>
-        </div>
+        {/* Registration & exemption details hidden at trust request */}
         <div className="w-24 h-0.5 bg-gold-500 mx-auto mt-3"></div>
       </div>
 
@@ -146,10 +139,7 @@ export default function DonationSystem({ currentLang, onAddDonation }: DonationS
               📞 {currentLang === 'hi' ? "स्थानांतरण के पश्चात रसीद हेतु +91 94260 55667 पर सूचित करें।" : "WhatsApp transaction receipt to +91 94260 55667 for Golden Name Record."}
             </p>
 
-            <div className="flex items-center space-x-3 text-xs bg-green-50 text-green-800 border-l-4 border-green-600 p-3.5">
-              <Shield className="w-5 h-5 text-green-700 shrink-0" />
-              <span className="font-bold">Income Tax 80G Rebate: Deductions available under standard Central Income Tax regulations for charitable religious trusts.</span>
-            </div>
+            {/* Exemption details hidden at trust request */}
           </div>
 
           {/* Core Donation funds list */}
@@ -276,37 +266,7 @@ export default function DonationSystem({ currentLang, onAddDonation }: DonationS
                 />
               </div>
 
-              {/* 80G PAN number logic */}
-              <div className="col-span-2 border-t-2 border-charcoal pt-4 flex flex-col space-y-3">
-                <div className="flex items-center space-x-2.5">
-                  <input
-                    type="checkbox"
-                    id="chk80g"
-                    className="w-4 h-4 accent-maroon-700"
-                    checked={is80GRequested}
-                    onChange={(e) => setIs80GRequested(e.target.checked)}
-                  />
-                  <label htmlFor="chk80g" className="text-xs text-maroon-800 font-bold block cursor-pointer select-none">
-                    {currentLang === 'hi' ? "आयकर छूट धारा 80G रसीद जनरेट करें" : "Generate Official Income Tax 80G Certificate PDF"}
-                  </label>
-                </div>
-
-                {is80GRequested && (
-                  <div className="bg-cream-100 p-3 rounded-none border-2 border-charcoal flex flex-col space-y-1 animate-fade-in max-w-sm">
-                    <label className="text-[10px] text-charcoal/70 uppercase tracking-wider font-mono">PAN CARD ID (स्थायी खाता संख्या) *</label>
-                    <input
-                      type="text"
-                      required={is80GRequested}
-                      pattern="[A-Z,a-z]{5}[0-9]{4}[A-Z,a-z]{1}"
-                      maxLength={10}
-                      placeholder="ABCDE1234F"
-                      className="p-2 border-2 border-charcoal rounded-none bg-white text-xs text-charcoal outline-none tracking-widest font-mono font-bold uppercase"
-                      value={panNumber}
-                      onChange={(e) => setPanNumber(e.target.value)}
-                    />
-                  </div>
-                )}
-              </div>
+              {/* 80G details omitted per trust directives */}
 
               {/* Payment methods */}
               <div className="col-span-2 pt-2 space-y-2">
@@ -381,7 +341,7 @@ export default function DonationSystem({ currentLang, onAddDonation }: DonationS
                         <div>
                           <span className="font-display font-black text-base text-maroon-800 block">{t.trustName}</span>
                           <span className="text-[9px] text-charcoal block uppercase font-black tracking-widest leading-none mt-1">Dungri Pura - Seva Mandir Trust</span>
-                          <span className="text-[8px] text-charcoal/60 block mt-0.5">Reg. No: E/1802/Barmer (Income Tax Act 80G Approved)</span>
+                          <span className="text-[8px] text-charcoal/60 block mt-0.5">Dungri Pura, Rajasthan, India (Authorized Spiritual Receipt)</span>
                         </div>
                         <div className="text-right">
                           <span className="bg-maroon-800 text-gold-300 font-extrabold text-[9px] px-2.5 py-1 rounded-none border border-charcoal block">DHARMIC RECEIPT</span>
@@ -404,13 +364,9 @@ export default function DonationSystem({ currentLang, onAddDonation }: DonationS
                             <span className="text-[10px] text-charcoal/50 block">Payment Mode:</span>
                             <span className="text-charcoal block">{generatedDonation.paymentMethod}</span>
                           </div>
-                          <div>
+                          <div className="col-span-2">
                             <span className="text-[10px] text-charcoal/50 block font-medium">Transaction ID:</span>
                             <span className="text-charcoal text-[11px] font-mono select-all truncate block">{generatedDonation.transactionId}</span>
-                          </div>
-                          <div>
-                            <span className="text-[10px] text-charcoal/50 block font-medium">Labharthi PAN ID:</span>
-                            <span className="text-maroon-800 text-xs font-mono block uppercase">{generatedDonation.panNumber || 'NA'}</span>
                           </div>
                         </div>
 

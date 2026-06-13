@@ -21,7 +21,7 @@ import OswalPalaceTab from './components/OswalPalaceTab';
 import DonationSystem from './components/DonationSystem';
 import LabhChadhava from './components/LabhChadhava';
 import DonorWall from './components/DonorWall';
-import CommunityEvents from './components/CommunityEvents';
+import VatsalyaDhamTab from './components/VatsalyaDhamTab';
 import ContactTab from './components/ContactTab';
 import AdminDashboard from './components/AdminDashboard';
 import ProjectVideoPlayer from './components/ProjectVideoPlayer';
@@ -29,8 +29,47 @@ import GalleryVideosTab from './components/GalleryVideosTab';
 
 export default function App() {
   const [currentLang, setLang] = useState<Language>('hi');
-  const [activeTab, setActiveTab] = useState<string>('home');
+  const [activeTab, _setActiveTab] = useState<string>(() => {
+    const path = window.location.pathname.replace(/^\/|\/$/g, '');
+    if (path === 'dharma-sahyog' || path === 'donations') return 'donations';
+    if (path === 'oswal-palace' || path === 'palace') return 'palace';
+    const validTabs = ['home', 'about', 'vihardham', 'palace', 'vatsalya', 'donations', 'donorwall', 'gallery', 'contact', 'admin'];
+    return validTabs.includes(path) ? path : 'home';
+  });
+
+  const setActiveTab = (tab: string) => {
+    _setActiveTab(tab);
+    let pathSegment = tab;
+    if (tab === 'donations') pathSegment = 'dharma-sahyog';
+    if (tab === 'palace') pathSegment = 'oswal-palace';
+    const newPath = tab === 'home' ? '/' : `/${pathSegment}`;
+    if (window.location.pathname !== newPath) {
+      window.history.pushState({}, '', newPath);
+    }
+    // Scroll to top on tab change for smoother transition
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  };
+
   const [showVideoModal, setShowVideoModal] = useState(false);
+
+  // Sync back/forward button clicks to active tab state
+  useEffect(() => {
+    const handlePopState = () => {
+      const path = window.location.pathname.replace(/^\/|\/$/g, '');
+      if (path === 'dharma-sahyog' || path === 'donations') {
+        _setActiveTab('donations');
+        return;
+      }
+      if (path === 'oswal-palace' || path === 'palace') {
+        _setActiveTab('palace');
+        return;
+      }
+      const validTabs = ['home', 'about', 'vihardham', 'palace', 'vatsalya', 'donations', 'donorwall', 'gallery', 'contact', 'admin'];
+      _setActiveTab(validTabs.includes(path) ? path : 'home');
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
 
   // Persistence States synced manually to LocalStorage
   const [roomBookings, setRoomBookings] = useState<RoomBooking[]>([]);
@@ -212,8 +251,13 @@ export default function App() {
 
     // 9. Slideshow images seed
     const localSlideshow = localStorage.getItem('siwanchi_slideshow_images');
-    if (localSlideshow) {
-      setSlideshowImages(JSON.parse(localSlideshow));
+    let parsedSlideshow: SlideshowImage[] = [];
+    try {
+      parsedSlideshow = localSlideshow ? JSON.parse(localSlideshow) : [];
+    } catch (_) {}
+
+    if (Array.isArray(parsedSlideshow) && parsedSlideshow.length > 0) {
+      setSlideshowImages(parsedSlideshow);
     } else {
       const defaultSlideshow: SlideshowImage[] = [
         {
@@ -226,7 +270,7 @@ export default function App() {
           id: "slide_2",
           url: "https://images.unsplash.com/photo-1545232979-8bf34eb9757b?auto=format&fit=crop&q=80&w=1200",
           title: { hi: "भव्य श्री आदिनाथ शिखरबद्ध जिनालय", en: "The Grand Shikharbandh Adinath Temple" },
-          caption: { hi: "नवनिर्मित पावन जैन मंदिर - भक्ति, शांति और ध्यान का पावन धाम", en: "Newly built sacred Jain Temple - A hub of devotion, peace, and mindfulness" }
+          caption: { hi: "नवानीर्मित पावन जैन मंदिर - भक्ति, शांति और ध्यान का पावन धाम", en: "Newly built sacred Jain Temple - A hub of devotion, peace, and mindfulness" }
         },
         {
           id: "slide_3",
@@ -382,31 +426,11 @@ export default function App() {
       case 'donorwall':
         return <DonorWall currentLang={currentLang} contributorsList={contributorsList} />;
         
-      case 'events':
-        return (
-          <CommunityEvents 
-            currentLang={currentLang} 
-            onAddVolunteer={handleAddVolunteer} 
-            onAddMember={handleAddMember}
-            newsList={seedNews}
-            eventsList={seedEvents}
-          />
-        );
+      case 'vatsalya':
+        return <VatsalyaDhamTab currentLang={currentLang} />;
         
       case 'gallery':
         return <GalleryVideosTab currentLang={currentLang} galleryItems={galleryItems} />;
-        
-
-      case 'community':
-        return (
-          <CommunityEvents 
-            currentLang={currentLang} 
-            onAddVolunteer={handleAddVolunteer} 
-            onAddMember={handleAddMember}
-            newsList={seedNews}
-            eventsList={seedEvents}
-          />
-        );
         
       case 'contact':
         return <ContactTab currentLang={currentLang} onAddContactQuery={handleAddContactQuery} />;
@@ -477,34 +501,7 @@ export default function App() {
               </div>
             </div>
 
-            {/* Embedded Mini Stays highlights directly into the Home Snapshot to expand content reach */}
-            <div className="bg-white border-t-3 border-charcoal py-20">
-              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-                <div className="space-y-5">
-                  <span className="text-maroon-700 text-[10px] font-black uppercase tracking-wider block font-mono bg-maroon-50ed border-2 border-charcoal px-3 py-1.5 self-start inline-block shadow-flat-sm">🏰 Elegant Venue Features</span>
-                  <h2 className="font-display font-black text-3xl text-maroon-850 uppercase">
-                    {currentLang === 'hi' ? "भोजनशाला एवं उत्सव कुटीर" : "Vedic Cuisine & Monastic Stays"}
-                  </h2>
-                  <p className="text-charcoal text-xs sm:text-sm leading-relaxed font-bold">
-                    The campus houses Adinath Bhojanshala catering strictly pure swasthya Jain foods, operating on zero profit goals. We also present a magnificent 1500 seats assembly hall supporting local marriage events, conferences, and Samaj gatherings.
-                  </p>
-                  <button 
-                    onClick={() => setActiveTab('palace')} 
-                    className="bg-maroon-700 hover:bg-gold-500 hover:text-maroon-800 text-white font-black text-xs px-5 py-3 rounded-none border-2 border-charcoal shadow-flat uppercase tracking-wider flex items-center space-x-1 transition-all cursor-pointer"
-                  >
-                    <span>View Oswal Palace Features</span>
-                    <span>→</span>
-                  </button>
-                </div>
-                <div>
-                  <img 
-                    src="https://images.unsplash.com/photo-1519167758481-83f550bb49b3?auto=format&fit=crop&q=80&w=600" 
-                    alt="Marriage stage decoration" 
-                    className="rounded-none border-3 border-charcoal shadow-flat-lg" 
-                  />
-                </div>
-              </div>
-            </div>
+            {/* Dedicated video / walkthrough ending container and spacers */}
           </div>
         );
     }
@@ -551,7 +548,7 @@ export default function App() {
             </p>
 
             <div className="text-[10px] text-gold-400 font-mono font-bold block pt-1">
-              <span>Verified Registration No. E/1802/Barmer, RJ, India</span>
+              <span>Shri Siwanchi Jain Seva Samiti Trust, Rajasthan, India</span>
             </div>
           </div>
 
@@ -562,7 +559,7 @@ export default function App() {
               <li><button onClick={() => setActiveTab('about')} className="hover:text-white transition-colors cursor-pointer">About Governing Trustees</button></li>
               <li><button onClick={() => setActiveTab('vihardham')} className="hover:text-white transition-colors cursor-pointer">Dharamshala Room Listings</button></li>
               <li><button onClick={() => setActiveTab('palace')} className="hover:text-white transition-colors cursor-pointer">Oswal Palace Reservations</button></li>
-              <li><button onClick={() => setActiveTab('donations')} className="hover:text-white transition-colors cursor-pointer">Exempt 80G Sponsoring</button></li>
+              <li><button onClick={() => setActiveTab('donations')} className="hover:text-white transition-colors cursor-pointer">Spiritual Sponsoring (धर्म सहयोग)</button></li>
             </ul>
           </div>
 
@@ -570,7 +567,7 @@ export default function App() {
           <div className="md:col-span-4 space-y-4 text-xs font-semibold text-cream-205">
             <h5 className="text-gold-400 uppercase tracking-widest font-black font-display text-[11px] block">Immediate Contact Office</h5>
             <p className="leading-relaxed">
-              📍 Dungri Pura (Meli), Siwana-Samdari Road, District Barmer, Rajasthan, India
+              📍 Siwana-Samdari Road,Opp Bhagvanti Petrol Pump DurgaPura (Meli) District Barmer, Rajasthan, India
             </p>
             <div className="space-y-1 block font-mono">
               <a href="tel:+919426055667" className="block hover:text-white transition-colors">📞 Phone: +91 94260 55667</a>
@@ -611,13 +608,13 @@ export default function App() {
               <iframe 
                 className="w-full h-full"
                 src="https://www.youtube.com/embed/Cwyn5LCGd0c?autoplay=1&rel=0" 
-                title="Dungri Pura Vihardham & Oswal Palace Project tour" 
+                title="Vihardham & Oswal Palace Project tour" 
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                 allowFullScreen
               ></iframe>
             </div>
             <div className="p-4 bg-cream-100 text-charcoal text-xs text-center border-t-2 border-charcoal font-bold leading-normal">
-              This interactive video walkthrough details the majestic design and master plan of Vihardham & Oswal Palace on Dungri Pura (Meli Road), Siwana.
+              This interactive video walkthrough details the majestic design and master plan of Vihardham & Oswal Palace on (Meli Road), Siwana.
             </div>
           </div>
         </div>

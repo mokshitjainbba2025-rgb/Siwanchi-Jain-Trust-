@@ -24,11 +24,10 @@ export default function Navbar({ currentLang, setLang, activeTab, setActiveTab }
     { id: 'about', label: t.about },
     { id: 'vihardham', label: t.vihardham },
     { id: 'palace', label: t.oswalPalace },
+    { id: 'vatsalya', label: t.vatsalyaDham },
     { id: 'donations', label: t.donations },
     { id: 'donorwall', label: t.donorWall },
-    { id: 'events', label: t.events },
     { id: 'gallery', label: t.gallery },
-    { id: 'community', label: t.community },
     { id: 'contact', label: t.contact },
   ];
 
@@ -80,7 +79,7 @@ export default function Navbar({ currentLang, setLang, activeTab, setActiveTab }
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden xl:flex items-center space-x-0.5 2xl:space-x-1.5">
+          <nav className="hidden 2xl:flex items-center space-x-1">
             {navItems.map((item) => (
               <button
                 key={item.id}
@@ -89,7 +88,7 @@ export default function Navbar({ currentLang, setLang, activeTab, setActiveTab }
                   activeTab === item.id
                     ? 'bg-maroon-700 text-gold-300 border-charcoal shadow-flat scale-[0.98]'
                     : 'text-charcoal border-transparent hover:border-charcoal hover:bg-gold-300/10'
-                } text-[9px] px-1 py-1 xl:text-[10px] xl:px-1.5 xl:py-1 2xl:text-xs 2xl:px-3 2xl:py-1.5`}
+                } text-[10px] px-1.5 py-1 2xl:text-xs 2xl:px-3 2xl:py-1.5`}
               >
                 {item.label}
               </button>
@@ -134,10 +133,10 @@ export default function Navbar({ currentLang, setLang, activeTab, setActiveTab }
           </div>
 
           {/* Mobile menu trigger button */}
-          <div className="xl:hidden flex items-center space-x-3">
+          <div className="2xl:hidden flex items-center space-x-3">
             {/* Quick Lang Switcher for mobile */}
             <button
-              onClick={() => setLang(currentLang === 'en' ? 'hi' : 'en')}
+               onClick={() => setLang(currentLang === 'en' ? 'hi' : 'en')}
               className="lg:hidden p-2 border-2 border-charcoal rounded-none bg-cream-100 text-maroon-700 text-xs font-black flex items-center space-x-1 shadow-flat"
             >
               <Globe className="w-4.5 h-4.5" />
@@ -156,7 +155,7 @@ export default function Navbar({ currentLang, setLang, activeTab, setActiveTab }
 
       {/* Mobile Navigation Panel */}
       {isOpen && (
-        <div className="xl:hidden bg-cream-100 border-t-3 border-charcoal px-4 pt-2 pb-6 space-y-2.0 block shadow-flat-lg">
+        <div className="2xl:hidden bg-cream-100 border-t-3 border-charcoal px-4 pt-2 pb-6 space-y-2.0 block shadow-flat-lg">
           {navItems.map((item) => (
             <button
               key={item.id}

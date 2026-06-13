@@ -30,8 +30,8 @@ export default function ProjectVideoPlayer({
   const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
 
   const shareText = currentLang === 'hi'
-    ? `डूंगरी पुरा (मेली) राजशाही विहारधाम और ओसवाल पैलेस परियोजना का भव्य वीडियो ट्यूर देखें: ${videoUrl}`
-    : `Watch the majestic video tour of Dungri Pura Vihardham & Oswal Palace Project: ${videoUrl}`;
+    ? `राजशाही विहारधाम और ओसवाल पैलेस परियोजना का भव्य वीडियो ट्यूर देखें: ${videoUrl}`
+    : `Watch the majestic video tour of Vihardham & Oswal Palace Project: ${videoUrl}`;
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(videoUrl).then(() => {

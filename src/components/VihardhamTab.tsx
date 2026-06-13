@@ -161,15 +161,109 @@ export default function VihardhamTab({ currentLang, onAddRoomBooking }: Vihardha
             </ul>
           </div>
 
-          {/* Quick timing alert */}
-          <div className="bg-cream-100 border-2 border-charcoal p-5 rounded-none space-y-2 shadow-flat-sm">
-            <h4 className="font-black text-maroon-800 text-sm flex items-center uppercase tracking-tight">
-              🍲 आदिनाथ भोजनशाला समय (Prasadam Timings)
-            </h4>
-            <div className="text-xs text-charcoal space-y-1 block font-bold leading-relaxed">
-              <p>• Navkarshi / Breakfast: <strong>07:30 AM to 09:00 AM</strong></p>
-              <p>• Main Lunch meal: <strong>11:30 AM to 01:30 PM</strong></p>
-              <p>• Chauvihar (strictly before Sunset Close): <strong>05:30 PM to Sunset</strong></p>
+          {/* Authentic Bhojanshala Timing & Rates Bulletin Card */}
+          <div className="bg-[#FFFDF0] border-3 border-amber-600 p-5 rounded-none space-y-4 shadow-flat-sm text-charcoal font-sans relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-16 h-16 bg-amber-500/10 rounded-full translate-x-4 -translate-y-4"></div>
+            
+            <div className="text-center space-y-1 pb-1.5 border-b border-amber-500/30">
+              <span className="text-maroon-800 text-xs font-mono font-black uppercase tracking-widest block">
+                {currentLang === 'hi' ? "★ भोजन व्यवस्था ★" : "★ SACRED CATERING ★"}
+              </span>
+              <h4 className="font-display font-black text-maroon-900 text-base sm:text-lg uppercase tracking-tight block">
+                {currentLang === 'hi' ? "संघवी शान्ताबाय जैन भोजनशाला" : "Sanghvi Shantaba Jain Bhojanshala"}
+              </h4>
+              <p className="text-[10px] text-amber-900 font-bold bg-amber-100 px-2 py-0.5 inline-block font-mono">
+                {currentLang === 'hi' ? "दिनांक : 01 फरवरी 2026 से प्रभावी" : "Effective Date: From 01 February 2026"}
+              </p>
+            </div>
+
+            {/* Timings & Cost Grid */}
+            <div className="border border-amber-600/40 divide-y divide-amber-600/40 text-[11px] font-bold">
+              {/* Header row */}
+              <div className="grid grid-cols-12 bg-amber-600/10 text-[10px] text-maroon-850 font-black uppercase tracking-wider p-2">
+                <span className="col-span-5">{currentLang === 'hi' ? "विवरण (Meal Type)" : "Meal Type"}</span>
+                <span className="col-span-3 text-center">{currentLang === 'hi' ? "दर (Rate)" : "Rate"}</span>
+                <span className="col-span-4 text-right">{currentLang === 'hi' ? "समय / नियम" : "Time / Rule"}</span>
+              </div>
+              
+              {/* Navkarsi */}
+              <div className="grid grid-cols-12 p-2 items-center bg-white">
+                <div className="col-span-5 pr-1">
+                  <span className="text-maroon-800 block text-xs font-black">{currentLang === 'hi' ? "सुबह की नवकारसी" : "Morning Navkarsi"}</span>
+                </div>
+                <div className="col-span-3 text-center text-xs font-black text-green-700">60 रू. (₹60)</div>
+                <div className="col-span-4 text-right text-[10px] text-charcoal/80">
+                  {currentLang === 'hi' ? "नवकारसी आने के बाद" : "After Navkarsi"}
+                </div>
+              </div>
+
+              {/* Lunch */}
+              <div className="grid grid-cols-12 p-2 items-center bg-white/70">
+                <div className="col-span-5 pr-1">
+                  <span className="text-maroon-800 block text-xs font-black">{currentLang === 'hi' ? "दोपहर का भोजन" : "Afternoon Lunch"}</span>
+                </div>
+                <div className="col-span-3 text-center text-xs font-black text-green-700">80 रू. (₹80)</div>
+                <div className="col-span-4 text-right text-[10px] text-charcoal/80">
+                  {currentLang === 'hi' ? "प्रातः 11 से दोपहर 1 बजे" : "11:00 AM to 01:00 PM"}
+                </div>
+              </div>
+
+              {/* Dinner */}
+              <div className="grid grid-cols-12 p-2 items-center bg-white">
+                <div className="col-span-5 pr-1">
+                  <span className="text-maroon-800 block text-xs font-black">{currentLang === 'hi' ? "शाम का भोजन" : "Evening Dinner"}</span>
+                </div>
+                <div className="col-span-3 text-center text-xs font-black text-green-700">80 रू. (₹80)</div>
+                <div className="col-span-4 text-right text-[10px] text-charcoal/80 font-black text-amber-800">
+                  {currentLang === 'hi' ? "सूर्यास्त पूर्व" : "Before Sunset"}
+                </div>
+              </div>
+            </div>
+
+            {/* Rules Block */}
+            <div className="bg-amber-50 border border-amber-500/20 p-3 text-[10px] sm:text-xs text-amber-950 space-y-1.5 leading-snug">
+              <span className="font-display font-black text-maroon-850 uppercase tracking-wider block text-center border-b border-amber-550/25 pb-0.5 mb-1 text-[11px]">
+                📢 {currentLang === 'hi' ? "आवश्यक सूचना एवं नियम" : "Important Room Rules & Notice"}
+              </span>
+              <p className="flex items-start">
+                <span className="mr-1.5 text-amber-600">⚖️</span>
+                <span>
+                  {currentLang === 'hi' 
+                    ? "अधिक यात्री होने से आगामी जानकारी अवश्य प्रदान करें।" 
+                    : "For larger pilgrim groups, please inform the management in advance."}
+                </span>
+              </p>
+              <p className="flex items-start font-black text-maroon-850">
+                <span className="mr-1.5 text-amber-600">🚫</span>
+                <span>
+                  {currentLang === 'hi' 
+                    ? "कृपया थाली में जूठा भोजन बिल्कुल न छोड़ें।" 
+                    : "Do not leave any leftover food on your dining plate."}
+                </span>
+              </p>
+              <p className="flex items-start">
+                <span className="mr-1.5 text-amber-600">🥛</span>
+                <span>
+                  {currentLang === 'hi' 
+                    ? "कृपया थाली धोकर पीने (आचमन करने) का पावन आग्रह रखें।" 
+                    : "We highly request rinsing the plate and sipping the water (zero waste ritual)."}
+                </span>
+              </p>
+            </div>
+
+            {/* Contacts & Trust Mandli */}
+            <div className="bg-white border border-amber-400 p-2.5 text-center space-y-1 font-mono text-[10px] sm:text-xs">
+              <span className="text-charcoal/60 block font-bold uppercase">{currentLang === 'hi' ? "भोजनशाला प्रबंधक संपर्क सूत्र" : "Bhojanshala Manager Contacts"}</span>
+              <div className="flex justify-center gap-3 text-maroon-800 font-black">
+                <a href="tel:+918233984114" className="underline hover:text-amber-700">8233984114</a>
+                <span>|</span>
+                <a href="tel:+918824654807" className="underline hover:text-amber-700">8824654807</a>
+              </div>
+              <p className="text-[9px] italic text-charcoal/75 pt-1 border-t border-dashed border-amber-300">
+                {currentLang === 'hi' 
+                  ? "कृपया अपना सुझाव भी जरूर-जरूर अवश्य देवें। ...ट्रस्ट मण्डल"
+                  : "Please share your helpful suggestions. ...Trust Board"}
+              </p>
             </div>
           </div>
         </div>
@@ -281,278 +375,97 @@ export default function VihardhamTab({ currentLang, onAddRoomBooking }: Vihardha
         <div className="fixed inset-0 z-50 overflow-y-auto bg-black/60 flex items-center justify-center p-4 col-span-2">
           <div className="relative bg-cream-50 w-full max-w-2xl rounded-none border-3 border-charcoal shadow-flat-lg overflow-hidden animate-fade-in">
             
-            {/* Header */}
-            <div className="bg-maroon-gradient p-5 border-b-2 border-charcoal flex justify-between items-center text-white">
-              <div className="flex items-center space-x-2">
-                <span className="text-2xl">🏨</span>
-                <div>
-                  <h3 className="font-display font-black text-lg text-gold-300 uppercase tracking-tight">
-                    Dharamshala Room Booking Portal
-                  </h3>
-                  <span className="text-[10px] tracking-wider uppercase block text-cream-100 font-black font-mono">
-                    Shri Siwanchi Jain Seva Samiti Trust
-                  </span>
-                </div>
-              </div>
+                   {/* Modal Content */}
+            <div className="p-6 max-h-[75vh] overflow-y-auto space-y-6 relative">
               <button 
                 onClick={handleCloseBooking}
-                className="p-1 px-2 hover:bg-white/10 text-white rounded cursor-pointer"
+                className="absolute top-4 right-4 p-1.5 border-2 border-charcoal hover:bg-cream-100 text-charcoal transition-colors cursor-pointer"
+                title="Close"
               >
-                <X className="w-5 h-5" />
+                <X className="w-4 h-4" />
               </button>
-            </div>
-
-            {/* Modal Content */}
-            <div className="p-6 max-h-[75vh] overflow-y-auto space-y-6">
-              {!isBookedSuccess ? (
-                /* Dynamic Booking Form */
-                <form onSubmit={handleSubmitBooking} className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs font-black uppercase font-mono tracking-wide text-charcoal">
-                  
-                  {/* Selected Room Metadata Container */}
-                  <div className="col-span-2 bg-white border-2 border-charcoal p-3.5 rounded-none flex items-center justify-between shadow-flat-sm">
-                    <div className="flex items-center space-x-3">
-                      <img 
-                        src={selectedRoomCategory.imageUrl} 
-                        alt="selected room" 
-                        className="w-14 h-14 object-cover rounded-none border border-charcoal" 
-                      />
-                      <div>
-                        <span className="text-xs text-maroon-800 block">Selected Suite:</span>
-                        <span className="font-display font-black text-sm text-charcoal tracking-tight lowercase first-line:uppercase">{selectedRoomCategory.name[currentLang]}</span>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <span className="text-[10px] text-charcoal/60 block">Rate / Night:</span>
-                      <span className="text-maroon-700 font-extrabold text-sm block">₹{selectedRoomCategory.ratePerDay}</span>
-                    </div>
-                  </div>
-
-                  {/* Form fields */}
-                  <div className="flex flex-col space-y-1">
-                    <label>Full Name *</label>
-                    <input 
-                      type="text" 
-                      required 
-                      placeholder="e.g. Ramesh Kumar Jain" 
-                      className="p-3 border-2 border-charcoal rounded-none bg-white text-xs outline-none font-bold"
-                      value={fullName}
-                      onChange={(e) => setFullName(e.target.value)}
-                    />
-                  </div>
-
-                  <div className="flex flex-col space-y-1">
-                    <label>Mobile Number *</label>
-                    <input 
-                      type="tel" 
-                      required 
-                      pattern="[0-9]{10}"
-                      placeholder="10-digit phone" 
-                      className="p-3 border-2 border-charcoal rounded-none bg-white text-xs outline-none font-bold" 
-                      value={mobile}
-                      onChange={(e) => setMobile(e.target.value)}
-                    />
-                  </div>
-
-                  <div className="flex flex-col space-y-1">
-                    <label>Email Address</label>
-                    <input 
-                      type="email" 
-                      placeholder="e.g. connect@domain.com" 
-                      className="p-3 border-2 border-charcoal rounded-none bg-white text-xs outline-none font-bold" 
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                    />
-                  </div>
-
-                  <div className="flex flex-col space-y-1">
-                    <label>Residential City *</label>
-                    <input 
-                      type="text" 
-                      required 
-                      placeholder="e.g. Pune, Maharashtra" 
-                      className="p-3 border-2 border-charcoal rounded-none bg-white text-xs outline-none font-bold" 
-                      value={address}
-                      onChange={(e) => setAddress(e.target.value)}
-                    />
-                  </div>
-
-                  <div className="flex flex-col space-y-1">
-                    <label>Check In Date *</label>
-                    <input 
-                      type="date" 
-                      required 
-                      min={new Date().toISOString().split('T')[0]}
-                      className="p-2.5 border-2 border-charcoal rounded-none bg-white text-xs outline-none font-bold" 
-                      value={checkIn}
-                      onChange={(e) => setCheckIn(e.target.value)}
-                    />
-                  </div>
-
-                  <div className="flex flex-col space-y-1">
-                    <label>Check Out Date *</label>
-                    <input 
-                      type="date" 
-                      required 
-                      min={checkIn || new Date().toISOString().split('T')[0]}
-                      className="p-2.5 border-2 border-charcoal rounded-none bg-white text-xs outline-none font-bold" 
-                      value={checkOut}
-                      onChange={(e) => setCheckOut(e.target.value)}
-                    />
-                  </div>
-
-                  <div className="flex flex-col space-y-1">
-                    <label>Total Guest Count *</label>
-                    <input 
-                      type="number" 
-                      min="1" 
-                      max={selectedRoomCategory.capacity * roomsRequired}
-                      required 
-                      className="p-2.5 border-2 border-charcoal rounded-none bg-white text-xs outline-none font-bold" 
-                      value={guestCount}
-                      onChange={(e) => setGuestCount(Number(e.target.value))}
-                    />
-                  </div>
-
-                  <div className="flex flex-col space-y-1">
-                    <label>Rooms Required *</label>
-                    <input 
-                      type="number" 
-                      min="1" 
-                      max="5" 
-                      required 
-                      className="p-2.5 border-2 border-charcoal rounded-none bg-white text-xs outline-none font-bold" 
-                      value={roomsRequired}
-                      onChange={(e) => setRoomsRequired(Number(e.target.value))}
-                    />
-                  </div>
-
-                  <div className="col-span-2 flex flex-col space-y-1">
-                    <label>Special Requests (e.g. Senior Citizen ground floor preference)</label>
-                    <textarea 
-                      rows={2} 
-                      placeholder="Any spiritual or physical needs..." 
-                      className="p-3 border-2 border-charcoal rounded-none bg-white text-xs outline-none font-bold" 
-                      value={specialRequests}
-                      onChange={(e) => setSpecialRequests(e.target.value)}
-                    />
-                  </div>
-
-                  {/* Payment Type */}
-                  <div className="col-span-2 space-y-2 pt-2 border-t-2 border-charcoal">
-                    <label className="text-maroon-800 text-xs block font-black font-display uppercase tracking-tight">Select Payment Mode *</label>
-                    <div className="grid grid-cols-2 gap-2 text-center text-[10px] sm:text-xs">
-                      {[
-                        { id: 'Pay at Counter', label: '🚶 Pay Cash on Arrival' },
-                        { id: 'UPI', label: '📲 UPI Instant QR Scan' },
-                        { id: 'Bank Transfer', label: '🏛️ NetBanking Transfer' },
-                        { id: 'Online Gateway', label: '💳 Simulated Gateway' }
-                      ].map((pay) => (
-                        <button
-                          key={pay.id}
-                          type="button"
-                          onClick={() => setPaymentOption(pay.id as any)}
-                          className={`p-2.5 border-2 border-charcoal text-xs font-black uppercase tracking-wider rounded-none cursor-pointer transition-colors shadow-flat-sm ${
-                            paymentOption === pay.id
-                              ? 'bg-maroon-700 text-gold-300'
-                              : 'bg-white text-charcoal hover:bg-cream-100'
-                          }`}
-                        >
-                          {pay.label}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Submit Frame */}
-                  <div className="col-span-2 pt-4 flex flex-col space-y-2 items-center text-center">
-                    <p className="text-[10px] text-charcoal/80 font-bold lowercase font-sans">
-                      By proceeding, you promise to abide by strict Jain code parameters (pure attire, no meat, no smoking/drinking) on the campus premises.
-                    </p>
-                    <button
-                      type="submit"
-                      className="w-full bg-maroon-gradient hover:bg-gold-500 hover:text-maroon-950 text-gold-300 font-black py-4 rounded-none border-2 border-charcoal shadow-flat-lg transition-all active:translate-y-0.5 cursor-pointer uppercase tracking-wider"
-                    >
-                      Process Booking Request (Estimated: ₹{selectedRoomCategory.ratePerDay * roomsRequired * Math.max(1, (checkIn && checkOut) ? Math.ceil(Math.abs(new Date(checkOut).getTime() - new Date(checkIn).getTime()) / (1000 * 60 * 60 * 24)) : 1)})
-                    </button>
-                  </div>
-
-                </form>
-              ) : (
-                /* Booking Success Receipt Page */
-                <div className="text-center p-4 space-y-6">
-                  <div className="w-16 h-16 bg-green-100 border-2 border-charcoal text-green-700 rounded-none flex items-center justify-center text-3xl mx-auto shadow-flat animate-bounce">
-                    ✓
-                  </div>
-                  <div className="space-y-1">
-                    <h4 className="font-display font-black text-2xl text-maroon-850 uppercase tracking-tight">Booking Request Submitted!</h4>
-                    <p className="text-xs text-charcoal font-bold">Your booking receipt is successfully registered and awaiting automatic check-in review.</p>
-                  </div>
-
-                  {/* Printable Receipt visual block */}
-                  {generatedBooking && (
-                    <div id="receipt-dharamshala" className="bg-white border-2 border-charcoal rounded-none p-5 text-left text-xs text-charcoal space-y-3.5 shadow-flat uppercase font-mono tracking-wider font-bold">
-                      <div className="flex justify-between border-b-2 border-charcoal pb-3">
-                        <div>
-                          <span className="font-black text-maroon-800 text-sm block tracking-tight uppercase">{t.trustName}</span>
-                          <span className="text-[9px] text-charcoal font-black mt-1">Dungri Pura Trust Dharamshala Receipt</span>
-                        </div>
-                        <div className="text-right">
-                          <span className="bg-gold-400 border border-charcoal text-maroon-950 font-black text-[9px] px-2 py-1 rounded-none uppercase font-mono block shadow-flat-sm">Status: PENDING</span>
-                          <span className="text-[10px] text-charcoal font-bold block mt-1.5">CODE: {generatedBooking.bookingCode}</span>
-                        </div>
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-y-2 gap-x-4 text-[10px]">
-                        <div>
-                          <span className="text-charcoal/60 block font-mono">Donor/Primary Occupant:</span>
-                          <strong className="text-charcoal text-xs">{generatedBooking.name}</strong>
-                        </div>
-                        <div>
-                          <span className="text-charcoal/60 block font-mono">Phone Contact:</span>
-                          <strong>{generatedBooking.mobile}</strong>
-                        </div>
-                        <div>
-                          <span className="text-charcoal/60 block font-mono">Selected Suite:</span>
-                          <strong className="text-maroon-700 font-mono">{generatedBooking.roomType} x {generatedBooking.roomsCount}</strong>
-                        </div>
-                        <div>
-                          <span className="text-charcoal/60 block font-mono">Estimated Bill Total:</span>
-                          <strong className="text-green-700 text-xs">₹{generatedBooking.totalAmount} ({generatedBooking.paymentOption})</strong>
-                        </div>
-                        <div>
-                          <span className="text-charcoal/60 block font-mono">Occupancy Interval:</span>
-                          <strong className="text-[11px] font-mono">{generatedBooking.checkIn} to {generatedBooking.checkOut}</strong>
-                        </div>
-                        <div>
-                          <span className="text-charcoal/60 block font-mono">Total Guests List:</span>
-                          <strong>{generatedBooking.guests} Residents</strong>
-                        </div>
-                      </div>
-
-                      <div className="border-t border-charcoal/20 pt-3.5 text-center text-[9px] text-charcoal/70 font-sans tracking-normal font-bold lowercase first-line:uppercase">
-                        Please present a digital copy of this booking receipt & valid identity card (Aadhar Card/Voter ID) at the campus front reception.
-                      </div>
-                    </div>
-                  )}
-
-                  <div className="flex gap-3 justify-center pt-2">
-                    <button
-                      onClick={() => window.print()}
-                      className="border-2 border-charcoal bg-white text-maroon-700 font-black text-xs px-5 py-2.5 rounded-none flex items-center space-x-1 hover:bg-cream-105 shadow-flat transition-colors cursor-pointer"
-                    >
-                      <Printer className="w-4 h-4" />
-                      <span>Print Document</span>
-                    </button>
-                    <button
-                      onClick={handleCloseBooking}
-                      className="bg-maroon-700 text-gold-350 font-black text-xs px-5 py-2.5 rounded-none border-2 border-charcoal shadow-flat hover:bg-gold-500 hover:text-maroon-950 transition-colors cursor-pointer"
-                    >
-                      Done
-                    </button>
-                  </div>
-
+              
+              <div className="text-center p-4 space-y-6">
+                <div className="w-16 h-16 bg-cream-100 border-2 border-charcoal text-maroon-700 rounded-none flex items-center justify-center text-3xl mx-auto shadow-flat animate-bounce">
+                  🗓️
                 </div>
-              )}
+                
+                <div className="space-y-3">
+                  <h4 className="font-display font-black text-xl sm:text-2xl text-maroon-850 uppercase tracking-tight">
+                    {currentLang === 'hi' ? "ऑनलाइन धर्मशाला बुकिंग: शीघ्र ही प्रारंभ" : "Online Room Booking: Coming Soon"}
+                  </h4>
+                  
+                  <div className="text-maroon-800 bg-amber-50 border border-amber-300 px-3 py-1 text-[11px] font-black uppercase font-mono tracking-widest inline-block shadow-flat-sm">
+                    {currentLang === 'hi' ? "ऑफलाइन बुकिंग उपलब्ध है (Offline Booking is Active)" : "Offline Booking is fully available"}
+                  </div>
+                  
+                  <p className="text-charcoal text-xs sm:text-sm font-semibold leading-relaxed">
+                    {currentLang === 'hi' ? (
+                      <>
+                        विहारधाम धर्मशाला में कमरों की <strong>ऑनलाइन बुकिंग सेवा शीघ्र ही शुरू की जाएगी</strong>। वर्तमान में यात्रीगण व तीर्थयात्री <strong>सीधे आगमन पर (Offline) अथवा ट्रस्ट पदाधिकारियों से दूरभाष पर संपर्क करके</strong> अपना प्रस्थान कक्ष पूर्व-सुरक्षित करा सकते हैं।
+                      </>
+                    ) : (
+                      <>
+                        The <strong>online booking system is currently scheduled to open soon</strong>. However, <strong>offline bookings and arrival reservations are fully active</strong> and operational. You can book your stay seamlessly on arrival or by contacting the Trust management beforehand.
+                      </>
+                    )}
+                  </p>
+                </div>
+
+                {/* Selected Room Metadata for reference */}
+                <div className="bg-white border-2 border-charcoal p-3.5 rounded-none flex items-center justify-between shadow-flat-sm text-left">
+                  <div className="flex items-center space-x-3">
+                    <img 
+                      src={selectedRoomCategory.imageUrl} 
+                      alt="selected room" 
+                      className="w-14 h-14 object-cover rounded-none border border-charcoal" 
+                    />
+                    <div>
+                      <span className="text-[10px] text-maroon-800 block font-bold uppercase tracking-wide">Selected Suite Type:</span>
+                      <span className="font-display font-black text-sm text-charcoal tracking-tight block uppercase">{selectedRoomCategory.name[currentLang]}</span>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <span className="text-[10px] text-charcoal/60 block font-bold uppercase">Rate / Night:</span>
+                    <span className="text-maroon-700 font-extrabold text-sm block">₹{selectedRoomCategory.ratePerDay}</span>
+                  </div>
+                </div>
+
+                {/* Direct Contact Numbers box */}
+                <div className="bg-cream-100 border-2 border-charcoal p-4 rounded-none text-left space-y-3 shadow-flat-sm font-sans">
+                  <span className="text-maroon-900 block text-xs font-black uppercase tracking-widest border-b-2 border-charcoal/20 pb-1">
+                    📞 {currentLang === 'hi' ? "तत्काल ऑफलाइन बुकिंग हेतु संपर्क सूत्र:" : "Direct Room Reservation lines:"}
+                  </span>
+                  
+                  <div className="font-mono text-xs text-charcoal font-bold space-y-1.5">
+                    <div className="flex justify-between items-center text-maroon-850">
+                      <span>• {currentLang === 'hi' ? "श्री शांतिलाल मुथा (मुख्य प्रबंधक)" : "Shantilal Mutha (Manager)"}:</span>
+                      <a href="tel:+919426055667" className="underline font-black hover:text-gold-650">+91 94260 55667</a>
+                    </div>
+                    <div className="flex justify-between items-center text-maroon-850">
+                      <span>• {currentLang === 'hi' ? "श्री राजमलजी भंसाली (अध्यक्ष)" : "Rajmalji Bhansali (President)"}:</span>
+                      <a href="tel:+919822538635" className="underline font-black hover:text-gold-650">+91 98225 38635</a>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Rules Footer */}
+                <div className="bg-white/80 border border-charcoal/30 p-3 text-[10px] text-charcoal font-bold font-mono uppercase text-center leading-normal">
+                  ⚠️ {currentLang === 'hi' 
+                    ? "धार्मिक मर्यादा का पालन अनिवार्य है (शुद्ध शाकाहारी भोजन, धूम्रपान/शराब वर्जित है)" 
+                    : "Strict Jain parameters applicable (Pure vegetarian food only, absolutely no meat or liquor)"}
+                </div>
+
+                <div className="pt-2">
+                  <button
+                    onClick={handleCloseBooking}
+                    className="bg-maroon-700 text-gold-300 font-extrabold text-xs px-8 py-3 rounded-none border-2 border-charcoal shadow-flat hover:bg-gold-500 hover:text-maroon-950 transition-colors uppercase cursor-pointer"
+                  >
+                    {currentLang === 'hi' ? "खिड़की बंद करें" : "Close Portal Window"}
+                  </button>
+                </div>
+
+              </div>
             </div>
 
           </div>

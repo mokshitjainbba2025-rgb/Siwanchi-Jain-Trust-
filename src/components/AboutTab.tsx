@@ -357,10 +357,12 @@ export default function AboutTab({ currentLang }: AboutTabProps) {
                 </div>
 
                 <div className="pt-3 border-t-2 border-charcoal flex flex-col space-y-2 text-xs font-bold font-mono">
-                  <a href={`tel:${tr.phone}`} className="flex items-center text-charcoal hover:text-maroon-700 transition-colors">
-                    <Phone className="w-3.5 h-3.5 text-maroon-700 mr-2" />
-                    <span>{tr.phone}</span>
-                  </a>
+                  {tr.id === 'tr1' && (
+                    <a href={`tel:${tr.phone}`} className="flex items-center text-charcoal hover:text-maroon-700 transition-colors">
+                      <Phone className="w-3.5 h-3.5 text-maroon-700 mr-2" />
+                      <span>{tr.phone}</span>
+                    </a>
+                  )}
                   <a href={`mailto:${tr.email}`} className="flex items-center text-charcoal hover:text-maroon-700 transition-colors truncate">
                     <Mail className="w-3.5 h-3.5 text-maroon-700 mr-2" />
                     <span className="truncate">{tr.email}</span>

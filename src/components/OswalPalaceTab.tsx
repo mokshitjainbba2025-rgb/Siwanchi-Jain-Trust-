@@ -134,12 +134,21 @@ export default function OswalPalaceTab({ currentLang, onAddPalaceBooking }: Oswa
             <span className="block text-right text-[11px] text-charcoal/50">— Trust Core Philosophy</span>
           </div>
 
+          <div className="bg-amber-50 border-2 border-amber-500/30 p-4 rounded-xl text-xs sm:text-sm text-amber-900 font-semibold flex items-center space-x-2 w-fit">
+            <span className="animate-pulse">🔔</span>
+            <span>
+              {currentLang === 'hi' 
+                ? "ओसवाल पैलेस प्रसंग बुकिंग शीघ्र ही उपलब्ध होगी!" 
+                : "Oswal Palace bookings will be available soon!"}
+            </span>
+          </div>
+
           <button
             onClick={handleOpenPalaceBooking}
-            className="bg-maroon-gradient hover:bg-gold-500 hover:text-maroon-900 text-gold-300 font-black px-8 py-3.5 rounded-xl border border-gold-500 shadow-xl flex items-center space-x-2 transition-transform scale-100 active:scale-98 cursor-pointer"
+            className="bg-maroon-gradient hover:bg-gold-500 hover:text-maroon-900 text-gold-300 font-black px-8 py-3.5 rounded-xl border border-gold-500 shadow-xl flex items-center space-x-2 transition-transform scale-100 active:scale-98 cursor-pointer text-xs uppercase"
           >
-            <span>🏰 Booking Palace Venue</span>
-            <ArrowRight className="w-4 h-4 text-current" />
+            <span>🏰 {currentLang === 'hi' ? "बुकिंग स्थिति व विवरण" : "Booking Status & Contact"}</span>
+            <ArrowRight className="w-4 h-4 text-current font-black" />
           </button>
         </div>
 
@@ -236,217 +245,68 @@ export default function OswalPalaceTab({ currentLang, onAddPalaceBooking }: Oswa
             </div>
 
             <div className="p-6 max-h-[75vh] overflow-y-auto space-y-6">
-              {!isSuccess ? (
-                /* Interactive Form */
-                <form onSubmit={handleSubmitPalaceBooking} className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs font-bold text-charcoal">
-                  
-                  <div className="col-span-2 bg-cream-100/50 outline-dotted outline-gold-400 p-4 rounded-xl">
-                    <span className="text-maroon-800 block text-[13px] font-display font-extrabold">🚨 Important Jain Monastic Mandates:</span>
-                    <span className="text-charcoal/80 text-[10px] block mt-1 leading-relaxed font-semibold">
-                      Please note that strict vegetarian / organic rules are applicable. Garlic and onion usage is prohibited in kitchen halls, and absolutely no alcohol, meat, or tobacco is permitted inside the campus.
-                    </span>
-                  </div>
-
-                  {/* Form fields */}
-                  <div className="flex flex-col space-y-1">
-                    <label>Event Type *</label>
-                    <select
-                      className="p-2.5 border border-gold-400/35 rounded bg-white text-xs outline-none"
-                      value={eventType}
-                      onChange={(e) => setEventType(e.target.value)}
-                    >
-                      <option value="Wedding">💍 Shubha Vivah (Wedding Event)</option>
-                      <option value="Reception">🎉 Reception Function</option>
-                      <option value="Social Function">🗣️ Samaj Meeting & Gatherings</option>
-                      <option value="Conference">📚 Educational / Seminar Program</option>
-                    </select>
-                  </div>
-
-                  <div className="flex flex-col space-y-1">
-                    <label>Target Event Date *</label>
-                    <input 
-                      type="date" 
-                      required 
-                      min={new Date().toISOString().split('T')[0]}
-                      className="p-2.5 border border-gold-400/35 rounded bg-white text-xs outline-none" 
-                      value={eventDate}
-                      onChange={(e) => setEventDate(e.target.value)}
-                    />
-                  </div>
-
-                  <div className="flex flex-col space-y-1">
-                    <label>Estimated Guest Count *</label>
-                    <input 
-                      type="number" 
-                      min="100" 
-                      max="3000" 
-                      required 
-                      className="p-2.5 border border-gold-400/35 rounded bg-white text-xs outline-none" 
-                      value={guestCount}
-                      onChange={(e) => setGuestCount(Number(e.target.value))}
-                    />
-                  </div>
-
-                  <div className="flex flex-col space-y-1">
-                    <label>Organizer / Sanghji Name *</label>
-                    <input 
-                      type="text" 
-                      required 
-                      placeholder="e.g. Shantilal Mutha" 
-                      className="p-2.5 border border-gold-400/35 rounded bg-white text-xs outline-none" 
-                      value={organizerName}
-                      onChange={(e) => setOrganizerName(e.target.value)}
-                    />
-                  </div>
-
-                  <div className="flex flex-col space-y-1">
-                    <label>Contact Phone (WhatsApp Mobile) *</label>
-                    <input 
-                      type="tel" 
-                      required 
-                      pattern="[0-9]{10}"
-                      placeholder="10 digit Whatsapp" 
-                      className="p-2.5 border border-gold-400/35 rounded bg-white text-xs outline-none" 
-                      value={contactPhone}
-                      onChange={(e) => setContactPhone(e.target.value)}
-                    />
-                  </div>
-
-                  <div className="flex flex-col space-y-1">
-                    <label>Contact Email</label>
-                    <input 
-                      type="email" 
-                      placeholder="e.g. connect@oswal.com" 
-                      className="p-2.5 border border-gold-400/35 rounded bg-white text-xs outline-none" 
-                      value={contactEmail}
-                      onChange={(e) => setContactEmail(e.target.value)}
-                    />
-                  </div>
-
-                  {/* Requirements Multi-Checkboxes */}
-                  <div className="col-span-2 space-y-2">
-                    <label className="text-xs text-maroon-800 block">Select Luxury Requirements (Optional):</label>
-                    <div className="grid grid-cols-2 gap-2 text-xs">
-                      {[
-                        { key: "Catering (Pure Organic Meal Service)", estimate: "Based on Count" },
-                        { key: "Royal Mandap Flower Decoration", estimate: "₹25k baseline" },
-                        { key: "LED Background Backdrops & Stage light", estimate: "₹15k baseline" },
-                        { key: "20+ Attached AC Suites allotment", estimate: "Included in high package" }
-                      ].map((item, idx) => (
-                        <div 
-                          key={idx}
-                          onClick={() => handleRequirementToggle(item.key)}
-                          className={`p-3 border rounded-xl flex justify-between items-center cursor-pointer transition-colors ${
-                            requirements.includes(item.key)
-                              ? 'bg-maroon-700/10 border-maroon-700 text-maroon-800 font-bold'
-                              : 'bg-white border-gold-400/20 hover:bg-cream-100'
-                          }`}
-                        >
-                          <span>{item.key}</span>
-                          <span className="text-[9px] text-charcoal/40 font-mono font-bold font-sans">({item.estimate})</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="col-span-2 pt-4 flex flex-col space-y-2 items-center text-center">
-                    <button
-                      type="submit"
-                      className="w-full bg-maroon-gradient hover:bg-gold-500 hover:text-maroon-950 text-gold-300 font-black py-4 rounded-xl border border-gold-500 shadow-xl transition-all scale-100 active:scale-98 cursor-pointer"
-                    >
-                      Process Palace Reservation request
-                    </button>
-                  </div>
-
-                </form>
-              ) : (
-                /* Success receipt output design */
-                <div className="text-center p-4 space-y-6">
-                  <div className="w-16 h-16 bg-green-100 text-green-700 rounded-full flex items-center justify-center text-3xl mx-auto shadow-md animate-pulse">
-                    🏰
-                  </div>
-                  <div className="space-y-1">
-                    <h4 className="font-display font-black text-2xl text-maroon-850">Palace Inquiry Filed!</h4>
-                    <p className="text-xs text-charcoal/70">The event inquiry has been logged. Our trust manager will coordinate with your family shortly.</p>
-                  </div>
-
-                  {generatedPalaceBooking && (
-                    <div id="receipt-palace" className="bg-white border-2 border-dashed border-gold-400 rounded-xl p-5 text-left text-xs text-charcoal space-y-4 shadow-inner">
-                      <div className="flex justify-between border-b border-gold-400/20 pb-3">
-                        <div>
-                          <span className="font-bold text-maroon-800 text-sm block">Oswal Palace Convention Hub</span>
-                          <span className="text-[9px] text-charcoal/50 block font-medium">Shri Siwanchi Jain Seva Samiti Trust</span>
-                        </div>
-                        <div className="text-right">
-                          <span className="bg-gold-400 text-maroon-900 font-extrabold text-[9px] px-2.5 py-0.5 rounded uppercase font-mono block">Status: PENDING Manager approval</span>
-                          <span className="text-[10px] text-charcoal/50 font-mono block mt-1">QUOTATION: OP-{generatedPalaceBooking.bookingCode}</span>
-                        </div>
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-y-2.5 gap-x-4">
-                        <div>
-                          <span className="text-charcoal/50 block">Sangh / Organizer:</span>
-                          <strong className="text-charcoal text-sm">{generatedPalaceBooking.organizerName}</strong>
-                        </div>
-                        <div>
-                          <span className="text-charcoal/50 block">Target phone Contact:</span>
-                          <strong>{generatedPalaceBooking.contact}</strong>
-                        </div>
-                        <div>
-                          <span className="text-charcoal/50 block">Event Category:</span>
-                          <strong className="text-maroon-700">{generatedPalaceBooking.eventType[currentLang]}</strong>
-                        </div>
-                        <div>
-                          <span className="text-charcoal/50 block">Estimated base quotation:</span>
-                          <strong className="text-green-700 text-sm">₹{generatedPalaceBooking.estimatedCost} (Subject to catering/decor additions)</strong>
-                        </div>
-                        <div>
-                          <span className="text-charcoal/50 block">Booking Date Requested:</span>
-                          <strong className="text-maroon-800 font-mono">{generatedPalaceBooking.date}</strong>
-                        </div>
-                        <div>
-                          <span className="text-charcoal/50 block">Target Guest Capacity:</span>
-                          <strong>{generatedPalaceBooking.guestCount} Attendees</strong>
-                        </div>
-                      </div>
-
-                      {generatedPalaceBooking.requirements.length > 0 && (
-                        <div className="border-t border-gold-400/20 pt-3.5">
-                          <span className="text-xs text-charcoal/60 block mb-1">Requested elements:</span>
-                          <div className="flex flex-wrap gap-1">
-                            {generatedPalaceBooking.requirements.map((item, idx) => (
-                              <span key={idx} className="bg-cream-100 border border-gold-400/20 text-maroon-850 font-bold px-2 py-0.5 rounded text-[9px]">
-                                • {item}
-                              </span>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-
-                      <div className="border-t border-gold-400/20 pt-3 text-center text-[10px] text-charcoal/50 italic">
-                        The reservation status is temporary. Upon visual confirmation by the Trust board secretary, the booking confirmation code will be updated.
-                      </div>
-                    </div>
-                  )}
-
-                  <div className="flex gap-3 justify-center pt-2">
-                    <button
-                      onClick={() => window.print()}
-                      className="border border-gold-500 bg-white text-maroon-700 font-black text-xs px-5 py-2.5 rounded-lg flex items-center space-x-1 hover:bg-cream-100 transition-colors"
-                    >
-                      <Printer className="w-4 h-4" />
-                      <span>Print Quotation</span>
-                    </button>
-                    <button
-                      onClick={handleClosePalaceBooking}
-                      className="bg-maroon-700 text-gold-300 font-black text-xs px-5 py-2.5 rounded-lg shadow hover:bg-gold-500 hover:text-maroon-900 transition-colors"
-                    >
-                      Close Window
-                    </button>
-                  </div>
-
+              <div className="text-center p-4 space-y-6">
+                <div className="w-20 h-20 bg-amber-50 rounded-full flex items-center justify-center text-5xl mx-auto border-3 border-amber-500 shadow-md animate-pulse">
+                  🏰
                 </div>
-              )}
+                
+                <div className="space-y-3">
+                  <h4 className="font-display font-black text-2xl text-maroon-850 uppercase tracking-tight">
+                    {currentLang === 'hi' ? "ओसवाल पैलेस बुकिंग: शीघ्र ही उपलब्ध" : "Oswal Palace Booking: Available Soon"}
+                  </h4>
+                  
+                  <div className="w-16 h-1 bg-amber-505 mx-auto"></div>
+                  
+                  <p className="text-charcoal text-xs sm:text-sm font-semibold leading-relaxed">
+                    {currentLang === 'hi' ? (
+                      <>
+                        ओसवाल पैलेस कम्युनिटी इवेंट वेन्यू का निर्माण एवं आंतरिक साज-सज्जा कार्य वर्तमान में प्रगति पर है। यह दिव्य और सर्वसुविधायुक्त मांगलिक केंद्र शीघ्र ही समाज बंधुओं को समर्पित किया जाएगा, जिसके बाद ऑनलाइन और ऑफलाइन प्रसंग बुकिंग प्रणाली पूर्ण रूप से कार्यान्वित कर दी जाएगी।
+                      </>
+                    ) : (
+                      <>
+                        The construction and interior layout modeling for the Oswal Palace complex are currently underway. This grand community wedding and event venue will be fully completed and dedicated soon, after which our online and offline reservations will be fully operational.
+                      </>
+                    )}
+                  </p>
+                </div>
+
+                {/* Important notice container */}
+                <div className="bg-cream-100 border-2 border-dashed border-gold-500 p-4 rounded-xl text-left space-y-2.5">
+                  <span className="text-maroon-800 block text-xs font-black font-display uppercase tracking-wide">
+                    🚨 {currentLang === 'hi' ? "विशेष धार्मिक निर्देश:" : "Religious & Pure Monastic Guidelines:"}
+                  </span>
+                  <p className="text-charcoal text-[11px] font-bold leading-relaxed">
+                    {currentLang === 'hi' ? (
+                      "यहाँ भोजन में लहसुन व प्याज का उपयोग पूर्णतः वर्जित रहेगा तथा परिसर के भीतर शराब, मांस या किसी भी प्रकार के नशीले पदार्थों का सेवन सख्त मना है।"
+                    ) : (
+                      "Strict pure-vegetarian parameters apply. Onion and garlic usage is absolutely prohibited in the catering/kitchen blocks, and no tobacco, liquor, or non-veg food elements are allowed anywhere inside the campus."
+                    )}
+                  </p>
+                </div>
+
+                {/* Trust contact directory */}
+                <div className="bg-white border-2 border-charcoal p-4 rounded-xl text-left space-y-3 shadow-sm font-sans">
+                  <span className="text-maroon-900 block text-xs font-extrabold uppercase tracking-widest border-b pb-1">
+                    📞 {currentLang === 'hi' ? "अग्रिम पूछताछ एवं सहयोग हेतु संपर्क सूत्र:" : "Early Inquiries & Trustees Contact:"}
+                  </span>
+                  <div className="font-mono text-xs text-charcoal font-black space-y-1.5">
+                    <div className="flex justify-between items-center text-maroon-800">
+                      <span>• श्री राजमलजी भंसाली (President):</span>
+                      <a href="tel:+919822538635" className="underline hover:text-gold-650">+91 98225 38635</a>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="pt-2">
+                  <button
+                    onClick={handleClosePalaceBooking}
+                    className="bg-maroon-700 text-gold-300 font-black text-xs px-8 py-3 rounded-lg border-2 border-charcoal shadow-flat hover:bg-gold-505 hover:text-maroon-900 transition-colors uppercase cursor-pointer"
+                  >
+                    {currentLang === 'hi' ? "खिड़की बंद करें" : "Close Window"}
+                  </button>
+                </div>
+
+              </div>
             </div>
 
           </div>

@@ -478,8 +478,54 @@ export default function AdminDashboard({
         </div>
 
         {authError && (
-          <div className="p-3 bg-red-50 border-2 border-red-300 text-red-700 text-[10px] font-mono leading-normal rounded text-left">
-            <strong>Authentication Error:</strong> {authError}
+          <div className="space-y-3.5 text-left">
+            <div className="p-3 bg-red-55/65 border-2 border-red-300 text-red-800 text-[11px] font-mono leading-relaxed rounded-none">
+              <strong className="text-red-950 block mb-1">⚠️ Authentication Error:</strong> 
+              {authError}
+            </div>
+
+            {/* Comprehensive Whitelist & Iframe Help Helper */}
+            <div className="bg-cream-100 p-4 border border-charcoal/20 text-xs text-charcoal/85 space-y-3">
+              <div className="flex items-center space-x-1.5 text-maroon-850 font-extrabold uppercase tracking-wide text-[10px]">
+                <span>🛠️</span>
+                <span>Authorization Configuration Guide</span>
+              </div>
+              
+              <p className="font-semibold leading-normal text-[11px]">
+                The error <strong>"auth/unauthorized-domain"</strong> occurs when your Firebase project does not trust this preview URL. If your popup opened and closed immediately as a blank screen, follow these direct solutions:
+              </p>
+
+              <div className="space-y-2 text-[11px] leading-relaxed">
+                <div className="flex items-start space-x-2">
+                  <span className="bg-gold-500 text-maroon-900 rounded-full w-4 h-4 shrink-0 flex items-center justify-center font-black text-[9px]">1</span>
+                  <div>
+                    <strong className="text-maroon-900 block">Open the App in a New Tab</strong>
+                    <span className="text-charcoal/70 font-medium">Inside-iframe environments like the AI Studio preview block cross-origin popups and cookies. Copy and open this URL in a fresh browser tab:</span>
+                    <code className="block mt-1 p-2 bg-white border font-mono select-all text-[10px] break-all leading-normal text-maroon-850">
+                      https://ais-dev-oizwr67ewaw4iuxq4tmsf7-623147707591.asia-southeast1.run.app
+                    </code>
+                  </div>
+                </div>
+
+                <div className="flex items-start space-x-2 pt-1 border-t border-charcoal/5">
+                  <span className="bg-gold-500 text-maroon-900 rounded-full w-4 h-4 shrink-0 flex items-center justify-center font-black text-[9px]">2</span>
+                  <div>
+                    <strong className="text-maroon-900 block">Whitelist the Domains in Firebase Console</strong>
+                    <span className="text-charcoal/70 font-medium">You need to register the workspace domains with your Firebase Project:</span>
+                    <ol className="list-decimal pl-4 mt-1 space-y-1 text-charcoal/80 font-semibold">
+                      <li>Go to your <a href="https://console.firebase.google.com/" target="_blank" rel="noopener noreferrer" className="text-maroon-700 underline font-bold">Firebase Console</a></li>
+                      <li>Select your project <strong>"gen-lang-client-0637418637"</strong></li>
+                      <li>Go to <strong>Authentication</strong> &gt; <strong>Settings</strong> &gt; <strong>Authorized domains</strong></li>
+                      <li>Click <strong>"Add domain"</strong> and whitelist both of these addresses:</li>
+                    </ol>
+                    <div className="mt-2 space-y-1">
+                      <code className="block p-1.5 bg-white border font-mono select-all text-[9.5px]">ais-dev-oizwr67ewaw4iuxq4tmsf7-623147707591.asia-southeast1.run.app</code>
+                      <code className="block p-1.5 bg-white border font-mono select-all text-[9.5px]">ais-pre-oizwr67ewaw4iuxq4tmsf7-623147707591.asia-southeast1.run.app</code>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         )}
 
