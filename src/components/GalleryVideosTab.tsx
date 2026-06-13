@@ -165,20 +165,33 @@ export default function GalleryVideosTab({ currentLang, galleryItems }: GalleryV
               );
             } else {
               // Standard Photo card
+              const getValidUrl = (url: string) => {
+                if (!url) return 'https://images.unsplash.com/photo-1545232979-8bf34eb9757b?auto=format&fit=crop&q=80&w=800';
+                const clean = url.trim();
+                if (clean.startsWith('http://') || clean.startsWith('https://') || clean.startsWith('data:image/') || clean.startsWith('/') || clean.startsWith('blob:')) {
+                  return clean;
+                }
+                return 'https://images.unsplash.com/photo-1545232979-8bf34eb9757b?auto=format&fit=crop&q=80&w=800';
+              };
+              const imageUrl = getValidUrl(item.url);
+
               return (
                 <div 
                   key={item.id}
                   className="bg-white border-3 border-charcoal rounded-none overflow-hidden shadow-flat hover:shadow-flat-lg hover:-translate-y-0.5 transition-all flex flex-col justify-between group relative"
                 >
                   <div className="relative h-60 overflow-hidden border-b-2 border-charcoal cursor-pointer" onClick={() => {
-                    setSelectedPhoto(item.url);
+                    setSelectedPhoto(imageUrl);
                     setSelectedPhotoTitle(item.title[currentLang]);
                   }}>
                     <img 
-                      src={item.url} 
+                      src={imageUrl} 
                       alt={item.title[currentLang]} 
                       loading="lazy"
                       className="w-full h-full object-cover object-center group-hover:scale-104 transition-transform duration-700 animate-fade-in"
+                      onError={(e) => {
+                        e.currentTarget.src = 'https://images.unsplash.com/photo-1545232979-8bf34eb9757b?auto=format&fit=crop&q=80&w=800';
+                      }}
                     />
                     <div className="absolute inset-0 bg-black/25 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                       <div className="w-10 h-10 bg-gold-450 border-2 border-charcoal flex items-center justify-center text-charcoal shadow-flat-sm scale-90 group-hover:scale-100 transition-transform">
@@ -224,6 +237,9 @@ export default function GalleryVideosTab({ currentLang, galleryItems }: GalleryV
                 src={selectedPhoto} 
                 alt="Selected Lightbox Render" 
                 className="max-w-full max-h-[70vh] object-contain border-2 border-charcoal shadow-flat"
+                onError={(e) => {
+                  e.currentTarget.src = 'https://images.unsplash.com/photo-1545232979-8bf34eb9757b?auto=format&fit=crop&q=80&w=800';
+                }}
               />
             </div>
             {selectedPhotoTitle && (

@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { ArrowRight, Heart, Calendar, ShieldCheck, Award, Eye, Play, Sparkles } from 'lucide-react';
-import { Language } from '../types';
+import { Language, SlideshowImage } from '../types';
 import { staticTranslations } from '../data';
 // @ts-ignore
 import campusPanoramicLayout from '../assets/images/campus_panoramic_layout_1781257618429.jpg';
@@ -14,10 +14,52 @@ interface HeroProps {
   currentLang: Language;
   onNavigate: (tabId: string) => void;
   onOpenVideoModal: () => void;
+  slideshowImages?: SlideshowImage[];
 }
 
-export default function Hero({ currentLang, onNavigate, onOpenVideoModal }: HeroProps) {
+export default function Hero({ currentLang, onNavigate, onOpenVideoModal, slideshowImages = [] }: HeroProps) {
   const t = staticTranslations[currentLang];
+
+  const fallbackSlides: SlideshowImage[] = [
+    {
+      id: 'default_col',
+      url: campusPanoramicLayout,
+      title: { hi: "विहारधाम जैन मंदिर एवं ओसवाल पैलेस संकुल", en: "Vihardham Jain Temple & Oswal Palace Complex" },
+      caption: { hi: "डूंगरी पुरा जैन मंदिर संकुल का विहंगम दृश्य - अध्यात्म एवं संस्कृति का संगम", en: "Panoramic layout overview of the divine spiritual and wedding venue campus" }
+    }
+  ];
+
+  const slides = slideshowImages && slideshowImages.length > 0 ? slideshowImages : fallbackSlides;
+
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+
+  // Auto-play interval
+  useEffect(() => {
+    if (slides.length <= 1) return;
+    const interval = setInterval(() => {
+      handleNextSlide();
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [currentIndex, slides.length]);
+
+  const handleNextSlide = () => {
+    if (slides.length <= 1) return;
+    setIsTransitioning(true);
+    setTimeout(() => {
+      setCurrentIndex((prev) => (prev + 1) % slides.length);
+      setIsTransitioning(false);
+    }, 200); // short fade out/in delay
+  };
+
+  const handlePrevSlide = () => {
+    if (slides.length <= 1) return;
+    setIsTransitioning(true);
+    setTimeout(() => {
+      setCurrentIndex((prev) => (prev - 1 + slides.length) % slides.length);
+      setIsTransitioning(false);
+    }, 200);
+  };
   
   // Custom statistics counter variables
   const stats = [
@@ -95,23 +137,84 @@ export default function Hero({ currentLang, onNavigate, onOpenVideoModal }: Hero
           </div>
 
           {/* Gorgeous Campus Visual Representation (Right Columns) */}
-          <div className="lg:col-span-5 relative mt-6 lg:mt-0">
+          <div className="lg:col-span-5 relative mt-6 lg:mt-0 select-none">
             {/* Ambient gold rings behind the main frame */}
             <div className="absolute -top-10 -left-10 w-44 h-44 rounded-none border-2 border-charcoal/5 bg-gold-400/5 pointer-events-none animate-pulse"></div>
 
-            {/* Immersive interactive visual frame */}
-            <div className="relative border-4 border-charcoal rounded-none overflow-hidden shadow-flat-lg divine-border group">
-              <img 
-                src={campusPanoramicLayout} 
-                alt="Shri Adinath Jain Mandir Dungri Pura Campus Layout" 
-                className="w-full h-80 sm:h-96 object-cover object-center group-hover:scale-105 transition-transform duration-700 animate-fade-in"
-                referrerPolicy="no-referrer"
-              />
+            {/* Immersive interactive visual frame of slideshow */}
+            <div className="relative border-4 border-charcoal rounded-none overflow-hidden shadow-flat-lg divine-border group bg-cream-100 flex flex-col">
+              {/* Slider image wrapped in a container that supports smooth transitions */}
+              <div className="relative h-80 sm:h-96 w-full overflow-hidden">
+                <img 
+                  src={slides[currentIndex]?.url || campusPanoramicLayout} 
+                  alt={slides[currentIndex]?.title[currentLang] || "Vihardham Campus Layout"} 
+                  className={`w-full h-full object-cover object-center transition-all duration-300 ${isTransitioning ? 'opacity-30 scale-98' : 'opacity-100 scale-100'}`}
+                  referrerPolicy="no-referrer"
+                  onError={(e) => {
+                    e.currentTarget.src = campusPanoramicLayout;
+                  }}
+                />
+                
+                {/* Visual gradient overlay for text readability at the bottom */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent flex flex-col justify-end p-4 pt-10">
+                  <div className={`transition-all duration-300 ${isTransitioning ? 'translate-y-2 opacity-0' : 'translate-y-0 opacity-100'}`}>
+                    <h3 className="text-gold-300 font-display font-black text-xs sm:text-sm uppercase tracking-wider drop-shadow-md line-clamp-1">
+                      {slides[currentIndex]?.title[currentLang]}
+                    </h3>
+                    {slides[currentIndex]?.caption?.[currentLang] && (
+                      <p className="text-white text-[10px] sm:text-xs font-semibold leading-relaxed font-sans drop-shadow mt-0.5 line-clamp-2">
+                        {slides[currentIndex]?.caption?.[currentLang]}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Navigation Arrows for Slideshow - visible only on hover on desktop, always visible on mobile */}
+              {slides.length > 1 && (
+                <>
+                  <button 
+                    onClick={handlePrevSlide}
+                    className="absolute left-2.5 top-1/2 -translate-y-1/2 bg-white/95 hover:bg-gold-400 text-maroon-900 border-2 border-charcoal w-8 h-8 rounded-full flex items-center justify-center cursor-pointer transition-colors hover:scale-105 active:scale-95 shadow-flat-sm z-15"
+                    aria-label="Previous slide"
+                  >
+                    <span className="font-mono text-base font-black">‹</span>
+                  </button>
+                  
+                  <button 
+                    onClick={handleNextSlide}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 bg-white/95 hover:bg-gold-400 text-maroon-900 border-2 border-charcoal w-8 h-8 rounded-full flex items-center justify-center cursor-pointer transition-colors hover:scale-105 active:scale-95 shadow-flat-sm z-15"
+                    aria-label="Next slide"
+                  >
+                    <span className="font-mono text-base font-black">›</span>
+                  </button>
+                </>
+              )}
+
+              {/* Dynamic bottom pagination indicators - dots */}
+              {slides.length > 1 && (
+                <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex space-x-1.5 z-15 bg-black/45 px-2 py-1 rounded-full border border-white/10">
+                  {slides.map((_, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => {
+                        setIsTransitioning(true);
+                        setTimeout(() => {
+                          setCurrentIndex(idx);
+                          setIsTransitioning(false);
+                        }, 200);
+                      }}
+                      className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${currentIndex === idx ? 'w-4 bg-gold-400 border border-charcoal' : 'w-1.5 bg-white/60 hover:bg-white'}`}
+                      aria-label={`Go to slide ${idx + 1}`}
+                    />
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* Interactive floating label */}
-            <div className="absolute top-4 right-4 bg-maroon-800 text-gold-300 text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-none border-2 border-charcoal shadow-flat">
-              🚧 Construction 90% Complete
+            <div className="absolute top-4 right-4 bg-maroon-800 text-gold-300 text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-none border-2 border-charcoal shadow-flat z-10">
+              🚧 Campus Slider
             </div>
           </div>
         </div>

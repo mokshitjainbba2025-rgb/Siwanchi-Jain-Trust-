@@ -7,8 +7,10 @@ import React, { useState, useEffect } from 'react';
 import { Sparkles, Phone, Mail, Award, X, Heart, Shield, Globe } from 'lucide-react';
 
 // Data types & assets imports
-import { Language, RoomBooking, PalaceBooking, Donation, Contributor, Volunteer, TrustMember, AuditLog, ContactQuery, LabhInquiry, GalleryItem } from './types';
+import { Language, RoomBooking, PalaceBooking, Donation, Contributor, Volunteer, TrustMember, AuditLog, ContactQuery, LabhInquiry, GalleryItem, SlideshowImage } from './types';
 import { staticTranslations, seedContributors, seedNews, seedEvents, seedGallery } from './data';
+// @ts-ignore
+import campusPanoramicLayout from './assets/images/campus_panoramic_layout_1781257618429.jpg';
 
 // Component imports
 import Navbar from './components/Navbar';
@@ -41,6 +43,7 @@ export default function App() {
   const [labhInquiries, setLabhInquiries] = useState<LabhInquiry[]>([]);
   const [auditLogs, setAuditLogs] = useState<AuditLog[]>([]);
   const [galleryItems, setGalleryItems] = useState<GalleryItem[]>([]);
+  const [slideshowImages, setSlideshowImages] = useState<SlideshowImage[]>([]);
 
   const t = staticTranslations[currentLang];
 
@@ -207,40 +210,106 @@ export default function App() {
       localStorage.setItem('siwanchi_gallery', JSON.stringify(seedGallery));
     }
 
+    // 9. Slideshow images seed
+    const localSlideshow = localStorage.getItem('siwanchi_slideshow_images');
+    if (localSlideshow) {
+      setSlideshowImages(JSON.parse(localSlideshow));
+    } else {
+      const defaultSlideshow: SlideshowImage[] = [
+        {
+          id: "slide_1",
+          url: campusPanoramicLayout,
+          title: { hi: "विहारधाम जैन मंदिर एवं ओसवाल पैलेस संकुल", en: "Vihardham Jain Temple & Oswal Palace Complex" },
+          caption: { hi: "डूंगरी पुरा जैन मंदिर संकुल का विहंगम दृश्य - अध्यात्म एवं संस्कृति का संगम", en: "Panoramic layout overview of the divine spiritual and wedding venue campus" }
+        },
+        {
+          id: "slide_2",
+          url: "https://images.unsplash.com/photo-1545232979-8bf34eb9757b?auto=format&fit=crop&q=80&w=1200",
+          title: { hi: "भव्य श्री आदिनाथ शिखरबद्ध जिनालय", en: "The Grand Shikharbandh Adinath Temple" },
+          caption: { hi: "नवनिर्मित पावन जैन मंदिर - भक्ति, शांति और ध्यान का पावन धाम", en: "Newly built sacred Jain Temple - A hub of devotion, peace, and mindfulness" }
+        },
+        {
+          id: "slide_3",
+          url: "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?auto=format&fit=crop&q=80&w=1200",
+          title: { hi: "ओसवाल पैलेस आलीशान वेडिंग हॉल", en: "Oswal Palace Luxurious Hall" },
+          caption: { hi: "सामाजिक सम्मेलनों, मांगलिक प्रसंगों एवं दिव्य विवाह आयोजनों के लिए उत्कृष्ट स्थल", en: "A premium multi-purpose venue equipped with all modern amenities for marriages" }
+        },
+        {
+          id: "slide_4",
+          url: "https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?auto=format&fit=crop&q=80&w=1200",
+          title: { hi: "साधु-साध्वी पावन विहारधाम परिसर", en: "Vihardham Spiritual Sanctuary" },
+          caption: { hi: "पूज्य जैन संतों के लिए वातानुकूलित कमरे, व्याख्यान हॉल एवं नि:शुल्क सेवाएं", en: "Comfortable air-conditioned rooms, large discourse halls, and free facilities for monks" }
+        }
+      ];
+      setSlideshowImages(defaultSlideshow);
+      localStorage.setItem('siwanchi_slideshow_images', JSON.stringify(defaultSlideshow));
+    }
+
   }, []);
+
+  // Safe localStorage helper to avoid crashing on QuotaExceededError or empty arrays
+  const safeSaveLocal = (key: string, data: any) => {
+    try {
+      localStorage.setItem(key, JSON.stringify(data));
+    } catch (e) {
+      console.warn(`Local Storage write failed for ${key}:`, e);
+    }
+  };
 
   // Update localStorage automatically whenever states mutate
   useEffect(() => {
-    if (roomBookings.length > 0) localStorage.setItem('siwanchi_rooms', JSON.stringify(roomBookings));
+    if (roomBookings.length > 0) safeSaveLocal('siwanchi_rooms', roomBookings);
   }, [roomBookings]);
 
   useEffect(() => {
-    if (palaceBookings.length > 0) localStorage.setItem('siwanchi_palace', JSON.stringify(palaceBookings));
+    if (palaceBookings.length > 0) safeSaveLocal('siwanchi_palace', palaceBookings);
   }, [palaceBookings]);
 
   useEffect(() => {
-    if (donations.length > 0) localStorage.setItem('siwanchi_donations', JSON.stringify(donations));
+    if (donations.length > 0) safeSaveLocal('siwanchi_donations', donations);
   }, [donations]);
 
   useEffect(() => {
-    if (contributorsList.length > 0) localStorage.setItem('siwanchi_contributors', JSON.stringify(contributorsList));
+    if (contributorsList.length > 0) safeSaveLocal('siwanchi_contributors', contributorsList);
   }, [contributorsList]);
 
   useEffect(() => {
-    if (valunteers.length > 0) localStorage.setItem('siwanchi_vols', JSON.stringify(valunteers));
+    if (valunteers.length > 0) safeSaveLocal('siwanchi_vols', valunteers);
   }, [valunteers]);
 
   useEffect(() => {
-    if (membersList.length > 0) localStorage.setItem('siwanchi_members', JSON.stringify(membersList));
+    if (membersList.length > 0) safeSaveLocal('siwanchi_members', membersList);
   }, [membersList]);
 
   useEffect(() => {
-    if (auditLogs.length > 0) localStorage.setItem('siwanchi_audit', JSON.stringify(auditLogs));
+    if (auditLogs.length > 0) safeSaveLocal('siwanchi_audit', auditLogs);
   }, [auditLogs]);
 
   useEffect(() => {
-    if (galleryItems.length > 0) localStorage.setItem('siwanchi_gallery', JSON.stringify(galleryItems));
+    // Save empty state as well so deletion works seamlessly
+    safeSaveLocal('siwanchi_gallery', galleryItems);
   }, [galleryItems]);
+
+  useEffect(() => {
+    safeSaveLocal('siwanchi_slideshow_images', slideshowImages);
+  }, [slideshowImages]);
+
+  // Scroll to top automatically when navigation activeTab switches
+  useEffect(() => {
+    // Immediate scroll jump for general viewports
+    window.scrollTo(0, 0);
+    if (document.documentElement) document.documentElement.scrollTop = 0;
+    if (document.body) document.body.scrollTop = 0;
+    
+    // Delayed fallback to handle async layout rendering / expansion delays
+    const timer = setTimeout(() => {
+      window.scrollTo(0, 0);
+      if (document.documentElement) document.documentElement.scrollTop = 0;
+      if (document.body) document.body.scrollTop = 0;
+    }, 60);
+
+    return () => clearTimeout(timer);
+  }, [activeTab]);
 
 
   // Global Append Handlers
@@ -360,6 +429,8 @@ export default function App() {
             setAuditLogs={setAuditLogs}
             galleryItems={galleryItems}
             setGalleryItems={setGalleryItems}
+            slideshowImages={slideshowImages}
+            setSlideshowImages={setSlideshowImages}
           />
         );
         
@@ -371,6 +442,7 @@ export default function App() {
               currentLang={currentLang} 
               onNavigate={(tab) => setActiveTab(tab)} 
               onOpenVideoModal={() => setShowVideoModal(true)} 
+              slideshowImages={slideshowImages}
             />
 
             {/* DEDICATED VIRTUAL TOUR SECTION */}

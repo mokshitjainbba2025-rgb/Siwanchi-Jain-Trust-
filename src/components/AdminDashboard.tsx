@@ -3,9 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState } from 'react';
-import { ShieldCheck, TrendingUp, CheckCircle, ClipboardList, RefreshCcw, Landmark, UserPlus, Heart, Award, FileText, Check, X, ShieldAlert, Sparkles, PlusCircle } from 'lucide-react';
-import { Language, RoomBooking, PalaceBooking, Donation, Volunteer, TrustMember, Contributor, AuditLog, GalleryItem } from '../types';
+import React, { useState, useEffect } from 'react';
+import { ShieldCheck, TrendingUp, CheckCircle, ClipboardList, RefreshCcw, Landmark, UserPlus, Heart, Award, FileText, Check, X, ShieldAlert, Sparkles, PlusCircle, Upload, Lock, LogOut } from 'lucide-react';
+import { Language, RoomBooking, PalaceBooking, Donation, Volunteer, TrustMember, Contributor, AuditLog, GalleryItem, SlideshowImage } from '../types';
+import { auth, googleProvider } from '../firebase';
+import { onAuthStateChanged, signInWithPopup, signOut, User } from 'firebase/auth';
 
 interface AdminDashboardProps {
   currentLang: Language;
@@ -31,6 +33,9 @@ interface AdminDashboardProps {
 
   galleryItems: GalleryItem[];
   setGalleryItems: React.Dispatch<React.SetStateAction<GalleryItem[]>>;
+
+  slideshowImages?: SlideshowImage[];
+  setSlideshowImages: React.Dispatch<React.SetStateAction<SlideshowImage[]>>;
 }
 
 export default function AdminDashboard({
@@ -48,10 +53,46 @@ export default function AdminDashboard({
   auditLogs,
   setAuditLogs,
   galleryItems,
-  setGalleryItems
+  setGalleryItems,
+  slideshowImages = [],
+  setSlideshowImages
 }: AdminDashboardProps) {
 
-  const [activeAdminSub, setActiveAdminSub] = useState<'stats' | 'rooms' | 'palace' | 'donations' | 'add_donor' | 'gallery_mgmt' | 'people' | 'audit'>('stats');
+  const [activeAdminSub, setActiveAdminSub] = useState<'stats' | 'rooms' | 'palace' | 'donations' | 'add_donor' | 'gallery_mgmt' | 'slideshow_mgmt' | 'people' | 'audit'>('stats');
+
+  // Firebase auth state tracking
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [authLoading, setAuthLoading] = useState(true);
+  const [authError, setAuthError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setCurrentUser(user);
+      setAuthLoading(false);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  const handleSignIn = async () => {
+    setAuthError(null);
+    try {
+      await signInWithPopup(auth, googleProvider);
+    } catch (err: any) {
+      console.error("Sign in failed:", err);
+      setAuthError(err?.message || String(err));
+    }
+  };
+
+  const handleSignOut = async () => {
+    try {
+      await signOut(auth);
+    } catch (err) {
+      console.error("Sign out failed:", err);
+    }
+  };
+
+  const AUTHORIZED_EMAIL = 'mokshit.jain.bba2025@atlasskilltech.university';
+  const isAuthorized = currentUser && currentUser.email === AUTHORIZED_EMAIL;
 
   // New Donor Form state
   const [newDonorNameHI, setNewDonorNameHI] = useState('');
@@ -75,6 +116,89 @@ export default function AdminDashboard({
   const [newMediaType, setNewMediaType] = useState<'image' | 'video'>('image');
   const [newMediaUrl, setNewMediaUrl] = useState('');
   const [isMediaAddedMsg, setIsMediaAddedMsg] = useState(false);
+
+  // Slideshow manager form states
+  const [slideTitleHI, setSlideTitleHI] = useState('');
+  const [slideTitleEN, setSlideTitleEN] = useState('');
+  const [slideCaptionHI, setSlideCaptionHI] = useState('');
+  const [slideCaptionEN, setSlideCaptionEN] = useState('');
+  const [slideUrl, setSlideUrl] = useState('');
+  const [slideDragActive, setSlideDragActive] = useState(false);
+  const [isSlideAddedMsg, setIsSlideAddedMsg] = useState(false);
+
+
+  // Drag and drop states & handlers for image upload
+  const [dragActive, setDragActive] = useState(false);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      readFile(file);
+    }
+  };
+
+  const handleDrag = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === "dragenter" || e.type === "dragover") {
+      setDragActive(true);
+    } else if (e.type === "dragleave") {
+      setDragActive(false);
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      const file = e.dataTransfer.files[0];
+      readFile(file);
+    }
+  };
+
+  const readFile = (file: File) => {
+    if (!file.type.startsWith('image/')) {
+      alert("Please upload an image file (PNG, JPG, JPEG, GIF, etc.)");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      if (e.target?.result) {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+          const MAX_DIM = 950;
+          if (width > MAX_DIM || height > MAX_DIM) {
+            if (width > height) {
+              height = Math.round((height * MAX_DIM) / width);
+              width = MAX_DIM;
+            } else {
+              width = Math.round((width * MAX_DIM) / height);
+              height = MAX_DIM;
+            }
+          }
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          if (ctx) {
+            ctx.drawImage(img, 0, 0, width, height);
+            const compressedBase64 = canvas.toDataURL('image/jpeg', 0.72);
+            setNewMediaUrl(compressedBase64);
+          } else {
+            setNewMediaUrl(e.target?.result as string);
+          }
+        };
+        img.onerror = () => {
+          setNewMediaUrl(e.target?.result as string);
+        };
+        img.src = e.target.result as string;
+      }
+    };
+    reader.readAsDataURL(file);
+  };
 
   // Administrative Logs Helper
   const logAction = (action: string, details: string) => {
@@ -197,10 +321,224 @@ export default function AdminDashboard({
     logAction("Removed Gallery item", `Deleted item: ${titleEN}`);
   };
 
+  const handleSlideFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      readSlideFile(file);
+    }
+  };
+
+  const handleSlideDrag = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === "dragenter" || e.type === "dragover") {
+      setSlideDragActive(true);
+    } else if (e.type === "dragleave") {
+      setSlideDragActive(false);
+    }
+  };
+
+  const handleSlideDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setSlideDragActive(false);
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      const file = e.dataTransfer.files[0];
+      readSlideFile(file);
+    }
+  };
+
+  const readSlideFile = (file: File) => {
+    if (!file.type.startsWith('image/')) {
+      alert("Please upload an image file (PNG, JPG, JPEG, GIF, etc.)");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      if (e.target?.result) {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+          const MAX_DIM = 1200;
+          if (width > MAX_DIM || height > MAX_DIM) {
+            if (width > height) {
+              height = Math.round((height * MAX_DIM) / width);
+              width = MAX_DIM;
+            } else {
+              width = Math.round((width * MAX_DIM) / height);
+              height = MAX_DIM;
+            }
+          }
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          if (ctx) {
+            ctx.drawImage(img, 0, 0, width, height);
+            const compressedBase64 = canvas.toDataURL('image/jpeg', 0.75);
+            setSlideUrl(compressedBase64);
+          } else {
+            setSlideUrl(e.target?.result as string);
+          }
+        };
+        img.onerror = () => {
+          setSlideUrl(e.target?.result as string);
+        };
+        img.src = e.target.result as string;
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleAddSlideItem = (e: React.FormEvent) => {
+    e.preventDefault();
+    const finalUrl = slideUrl.trim();
+    if (!finalUrl) {
+      alert("Please enter an image URL or drop an image file!");
+      return;
+    }
+
+    const newSlide: SlideshowImage = {
+      id: "slide_" + Date.now(),
+      url: finalUrl,
+      title: { hi: slideTitleHI || slideTitleEN, en: slideTitleEN || slideTitleHI },
+      caption: { hi: slideCaptionHI, en: slideCaptionEN }
+    };
+
+    setSlideshowImages(prev => [...prev, newSlide]);
+    logAction("Appended Hero Slideshow item", `Added slide: ${slideTitleEN}`);
+
+    // Reset Form
+    setSlideTitleHI('');
+    setSlideTitleEN('');
+    setSlideCaptionHI('');
+    setSlideCaptionEN('');
+    setSlideUrl('');
+    setIsSlideAddedMsg(true);
+    setTimeout(() => setIsSlideAddedMsg(false), 3000);
+  };
+
+  const handleDeleteSlideItem = (id: string, titleEN: string) => {
+    setSlideshowImages(prev => prev.filter(item => item.id !== id));
+    logAction("Removed Slideshow static slide", `Deleted slide item: ${titleEN}`);
+  };
+
+  const handleResetSlideshow = () => {
+    if (window.confirm("Are you sure you want to restore the default 4-image slideshow (Vihardham Layout, Temple, Wedding Hall & Monk sanctuary)? This will override any custom uploads.")) {
+      localStorage.removeItem('siwanchi_slideshow_images');
+      window.location.reload();
+    }
+  };
+
+
   // Dynamic Statistics Counters
   const totalDonationsAmount = donations.reduce((sum, item) => sum + item.amount, 0);
   const activeReservationsCount = roomBookings.filter(b => b.approvalStatus === 'Approved').length;
   const pendingInquiriesCount = roomBookings.filter(b => b.approvalStatus === 'Pending').length + palaceBookings.filter(b => b.approvalStatus === 'Pending').length;
+
+  // --- AUTH SECURITY GATE GUARDS ---
+  if (authLoading) {
+    return (
+      <div className="max-w-md mx-auto my-24 p-8 bg-white border-3 border-charcoal shadow-flat text-center space-y-4">
+        <div className="inline-block w-8 h-8 border-4 border-maroon-700 border-t-transparent rounded-full animate-spin"></div>
+        <p className="text-xs font-mono font-black uppercase text-charcoal/70 tracking-widest">
+          Verifying Authority Credentials...
+        </p>
+      </div>
+    );
+  }
+
+  if (!currentUser) {
+    return (
+      <div className="max-w-lg mx-auto my-16 p-8 bg-cream-50 border-3 border-charcoal shadow-flat text-center space-y-6">
+        <div className="w-16 h-16 rounded-full bg-maroon-700 border-2 border-charcoal flex items-center justify-center text-gold-300 text-3xl font-bold mx-auto shadow-flat-sm">
+          🔑
+        </div>
+        
+        <div className="space-y-2">
+          <h2 className="font-display font-black text-xl sm:text-2xl text-maroon-850 uppercase tracking-tight">
+            Trust Authority Entrance Gate
+          </h2>
+          <p className="text-[11px] text-charcoal/60 font-mono font-bold uppercase tracking-wider block">
+            श्री सिवांची जैन सेवा समिति ट्रस्ट • Admin Portal
+          </p>
+          <div className="w-16 h-0.5 bg-gold-500 mx-auto"></div>
+        </div>
+
+        <p className="text-xs text-charcoal/85 leading-relaxed font-semibold">
+          Access to these administrative tools is restricted to authorized trust members. To modify, approve, or reject bookings, update the gallery, and seed donors, please sign in with your verified Google email account.
+        </p>
+
+        <div className="bg-amber-50 border-2 border-dashed border-amber-300 p-4 rounded-none space-y-1.5 text-left">
+          <span className="text-[11px] font-black text-amber-800 uppercase block tracking-wider">🔒 Restricted Access:</span>
+          <p className="text-[10px] text-amber-900 font-bold leading-normal">
+            Only the registered and verified Trust Chairman / Administrator Google account is allowed to access the control panel.
+          </p>
+        </div>
+
+        {authError && (
+          <div className="p-3 bg-red-50 border-2 border-red-300 text-red-700 text-[10px] font-mono leading-normal rounded text-left">
+            <strong>Authentication Error:</strong> {authError}
+          </div>
+        )}
+
+        <button
+          onClick={handleSignIn}
+          className="w-full bg-maroon-gradient hover:bg-gold-500 hover:text-maroon-900 text-gold-300 hover:scale-[1.01] transition-transform font-black py-3 rounded-none border-3 border-charcoal cursor-pointer uppercase text-xs tracking-wider shadow-flat flex items-center justify-center space-x-2"
+        >
+          <ShieldCheck className="w-5 h-5 text-current animate-pulse" />
+          <span>Sign In with google</span>
+        </button>
+      </div>
+    );
+  }
+
+  if (!isAuthorized) {
+    return (
+      <div className="max-w-lg mx-auto my-16 p-8 bg-cream-50 border-3 border-charcoal shadow-flat text-center space-y-6">
+        <div className="w-16 h-16 rounded-full bg-red-700 border-2 border-charcoal flex items-center justify-center text-white text-3xl font-bold mx-auto shadow-flat-sm animate-bounce">
+          ⚠️
+        </div>
+
+        <div className="space-y-2">
+          <h2 className="font-display font-black text-xl sm:text-2xl text-red-800 uppercase tracking-tight">
+            Access Restrict Alert
+          </h2>
+          <p className="text-[11px] text-charcoal/60 font-mono font-bold uppercase tracking-wider block">
+            Permission Refused • Security Invariant Enforced
+          </p>
+          <div className="w-16 h-0.5 bg-red-600 mx-auto"></div>
+        </div>
+
+        <p className="text-xs text-charcoal/85 leading-relaxed font-semibold">
+          Your account <span className="font-mono text-maroon-800 lowercase bg-white border border-charcoal/10 px-1 py-0.5">{currentUser.email}</span> does not have standard administrative privileges on the Shri Siwanchi Jain Seva Samiti database.
+        </p>
+
+        <div className="bg-red-50 border-2 border-dashed border-red-300 p-4 rounded-none text-left text-[11px] text-red-950 font-bold space-y-1">
+          <span className="uppercase block text-red-800 font-black">Authorized Directives:</span>
+          <p className="leading-normal">
+            If you are the designated administrator, please sign out and sign back in using your registered admin Google Account.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <button
+            onClick={handleSignOut}
+            className="bg-white hover:bg-cream-100 text-charcoal font-black py-2.5 rounded-none border-2 border-charcoal cursor-pointer uppercase text-xs shadow-flat transition-transform active:translate-y-0.5"
+          >
+            Sign Out
+          </button>
+          <button
+            onClick={() => window.location.reload()}
+            className="bg-maroon-700 hover:bg-maroon-800 text-white font-black py-2.5 rounded-none border-2 border-charcoal cursor-pointer uppercase text-xs shadow-flat transition-transform active:translate-y-0.5"
+          >
+            Retry Login
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-10 text-charcoal">
@@ -217,14 +555,23 @@ export default function AdminDashboard({
               <ShieldCheck className="w-5.5 h-5.5 text-green-400 ml-1.5 animate-pulse" />
             </h1>
             <span className="text-[10px] sm:text-xs text-cream-200 block uppercase font-bold tracking-widest mt-0.5">
-              Role: Super Admin (Sanghvi Shantilal Ji) • Secured Local State Session
+              Super Admin Control Session ({currentUser.email})
             </span>
           </div>
         </div>
 
-        {/* Live system status readout */}
-        <div className="mt-4 md:mt-0 bg-maroon-800 text-[10px] px-3.5 py-2 rounded-xl border border-gold-500/30 text-center font-mono font-bold font-sans">
-          <span>● Database connection ACTIVE</span>
+        {/* Live system status readout & Sign out */}
+        <div className="mt-4 md:mt-0 flex flex-col sm:flex-row items-center gap-3.5">
+          <div className="bg-maroon-800 text-[10px] px-3.5 py-2 rounded-xl border border-gold-500/30 text-center font-mono font-bold font-sans">
+            <span>● Database Session ACTIVE</span>
+          </div>
+          <button
+            onClick={handleSignOut}
+            className="bg-gold-500 hover:bg-gold-450 text-maroon-950 font-black px-4.5 py-2 border-2 border-charcoal/30 text-[11px] uppercase cursor-pointer flex items-center space-x-1.5 active:translate-y-0.5 shadow-flat font-mono rounded"
+          >
+            <LogOut className="w-3.5 h-3.5 mr-0.5" />
+            <span>Sign Out Control</span>
+          </button>
         </div>
       </div>
 
@@ -237,6 +584,7 @@ export default function AdminDashboard({
           { id: 'donations', label: `💖 Dharma Sahyog Logs (${donations.length})` },
           { id: 'add_donor', label: '✍️ Append Labharthi Wall Row' },
           { id: 'gallery_mgmt', label: `🖼️ Gallery & Videos (${galleryItems.length})` },
+          { id: 'slideshow_mgmt', label: `✨ Hero Slideshow (${slideshowImages.length})` },
           { id: 'people', label: '👥 Members/Volunteers' },
           { id: 'audit', label: `📜 System Audit Logs (${auditLogs.length})` }
         ].map((sub) => (
@@ -760,21 +1108,97 @@ export default function AdminDashboard({
               </select>
             </div>
 
-            <div className="col-span-1 sm:col-span-2 flex flex-col space-y-1">
-              <label>{newMediaType === 'video' ? 'YouTube URL / Share Link *' : 'Image URL *'}</label>
-              <input 
-                type="url" 
-                required 
-                placeholder={newMediaType === 'video' ? 'https://youtu.be/Cwyn5LCGd0c or watch URL' : 'https://images.unsplash.com/...'} 
-                className="p-2.5 border border-gold-400/35 bg-cream-50/20 rounded outline-none text-xs font-mono"
-                value={newMediaUrl}
-                onChange={(e) => setNewMediaUrl(e.target.value)}
-              />
-              <span className="text-[10px] text-charcoal/45 font-mono font-medium block mt-1">
-                {newMediaType === 'video' 
-                  ? 'Paste any YouTube regular or share link. Our player parses the ID and configures lazy-loading automatically.' 
-                  : 'Provide a valid image file address hosted online.'}
-              </span>
+            <div className="col-span-1 sm:col-span-2 flex flex-col space-y-2">
+              <label className="text-maroon-800 font-bold block mb-1">
+                {newMediaType === 'video' ? 'YouTube URL / Share Link *' : 'Image Source'}
+              </label>
+              
+              {newMediaType === 'video' ? (
+                <>
+                  <input 
+                    type="url" 
+                    required 
+                    placeholder="https://youtu.be/Cwyn5LCGd0c or watch URL" 
+                    className="p-2.5 border border-gold-400/35 bg-cream-50/20 rounded outline-none text-xs font-mono"
+                    value={newMediaUrl}
+                    onChange={(e) => setNewMediaUrl(e.target.value)}
+                  />
+                  <span className="text-[10px] text-charcoal/45 font-mono font-medium block">
+                    Paste any YouTube regular or share link. Our player parses the ID and configures lazy-loading automatically.
+                  </span>
+                </>
+              ) : (
+                <div className="space-y-4">
+                  {/* Image input via text url */}
+                  <div className="flex flex-col space-y-1">
+                    <span className="text-[10px] text-charcoal/60 block">Option A: Paste a Web Image URL or relative path</span>
+                    <input 
+                      type="text" 
+                      placeholder="e.g. https://images.unsplash.com/... or relative assets path" 
+                      className="p-2.5 border border-gold-400/35 bg-cream-50/20 rounded outline-none text-xs font-mono"
+                      value={newMediaUrl.startsWith('data:image/') ? '' : newMediaUrl}
+                      onChange={(e) => setNewMediaUrl(e.target.value)}
+                    />
+                  </div>
+
+                  {/* Drag and Drop Zone */}
+                  <div className="flex flex-col space-y-1">
+                    <span className="text-[10px] text-charcoal/60 block">Option B: Drag-and-drop or browse an image file from your device</span>
+                    <div 
+                      onDragEnter={handleDrag}
+                      onDragOver={handleDrag}
+                      onDragLeave={handleDrag}
+                      onDrop={handleDrop}
+                      onClick={() => document.getElementById('media-file-input')?.click()}
+                      className={`border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-all duration-200 ${
+                        dragActive 
+                          ? 'border-gold-500 bg-gold-100/10' 
+                          : newMediaUrl.startsWith('data:image/') 
+                            ? 'border-green-600 bg-green-50/10' 
+                            : 'border-gold-400/40 hover:border-maroon-700 bg-cream-50/10'
+                      }`}
+                    >
+                      <input 
+                        id="media-file-input"
+                        type="file" 
+                        accept="image/*" 
+                        className="hidden" 
+                        onChange={handleFileChange}
+                      />
+                      
+                      <div className="flex flex-col items-center justify-center space-y-2">
+                        {newMediaUrl.startsWith('data:image/') ? (
+                          <>
+                            <div className="relative w-20 h-20 border-2 border-charcoal/30 bg-white shadow-md rounded">
+                              <img src={newMediaUrl} className="w-full h-full object-cover" alt="Uploaded Thumbnail" />
+                              <button 
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setNewMediaUrl('');
+                                }}
+                                className="absolute -top-2 -right-2 bg-red-700 text-white rounded-full p-1 border border-charcoal hover:bg-red-850 transition-colors"
+                              >
+                                <X className="w-3 h-3" />
+                              </button>
+                            </div>
+                            <span className="text-green-800 text-xs font-bold font-sans">✓ Image uploaded successfully via client file selector!</span>
+                            <span className="text-[9px] text-charcoal/40 font-semibold">(Encoded securely in Base64 for instant preview & persistence)</span>
+                          </>
+                        ) : (
+                          <>
+                            <Upload className="w-8 h-8 text-gold-500 animate-pulse" />
+                            <p className="text-xs text-charcoal font-black">
+                              Drag & Drop your image file here, or <span className="text-maroon-700 font-bold underline">click to browse</span>
+                            </p>
+                            <p className="text-[9px] text-charcoal/40 font-semibold">Supports PNG, JPG, JPEG, GIF, WEBP</p>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="col-span-1 sm:col-span-2 pt-2 text-center space-y-3">
@@ -798,28 +1222,248 @@ export default function AdminDashboard({
           <div className="space-y-3 border-t-2 border-gold-400/20 pt-6">
             <h4 className="font-display font-medium text-maroon-850 text-sm">Active Gallery Items ({galleryItems.length})</h4>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {galleryItems.map((item) => (
-                <div key={item.id} className="border-2 border-charcoal/20 p-3 flex justify-between items-center gap-3 bg-cream-50/40">
-                  <div className="flex items-center space-x-2.5">
-                    {item.type === 'image' ? (
-                      <img src={item.url} className="w-12 h-12 object-cover border border-charcoal shrink-0" alt="Preview" />
+              {galleryItems.map((item) => {
+                const getValidUrl = (url: string) => {
+                  if (!url) return 'https://images.unsplash.com/photo-1545232979-8bf34eb9757b?auto=format&fit=crop&q=80&w=800';
+                  const clean = url.trim();
+                  if (clean.startsWith('http://') || clean.startsWith('https://') || clean.startsWith('data:image/') || clean.startsWith('/') || clean.startsWith('blob:')) {
+                    return clean;
+                  }
+                  return 'https://images.unsplash.com/photo-1545232979-8bf34eb9757b?auto=format&fit=crop&q=80&w=800';
+                };
+                const imageUrl = item.type === 'image' ? getValidUrl(item.url) : '';
+
+                return (
+                  <div key={item.id} className="border-2 border-charcoal/20 p-3 flex justify-between items-center gap-3 bg-cream-50/40">
+                    <div className="flex items-center space-x-2.5">
+                      {item.type === 'image' ? (
+                        <img 
+                          src={imageUrl} 
+                          className="w-12 h-12 object-cover border border-charcoal shrink-0" 
+                          alt="Preview" 
+                          onError={(e) => {
+                            e.currentTarget.src = 'https://images.unsplash.com/photo-1545232979-8bf34eb9757b?auto=format&fit=crop&q=80&w=800';
+                          }}
+                        />
+                      ) : (
+                        <div className="w-12 h-12 bg-red-800 text-white shrink-0 flex items-center justify-center font-mono text-[9px]">VIDEO</div>
+                      )}
+                      <div>
+                        <span className="text-maroon-800 text-[10px] font-mono block">[{item.category}] ({item.type})</span>
+                        <strong className="text-charcoal text-xs block line-clamp-1">{item.title.en}</strong>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => handleDeleteMediaItem(item.id, item.title.en)}
+                      className="border-2 border-red-700 text-red-700 hover:bg-red-50 px-2 py-1 text-[10px] rounded cursor-pointer font-bold uppercase"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+        </div>
+      )}
+
+      {/* SUBVIEW: Manage Hero Slideshow Images */}
+      {activeAdminSub === 'slideshow_mgmt' && (
+        <div className="bg-white border rounded-2xl shadow p-6 relative divine-border space-y-8 animate-fade-in text-xs font-bold text-charcoal">
+          
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-gold-400/20 pb-4 gap-4">
+            <div>
+              <h3 className="font-display font-bold text-lg text-maroon-800 flex items-center">
+                <Sparkles className="w-5.5 h-5.5 mr-2 text-gold-550" />
+                <span>हीरो स्लाइड शो प्रबंधन (Manage Hero Slideshow)</span>
+              </h3>
+              <p className="text-[10px] text-charcoal/40 font-semibold mt-0.5">Add, modify, or delete the slideshow images that are featured on your homepage's hero banner instead of static placeholders.</p>
+            </div>
+            <button
+              onClick={handleResetSlideshow}
+              className="bg-gold-500 hover:bg-gold-450 text-maroon-900 font-extrabold px-3.5 py-2 border border-charcoal/30 flex items-center space-x-1 uppercase text-[10px] hover:scale-[1.01] active:translate-y-0.5 transition-transform shadow-flat cursor-pointer"
+            >
+              🔄 Restore 4 Default Slides
+            </button>
+          </div>
+
+          {/* Form to add item */}
+          <form onSubmit={handleAddSlideItem} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            
+            <div className="flex flex-col space-y-1">
+              <label>Slide Title (Hindi) *</label>
+              <input 
+                type="text" 
+                required 
+                placeholder="उदा. भव्य श्री आदिनाथ शिखरबद्ध जिनालय" 
+                className="p-2.5 border border-gold-400/35 bg-cream-50/20 rounded outline-none text-xs"
+                value={slideTitleHI}
+                onChange={(e) => setSlideTitleHI(e.target.value)}
+              />
+            </div>
+
+            <div className="flex flex-col space-y-1">
+              <label>Slide Title (English) *</label>
+              <input 
+                type="text" 
+                required 
+                placeholder="e.g. Grand Shikharbandh Adinath Temple" 
+                className="p-2.5 border border-gold-400/35 bg-cream-50/20 rounded outline-none text-xs"
+                value={slideTitleEN}
+                onChange={(e) => setSlideTitleEN(e.target.value)}
+              />
+            </div>
+
+            <div className="flex flex-col space-y-1">
+              <label>Slide Caption/Subtitle (Hindi) - Optional</label>
+              <input 
+                type="text" 
+                placeholder="उदा. नवनिर्मित पावन जैन मंदिर - भक्ति, शांति और ध्यान का पावन धाम" 
+                className="p-2.5 border border-gold-400/35 bg-cream-50/20 rounded outline-none text-xs animate-none"
+                value={slideCaptionHI}
+                onChange={(e) => setSlideCaptionHI(e.target.value)}
+              />
+            </div>
+
+            <div className="flex flex-col space-y-1">
+              <label>Slide Caption/Subtitle (English) - Optional</label>
+              <input 
+                type="text" 
+                placeholder="e.g. Newly built sacred Jain Temple - A hub of devotion and peace" 
+                className="p-2.5 border border-gold-400/35 bg-cream-50/20 rounded outline-none text-xs animate-none"
+                value={slideCaptionEN}
+                onChange={(e) => setSlideCaptionEN(e.target.value)}
+              />
+            </div>
+
+            {/* Drag and drop / URL Input block */}
+            <div className="col-span-1 sm:col-span-2 flex flex-col space-y-2 pt-2">
+              <label className="text-maroon-800 font-bold block">Slide Image Asset *</label>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="flex flex-col space-y-1 justify-center">
+                  <span className="text-[10px] text-charcoal/60 block font-mono">🚀 Option A: Paste a Web Image URL:</span>
+                  <input 
+                    type="text" 
+                    placeholder="https://images.unsplash.com/... or local assets path" 
+                    className="p-2.5 border border-gold-400/35 bg-cream-50/20 rounded outline-none text-[11px] font-mono"
+                    value={slideUrl.startsWith('data:image/') ? '' : slideUrl}
+                    onChange={(e) => setSlideUrl(e.target.value)}
+                  />
+                  <span className="text-[9px] text-charcoal/40 font-semibold mt-1">Useful for embedding high-res stock photography directly.</span>
+                </div>
+
+                <div className="flex flex-col space-y-1">
+                  <span className="text-[10px] text-charcoal/60 block font-mono">📸 Option B: Upload direct from device (Auto compressed):</span>
+                  <div 
+                    onDragEnter={handleSlideDrag}
+                    onDragOver={handleSlideDrag}
+                    onDragLeave={handleSlideDrag}
+                    onDrop={handleSlideDrop}
+                    className={`border-2 border-dashed rounded-lg h-32 flex flex-col items-center justify-center p-3 transition-colors relative cursor-pointer ${
+                      slideDragActive 
+                        ? 'border-maroon-750 bg-maroon-50/30 text-maroon-900 border-dashed animate-pulse' 
+                        : slideUrl.startsWith('data:image/')
+                          ? 'border-green-600 bg-green-50/20 text-green-800'
+                          : 'border-gold-400/30 hover:border-gold-500 bg-cream-50/5'
+                    }`}
+                  >
+                    <input 
+                      type="file" 
+                      accept="image/*"
+                      className="absolute inset-0 opacity-0 cursor-pointer z-20"
+                      onChange={handleSlideFileChange}
+                    />
+                    {slideUrl.startsWith('data:image/') ? (
+                      <div className="text-center space-y-1 pointer-events-none">
+                        <span className="text-xl">✨</span>
+                        <p className="text-[10px] font-mono font-black text-green-700 uppercase">IMAGE STREAM READY</p>
+                        <p className="text-[9px] text-green-600/70">Automatic canvas scale and compression complete</p>
+                      </div>
                     ) : (
-                      <div className="w-12 h-12 bg-red-800 text-white shrink-0 flex items-center justify-center font-mono text-[9px]">VIDEO</div>
+                      <div className="text-center space-y-1 pointer-events-none">
+                        <span className="text-xl text-charcoal/40">📤</span>
+                        <p className="text-[10px] text-charcoal/80 font-bold uppercase">Drag photo here or browse</p>
+                        <p className="text-[9px] text-charcoal/45">Will compress layout for high speeds</p>
+                      </div>
                     )}
-                    <div>
-                      <span className="text-maroon-800 text-[10px] font-mono block">[{item.category}] ({item.type})</span>
-                      <strong className="text-charcoal text-xs block line-clamp-1">{item.title.en}</strong>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="col-span-1 sm:col-span-2 pt-2">
+              <button
+                type="submit"
+                className="w-full bg-maroon-gradient border-2 border-charcoal/40 hover:bg-gold-500 hover:text-maroon-950 text-gold-300 font-extrabold py-3 uppercase tracking-wider text-xs shadow-flat hover:scale-[1.005] transition-transform cursor-pointer"
+              >
+                ➕ Inject Slide into Hero Banner
+              </button>
+            </div>
+          </form>
+
+          {isSlideAddedMsg && (
+            <div className="p-3.5 bg-green-50 rounded border-2 border-green-300 text-green-800 text-[11px] font-semibold flex items-center space-x-2">
+              <span>🎉</span>
+              <span><strong>Success:</strong> Appended new hero slide to trust assets! It is now rendering live in real-time on the homepage banner.</span>
+            </div>
+          )}
+
+          {/* List of active slides */}
+          <div className="space-y-4 pt-4 border-t border-gold-400/20">
+            <h4 className="font-display font-extrabold text-sm text-maroon-800 tracking-tight uppercase">📺 Current Active Slides ({slideshowImages.length})</h4>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {slideshowImages.map((slide, idx) => {
+                return (
+                  <div key={slide.id} className="bg-cream-50/30 border-2 border-charcoal/20 p-3.5 flex flex-col justify-between relative shadow-flat-sm space-y-3.5">
+                    
+                    {/* Index badge */}
+                    <span className="absolute top-2 right-2 bg-charcoal text-white text-[10px] font-mono font-black w-6 h-6 flex items-center justify-center rounded-none shadow-flat-sm">
+                      #{idx + 1}
+                    </span>
+
+                    <div className="flex space-x-3.5 items-center">
+                      <img 
+                        src={slide.url} 
+                        alt="Slide preview" 
+                        className="w-20 h-16 object-cover object-center border border-charcoal shrink-0 shadow-flat-xs"
+                        onError={(e) => {
+                          e.currentTarget.src = 'https://images.unsplash.com/photo-1545232979-8bf34eb9757b?auto=format&fit=crop&q=80&w=800';
+                        }}
+                      />
+                      <div className="space-y-1">
+                        <strong className="text-charcoal font-black text-[12px] block line-clamp-1 pr-6">{slide.title.en}</strong>
+                        {slide.caption?.en && (
+                          <p className="text-charcoal/60 text-[10px] font-medium leading-relaxed font-sans line-clamp-2">{slide.caption.en}</p>
+                        )}
+                        <span className="text-maroon-850 text-[10px] font-bold block">Hindi Title: "{slide.title.hi}"</span>
+                      </div>
+                    </div>
+
+                    <div className="flex justify-between items-center pt-2 border-t border-charcoal/5">
+                      <span className="text-[9px] text-charcoal/40 font-mono font-bold uppercase truncate max-w-[200px]">{slide.url.startsWith('data:image/') ? '[Compressed base64 File]' : slide.url}</span>
+                      <button
+                        onClick={() => handleDeleteSlideItem(slide.id, slide.title.en)}
+                        className="border-2 border-red-700 hover:bg-red-50 text-red-700 font-black px-2.5 py-1 text-[10px] uppercase cursor-pointer transition-transform hover:scale-102"
+                      >
+                        Delete Slide
+                      </button>
                     </div>
                   </div>
-                  <button
-                    onClick={() => handleDeleteMediaItem(item.id, item.title.en)}
-                    className="border-2 border-red-700 text-red-700 hover:bg-red-50 px-2 py-1 text-[10px] rounded cursor-pointer font-bold uppercase"
-                  >
-                    Delete
-                  </button>
-                </div>
-              ))}
+                );
+              })}
             </div>
+
+            {slideshowImages.length === 0 && (
+              <div className="bg-amber-50 border-2 border-dashed border-amber-300 p-6 text-center space-y-1">
+                <p className="text-amber-850 font-black uppercase text-xs">⚠️ No Custom Slides Active</p>
+                <p className="text-amber-900/80 text-[11px] font-semibold leading-normal">
+                  You do not have any customized slide images. The webpage is currently falling back to rendering the default single Vihardham rendering and stock photography slides. You can add one anytime above!
+                </p>
+              </div>
+            )}
           </div>
 
         </div>

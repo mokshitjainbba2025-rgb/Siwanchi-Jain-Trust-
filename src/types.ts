@@ -219,3 +219,10 @@ export interface ContactQuery {
   status: 'Pending' | 'Resolved';
   createdAt: string;
 }
+
+export interface SlideshowImage {
+  id: string;
+  url: string;
+  title: TranslationMap;
+  caption?: TranslationMap;
+}
