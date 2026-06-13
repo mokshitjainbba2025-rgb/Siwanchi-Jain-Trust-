@@ -489,8 +489,8 @@ export default function App() {
                   currentLang={currentLang}
                   videoId="Cwyn5LCGd0c"
                   title={{
-                    hi: "डूंगरी पुरा (मेली) राजशाही विहारधाम और ओसवाल पैलेस परियोजना",
-                    en: "Dungri Pura Vihardham & Oswal Palace Project Tour"
+                    hi: "राजशाही विहारधाम और ओसवाल पैलेस परियोजना",
+                    en: "Vihardham & Oswal Palace Project Tour"
                   }}
                   description={{
                     hi: "श्री सिवांची जैन सेवा समिति ट्रस्ट के तत्वाधान में निर्माणाधीन सुप्रसिद्ध विहारधाम, धर्मशाला तथा सामाजिक सुविधाओं से सुसज्जित ओसवाल पैलेस का आधिकारिक भव्य वीडियो ट्यूर दर्शन का आनंद उठाएं।",
@@ -570,7 +570,7 @@ export default function App() {
               📍 Siwana-Samdari Road,Opp Bhagvanti Petrol Pump DurgaPura (Meli) District Barmer, Rajasthan, India
             </p>
             <div className="space-y-1 block font-mono">
-              <a href="tel:+919426055667" className="block hover:text-white transition-colors">📞 Phone: +91 94260 55667</a>
+              <a href="tel:+919426055667" className="block hover:text-white transition-colors">📞 Phone: +91 9822538635</a>
               <a href="mailto:connect@siwanchitrust.org" className="block hover:text-white transition-colors text-xs">✉️ Email: connect@siwanchitrust.org</a>
             </div>
           </div>

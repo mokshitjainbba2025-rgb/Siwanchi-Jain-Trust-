@@ -640,24 +640,4 @@ export const seedGallery: GalleryItem[] = [
   }
 ];
 
-// Daily Aarti schedules
-export const dailyAartiSchedule: LiveAarti[] = [
-  {
-    id: "a1",
-    name: { hi: "मंगला आरती (प्रातः काल दर्शन)", en: "Mangla Aarti (Early Morning)" },
-    time: "06:15 AM",
-    description: { hi: "परम शांति की तरंगों के साथ आदिनाथ भगवान का प्रथम अभिषेक दर्शन व भव्यातिभव्य स्तुति गान।", en: "Start the day with deep peaceful vibrations, holy bath visuals, and soft traditional devotional hymns." }
-  },
-  {
-    id: "a2",
-    name: { hi: "मुख्य केसर पूजा एवं अष्टप्रकारी महापूजा", en: "Keshar Pooja & Ashtaprakari Mahapooja" },
-    time: "09:30 AM",
-    description: { hi: "साधार्मिक भाई बहिनों द्वारा शुद्ध वस्त्रों में प्रभु को केसर, पुष्प व अक्षत चढ़ाने का पुण्योत्सव समय।", en: "Devotees perform pure saffron paste offering, fresh marigold worship, and complete eight-fold rituals on the idols." }
-  },
-  {
-    id: "a3",
-    name: { hi: "संध्या आरती (महा आरती)", en: "Sandhya Aarti (Grand Evening Chanting)" },
-    time: "07:15 PM",
-    description: { hi: "घंटियों की दिव्य गूंज, दीपक की लौ और सैकड़ों भावुक श्रद्धालुओं के साथ संपन्न होने वाली महा आरती।", en: "Dazzling brass oil lamps, reverberating silver handbells, and collective divine chanting under starry sky." }
-  }
-];
+
