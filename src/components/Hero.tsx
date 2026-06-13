@@ -40,7 +40,7 @@ export default function Hero({ currentLang, onNavigate, onOpenVideoModal }: Hero
           <div className="lg:col-span-7 space-y-6 z-10">
             <div className="inline-flex items-center space-x-2 bg-maroon-50ed border-2 border-charcoal px-3 py-1.5 rounded-none text-maroon-700 font-black text-xs uppercase tracking-widest shadow-flat">
               <Sparkles className="w-4 h-4 text-gold-500 animate-spin" style={{ animationDuration: '6s' }} />
-              <span>श्री सीवांशी जैन समाज गौरव</span>
+              <span>श्री सिवांची जैन समाज गौरव</span>
             </div>
             
             <h1 className="font-display font-black text-4xl sm:text-5xl lg:text-6xl text-maroon-800 tracking-tight leading-tight uppercase">

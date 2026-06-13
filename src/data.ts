@@ -18,7 +18,7 @@ import {
 export const staticTranslations = {
   hi: {
     trustName: "श्री सिवांची जैन सेवा समिति ट्रस्ट",
-    location: "डूंगरी पुरा (मेली), सिवाना-समदड़ी रोड, जिला बाड़मेर, राजस्थान, भारत",
+    location: "विहारधाम(मेली), सिवाना-समदड़ी रोड, जिला बाड़मेर, राजस्थान, भारत",
     trustTagline: "धर्म, सेवा और समाज का संगम",
     trustDescription: "सिवांची जैन समाज की सेवा, साधु-साध्वी विहारधाम विश्राम, और ओसवाल पैलेस के माध्यम से आध्यात्मिक एवं सामाजिक कल्याण के लिए समर्पित एक पावन स्थान।",
     donateNow: "धर्म सहयोग (Dharma Sahyog)",
@@ -35,7 +35,6 @@ export const staticTranslations = {
     donations: "धर्म सहयोग अवसर",
     donorWall: "लाभार्थी पट्ट (Labharthi Wall)",
     events: "आयोजन",
-    liveDarshan: "लाइव दर्शन",
     gallery: "गैलरी और वीडियो",
     community: "समाज",
     contact: "संपर्क करें",
@@ -69,7 +68,7 @@ export const staticTranslations = {
   },
   en: {
     trustName: "Shri Siwanchi Jain Seva Samiti Trust",
-    location: "Dungri Pura (Meli), Siwana-Samdari Road, District Barmer, Rajasthan, India",
+    location: "Vihardham (Meli), Siwana-Samdari Road, District Barmer, Rajasthan, India",
     trustTagline: "A Sacred Union of Dharma, Seva, and Samaj",
     trustDescription: "A sacred sanctuary dedicated to serving the Siwanchi Jain community, supporting Jain Sadhus and Sadhvis during their Vihardham stays, and hosting events at Oswal Palace.",
     donateNow: "Dharma Sahyog",
@@ -86,7 +85,6 @@ export const staticTranslations = {
     donations: "Dharma Sahyog",
     donorWall: "Labharthi Wall",
     events: "Events",
-    liveDarshan: "Live Darshan",
     gallery: "Gallery & Videos",
     community: "Community",
     contact: "Contact Us",

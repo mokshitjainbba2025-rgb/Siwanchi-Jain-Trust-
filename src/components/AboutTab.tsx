@@ -29,7 +29,7 @@ export default function AboutTab({ currentLang }: AboutTabProps) {
     },
     {
       year: "2022",
-      title: { hi: "आदिनाथ भोजनशाला शुभारंभ", en: "Inauguration of Adinath Bhojanshala" },
+      title: { hi: " भोजनशाला शुभारंभ", en: "Inauguration of Shanataba Bhojanshala" },
       desc: { hi: "तीर्थ यात्रियों एवं साधार्मिक बंधुओं के लिए सात्विक व ताजे भोजन की व्यवस्था के लिए अत्याधुनिक डायनिंग ब्लॉक शुरू हुआ।", en: "Successfully commissioned dining block providing fresh pure organic foods, clean water, and nutritional support." }
     },
     {
@@ -206,11 +206,11 @@ export default function AboutTab({ currentLang }: AboutTabProps) {
             <p className="text-cream-50 font-semibold text-xs sm:text-sm leading-relaxed">
               {currentLang === 'hi' ? (
                 <>
-                  हर्ष का विषय है कि हमारी <strong>आदिनाथ भोजनशाला</strong> वर्तमान में पूर्णतः चालू है और यहाँ प्रतिदिन डूंगरी पुरा आने वाले श्रद्धालुओं, नवकारशी तपस्वियों, मुमुक्षुओं एवं साधार्मिक बंधुओं को शुद्ध वस्त्रधारी रसोईयों द्वारा तैयार १००% सात्विक औषधीय भोजन परोसा जा रहा है। यहाँ स्वच्छ जल पियू (Pyau) की भी सुंदर व्यवस्था पूर्ण हो चुकी है।
+                  हर्ष का विषय है कि हमारी <strong> भोजनशाला</strong> वर्तमान में पूर्णतः चालू है और यहाँ प्रतिदिन डूंगरी पुरा आने वाले श्रद्धालुओं, नवकारशी तपस्वियों, मुमुक्षुओं एवं साधार्मिक बंधुओं को शुद्ध वस्त्रधारी रसोईयों द्वारा तैयार १००% सात्विक औषधीय भोजन परोसा जा रहा है। यहाँ स्वच्छ जल पियू (Pyau) की भी सुंदर व्यवस्था पूर्ण हो चुकी है।
                 </>
               ) : (
                 <>
-                  We are extremely pleased to highlight that the <strong>Adinath Bhojanshala</strong> is fully operational and successfully serving sacred organic Jain meals daily. Adhering to strict traditional codes of wellness, specialized cooks in sacred attire prepare wholesome meals. Complimentary pristine drinking water booths (Pyau) are also active.
+                  We are extremely pleased to highlight that the <strong> Bhojanshala</strong> is fully operational and successfully serving sacred organic Jain meals daily. Adhering to strict traditional codes of wellness, specialized cooks in sacred attire prepare wholesome meals. Complimentary pristine drinking water booths (Pyau) are also active.
                 </>
               )}
             </p>

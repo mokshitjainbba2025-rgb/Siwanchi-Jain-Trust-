@@ -81,7 +81,7 @@ export default function ContactTab({ currentLang, onAddContactQuery }: ContactTa
                 <Phone className="w-5 h-5 text-gold-500 shrink-0 mt-0.5" />
                 <div>
                   <span className="text-maroon-800 block text-[11px] font-black">Helpline numbers:</span>
-                  <a href="tel:+919426055667" className="font-mono text-charcoal font-black hover:text-maroon-700 block">+91 94260 55667 (Secretary Prakash Ji)</a>
+                  <a href="tel:+91 98225 38635" className="font-mono text-charcoal font-black hover:text-maroon-700 block">+91 98225 38635 (Chairman Rajmalji Bhansali)</a>
                   <a href="tel:+919845033445" className="font-mono text-charcoal font-black hover:text-maroon-700 block">+91 98450 33445 (VP Manak Ji)</a>
                 </div>
               </div>
@@ -90,7 +90,7 @@ export default function ContactTab({ currentLang, onAddContactQuery }: ContactTa
                 <Mail className="w-5 h-5 text-gold-500 shrink-0 mt-0.5" />
                 <div>
                   <span className="text-maroon-800 block text-[11px] font-black">Email communications:</span>
-                  <a href="mailto:connect@siwanchitrust.org" className="text-charcoal font-black hover:text-maroon-700 block lowercase">connect@siwanchitrust.org</a>
+                  <a href="mailto:team.siwanchitrust@gmail.com" className="text-charcoal font-black hover:text-maroon-700 block lowercase">team.siwanchitrust@gmail.com</a>
                 </div>
               </div>
             </div>
@@ -102,7 +102,7 @@ export default function ContactTab({ currentLang, onAddContactQuery }: ContactTa
                 <p className="text-[10px] text-green-700 font-bold block mt-1 lowercase first-line:uppercase">Get immediate responses about bookings and chadhava opportunities.</p>
               </div>
               <a 
-                href="https://wa.me/919426055667" 
+                href="https://wa.me/919822538635" 
                 target="_blank" 
                 rel="noreferrer" 
                 className="bg-green-700 hover:bg-green-600 border-2 border-charcoal text-white font-extrabold px-3 py-2 rounded-none text-center flex items-center justify-center space-x-1 ml-auto shrink-0 w-full sm:w-auto shadow-flat active:translate-y-0.5"
@@ -117,7 +117,7 @@ export default function ContactTab({ currentLang, onAddContactQuery }: ContactTa
           <div className="bg-white border-3 border-charcoal p-2.5 rounded-none shadow-flat overflow-hidden aspect-video">
             <iframe 
               title="Google Map location Dungri Pura Meli Rajasthan"
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d113941.83416955099!2d72.37894371562502!3d25.642948600000007!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3943fbfd14e0f0df%3A0x671191054fdcaebe!2sSiwana%2C%20Rajasthan%20344044!5e0!3m2!1sen!2sin!4v1718151241123!5m2!1sen!2sin" 
+              src="https://www.google.com/search?sca_esv=2281bbf698677232&biw=1536&bih=695&sxsrf=ANbL-n4rmT_PfhixwkJn9ABSu3jyiALPVA%3A1781331629999&kgmid=%2Fg%2F11spplw10q&q=Sunanda%20keshav%20jinalay%20(vihardham)&shem=epsd1%2Crimspwouoe&shndl=30&source=sh%2Fx%2Floc%2Funi%2Fm1%2F1&kgs=36f866ed9cb0abb8" 
               className="w-full h-full border-0 rounded-none"
               allowFullScreen={false} 
               loading="lazy" 
