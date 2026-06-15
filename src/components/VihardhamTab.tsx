@@ -6,15 +6,95 @@
 import React, { useState } from 'react';
 import { Calendar, User, Phone, Mail, MapPin, Check, Heart, ShieldAlert, Sparkles, Building, ChevronRight, X, Printer, BedDouble } from 'lucide-react';
 import { Language, RoomBooking, RoomCategory } from '../types';
-import { roomCategories, staticTranslations } from '../data';
+import { staticTranslations } from '../data';
 import ProjectVideoPlayer from './ProjectVideoPlayer';
 
 interface VihardhamTabProps {
   currentLang: Language;
   onAddRoomBooking: (booking: RoomBooking) => void;
+  roomCategories: RoomCategory[];
 }
 
-export default function VihardhamTab({ currentLang, onAddRoomBooking }: VihardhamTabProps) {
+function RoomSlideshow({ images, currentLang, type }: { images: RoomCategory['images']; currentLang: Language; type: string }) {
+  const views: { key: keyof typeof images; labelHi: string; labelEn: string; icon: string }[] = [
+    { key: 'exterior', labelHi: 'बाहरी रूप', labelEn: 'Exterior', icon: '🏛️' },
+    { key: 'interior', labelHi: 'कमरा', labelEn: 'Interior', icon: '🛌' },
+    { key: 'beds', labelHi: 'बिस्तर', labelEn: 'Beds', icon: '🛏️' },
+    { key: 'washroom', labelHi: 'बाथरूम', labelEn: 'Washroom', icon: '🚿' },
+    { key: 'storage', labelHi: 'लॉकर', labelEn: 'Storage', icon: '🔑' },
+    { key: 'common', labelHi: 'सामान्य', labelEn: 'Common', icon: '🏡' }
+  ];
+
+  const [activeIdx, setActiveIdx] = React.useState(0);
+
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveIdx((prev) => (prev + 1) % views.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const activeView = views[activeIdx];
+  const activeUrl = images ? images[activeView.key] : '';
+
+  return (
+    <div className="relative h-52 sm:h-60 w-full flex flex-col justify-between border-b-2 border-charcoal overflow-hidden group/slide bg-charcoal/5">
+      {/* Active Image */}
+      <div className="absolute inset-x-0 top-0 bottom-12 overflow-hidden bg-cream-50 flex items-center justify-center">
+        {activeUrl ? (
+          <img
+            src={activeUrl}
+            alt={activeView.labelEn}
+            referrerPolicy="no-referrer"
+            className="w-full h-full object-cover object-center transition-all duration-750 transform scale-100 group-hover/slide:scale-103"
+          />
+        ) : (
+          <div className="text-[10px] text-charcoal/40 font-mono">No Image Configured</div>
+        )}
+        
+        {/* Navigation Overlays */}
+        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent p-2 flex justify-between items-end">
+          <span className="text-[10px] text-yellow-300 font-extrabold uppercase font-mono tracking-wider">
+            {activeView.icon} {currentLang === 'hi' ? activeView.labelHi : activeView.labelEn}
+          </span>
+          <span className="text-[8px] bg-black/45 text-white/80 px-1 py-0.5 rounded font-mono">
+            {activeIdx + 1}/6
+          </span>
+        </div>
+      </div>
+
+      {/* Header Overlay Badges */}
+      <div className="absolute top-2 left-2 pointer-events-none z-10">
+        <div className="bg-maroon-800 text-gold-300 font-bold text-[9px] px-2 py-0.5 border border-charcoal uppercase shadow-flat-sm font-mono tracking-wider">
+          {type}
+        </div>
+      </div>
+
+      {/* Manual buttons tab bar at bottom */}
+      <div className="h-12 w-full mt-auto bg-cream-50 border-t-2 border-charcoal flex items-center justify-between px-0.5 overflow-x-auto divide-x divide-charcoal/20 select-none">
+        {views.map((v, i) => (
+          <button
+            key={v.key}
+            onClick={() => setActiveIdx(i)}
+            type="button"
+            className={`flex-1 h-full flex flex-col items-center justify-center text-center transition-all cursor-pointer ${
+              activeIdx === i
+                ? 'bg-gold-450 hover:bg-gold-500 bg-gold-400 text-maroon-950 font-black'
+                : 'text-charcoal/70 hover:text-charcoal hover:bg-cream-100/60 text-[9px]'
+            }`}
+          >
+            <span className="text-xs shrink-0 leading-none mb-0.5">{v.icon}</span>
+            <span className="text-[8px] font-black uppercase tracking-tighter leading-none block font-mono">
+              {currentLang === 'hi' ? v.labelHi : v.labelEn}
+            </span>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export default function VihardhamTab({ currentLang, onAddRoomBooking, roomCategories }: VihardhamTabProps) {
   const [selectedRoomCategory, setSelectedRoomCategory] = useState<RoomCategory | null>(null);
   const [showBookingModal, setShowBookingModal] = useState(false);
   const [isBookedSuccess, setIsBookedSuccess] = useState(false);
@@ -261,7 +341,7 @@ export default function VihardhamTab({ currentLang, onAddRoomBooking }: Vihardha
               </div>
               <p className="text-[9px] italic text-charcoal/75 pt-1 border-t border-dashed border-amber-300">
                 {currentLang === 'hi' 
-                  ? "कृपया अपना सुझाव भी जरूर-जरूर अवश्य देवें। ...ट्रस्ट मण्डल"
+                  ? "कृपया अपना सुझाव भी जरूर-जरूर अवश्य देवें। ...ट्रस्ट मण्डल" 
                   : "Please share your helpful suggestions. ...Trust Board"}
               </p>
             </div>
@@ -271,7 +351,7 @@ export default function VihardhamTab({ currentLang, onAddRoomBooking }: Vihardha
         {/* Accommodation Booking Room Grid (Right side columns) */}
         <div className="lg:col-span-7 space-y-6">
           <div className="border-b-2 border-charcoal pb-4">
-            <h3 className="font-display font-black text-2xl text-maroon-800 flex items-center uppercase tracking-tight">
+            <h3 className="font-display font-black text-xl sm:text-2xl text-maroon-800 flex items-center uppercase tracking-tight">
               <Building className="w-6 h-6 mr-2 text-maroon-700" />
               <span>धर्मशाला अतिथि गृह: उपलब्ध कमरे</span>
             </h3>
@@ -284,32 +364,19 @@ export default function VihardhamTab({ currentLang, onAddRoomBooking }: Vihardha
                 key={rc.id} 
                 className="bg-white border-3 border-charcoal rounded-none shadow-flat hover:shadow-flat-lg hover:-translate-y-0.5 transition-all flex flex-col justify-between group"
               >
-                <div className="relative h-44 overflow-hidden border-b-2 border-charcoal">
-                  <img 
-                    src={rc.imageUrl} 
-                    alt={rc.name[currentLang]} 
-                    className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
-                  />
-                  <div className="absolute top-3 left-3 bg-maroon-800 text-gold-300 font-bold text-[10px] px-2.5 py-1 rounded-none border border-charcoal uppercase shadow-flat-sm font-mono tracking-wider">
-                    {rc.type}
-                  </div>
-                  {rc.ratePerDay === 0 ? (
-                    <div className="absolute bottom-3 right-3 bg-green-700 text-white font-black text-[10px] px-2.5 py-1 rounded-none border border-charcoal shadow-flat-sm uppercase tracking-wider font-mono">
-                      FREE SERVICE
-                    </div>
-                  ) : (
-                    <div className="absolute bottom-3 right-3 bg-gold-400 text-maroon-950 font-black text-xs px-2.5 py-1 rounded-none border border-charcoal shadow-flat-sm font-mono">
-                      ₹{rc.ratePerDay}/Day
-                    </div>
-                  )}
-                </div>
+                <RoomSlideshow images={rc.images} currentLang={currentLang} type={rc.type} />
 
                 <div className="p-4 flex-1 flex flex-col justify-between space-y-3">
                   <div>
-                    <h4 className="font-display font-black text-base text-maroon-800 line-clamp-1 uppercase tracking-tight">
-                      {rc.name[currentLang]}
-                    </h4>
-                    <p className="text-charcoal text-xs mt-1 line-clamp-2 leading-relaxed font-semibold">
+                    <div className="flex justify-between items-start gap-2 border-b border-charcoal/10 pb-2">
+                      <h4 className="font-display font-black text-sm text-maroon-800 uppercase tracking-tight">
+                        {rc.name[currentLang]}
+                      </h4>
+                      <span className="text-maroon-900 font-black text-xs sm:text-sm font-mono shrink-0 bg-gold-400/30 px-2 py-0.5 rounded">
+                        ₹{rc.ratePerDay}{rc.id === 'rc2' ? '/Bed' : '/Day'}
+                      </span>
+                    </div>
+                    <p className="text-charcoal text-[11px] mt-2 leading-relaxed font-semibold">
                       {rc.description[currentLang]}
                     </p>
                     
@@ -364,7 +431,7 @@ export default function VihardhamTab({ currentLang, onAddRoomBooking }: Vihardha
           }}
           description={{
             hi: "परम पावन डूंगरी पुरा में साधु-साध्वी भगवंतों के लिए नवनिर्मित विहारधाम, धर्मशाला ब्लॉक एवं प्राकृतिक बगीचे का सम्पूर्ण वीडियो ट्यूर।",
-            en: "Interactive visual walk of the custom-built Vihardham rooms, pure-meal Adinath Bhojanshala kitchen system, and serene organic gardens designed for traveling Jain Monks and holy patrons."
+            en: "Interactive visual walk of the custom-built Vihardham rooms, pure-meal Shantaba Bhojanshala kitchen system, and serene organic gardens designed for traveling Jain Monks and holy patrons."
           }}
           category="Vihardham Preview"
         />

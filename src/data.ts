@@ -184,8 +184,8 @@ export const seedTrustees: Trustee[] = [
       hi: "ट्रस्ट के सेवा कार्य निस्वार्थ रूप से समाज के हर वर्ग तक पहुँचे, यही हमारा ध्येय है।", 
       en: "Our ultimate goal is to ensure every pilgrim visiting Dungri Pura experiences profound peace."
     },
-    phone: "+91 94220 54100",
-    email: "bhanwar.jirawala@siwanchitrust.org",
+    phone: "",
+    email: "",
     photoUrl: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=300"
   },
   {
@@ -197,8 +197,8 @@ export const seedTrustees: Trustee[] = [
       hi: "साधु-साध्वी विहार सेवा और पदयात्रियों की भक्ति हमारी संस्कृति का मुख्य स्तंभ है।",
       en: "Serving the holy monks and walking pilgrimages is our highest luck."
     },
-    phone: "+91 94260 12680",
-    email: "mithalal.j@siwanchitrust.org",
+    phone: "",
+    email: "",
     photoUrl: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&q=80&w=300"
   },
   {
@@ -210,8 +210,8 @@ export const seedTrustees: Trustee[] = [
       hi: "नवीन मन्दिर की मंगल अंजनशलाका प्रतिष्ठा एवं भावी धार्मिक गतिविधियों के त्वरित संचालन के लिए हम प्रतिबद्ध हैं।", 
       en: "Deeply committed to organizing religious festivals and accelerating ongoing developments at the holy site."
     },
-    phone: "+91 89835 60470",
-    email: "raju.bhansali@siwanchitrust.org",
+    phone: "",
+    email: "",
     photoUrl: "https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?auto=format&fit=crop&q=80&w=300"
   },
   {
@@ -223,8 +223,8 @@ export const seedTrustees: Trustee[] = [
       hi: "हर तीर्थ यात्री डूंगरी पुरा आकर आध्यात्मिक शांति का अनुभव करे, यही हमारा मूल संकल्प है।", 
       en: "Our ultimate goal is that every pilgrim visits Dungri Pura and experiences spiritual peace."
     },
-    phone: "+91 94220 54100",
-    email: "suresh.bhansali@siwanchitrust.org",
+    phone: "",
+    email: "",
     photoUrl: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=300"
   },
   {
@@ -236,8 +236,8 @@ export const seedTrustees: Trustee[] = [
       hi: "अपनी पावन भूमि सिवाना और मेली रोड क्षेत्र का धार्मिक पुनरुत्थान देखना ही जीवन का परम आनंद है।", 
       en: "Witnessing the glorious religious revival of our historical Siwana regional sectors is a matter of profound joy."
     },
-    phone: "+91 94230 01108",
-    email: "amrit.bhansali@siwanchitrust.org",
+    phone: "",
+    email: "",
     photoUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=300"
   },
   {
@@ -249,8 +249,8 @@ export const seedTrustees: Trustee[] = [
       hi: "तीर्थ क्षेत्र का पर्यावरण शुद्ध, सात्विक एवं हरा-भरा रहे ताकि साधना व तप के लिए अनुकूलता बढ़े।", 
       en: "Nurturing an eco-conscious serene green atmosphere surrounding our sacred temple shrines."
     },
-    phone: "+91 94271 24184",
-    email: "ishwar.dantewadia@siwanchitrust.org",
+    phone: "",
+    email: "",
     photoUrl: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=300"
   },
   {
@@ -262,8 +262,8 @@ export const seedTrustees: Trustee[] = [
       hi: "समाज सेवा में समर्पित हर एक क्षण प्रभु सुमिरन के समान है। हम सबको मिलकर इस धर्म ध्वज को बढ़ाना है।", 
       en: "Every single breath spent in humanistic service matches prayer itself. May we all hold this flag of truth high."
     },
-    phone: "+91 98230 77511",
-    email: "babulal.lunkad@siwanchitrust.org",
+    phone: "",
+    email: "",
     photoUrl: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=300"
   }
 ];
@@ -272,49 +272,82 @@ export const seedTrustees: Trustee[] = [
 export const roomCategories: RoomCategory[] = [
   {
     id: "rc1",
-    name: { hi: "अभिषेक डीलक्स एसी कमरा (A/C Deluxe Room)", en: "Abhishek Deluxe A/C Room" },
-    description: { hi: "उत्कृष्ट वातानुकूलित शयनकक्ष जिसमें दो पलंग, साफ वॉशरूम और बालकनी शामिल है।", en: "Classic air-conditioned room featuring double beds, hygiene-first attached bathroom, and scenic balcony." },
-    type: "AC",
-    capacity: 3,
-    ratePerDay: 1200,
-    availableRooms: 150,
+    name: { hi: "सामूहिक हॉल बुकिंग (Full Hall Booking)", en: "Full Hall Booking" },
+    description: {
+      hi: "बड़े समूहों, यात्रियों, धार्मिक सम्मेलनों और सामूहिक प्रवास के लिए अत्यंत सुविधाजनक स्थान।",
+      en: "Suitable for large groups, yatris, religious gatherings, and community stays."
+    },
+    type: "Hall",
+    capacity: 35,
+    ratePerDay: 3000,
+    availableRooms: 3,
     amenities: [
-      { hi: "डबल बेड", en: "Double Bed" },
-      { hi: "गीजर", en: "Geyser" },
-      { hi: "शीतल जल", en: "Filtered Water" },
-      { hi: "हाईवे व्यू", en: "Highway/Hill View" }
+      { hi: "बिछौने व गद्दे", en: "Comfortable Beddings" },
+      { hi: "उत्कृष्ट वातानुकूलन", en: "Central Air Cooling" },
+      { hi: "अटैच्ड वाशरूम", en: "Attached Washrooms" }
     ],
-    imageUrl: "https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&q=80&w=400"
+    imageUrl: "https://images.unsplash.com/photo-1544644181-1484b3fdfc62?auto=format&fit=crop&q=80&w=400",
+    images: {
+      exterior: "https://images.unsplash.com/photo-1544644181-1484b3fdfc62?auto=format&fit=crop&q=80&w=600",
+      interior: "https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&q=80&w=600",
+      beds: "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?auto=format&fit=crop&q=80&w=600",
+      washroom: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&q=80&w=600",
+      storage: "https://images.unsplash.com/photo-1595428774223-ef52624120d2?auto=format&fit=crop&q=80&w=600",
+      common: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&q=80&w=600"
+    }
   },
   {
     id: "rc2",
-    name: { hi: "आदिनाथ कम्युनिटी हॉल (Adinath Community Hall)", en: "Adinath Community Hall" },
-    description: { hi: "सामूहिक रहने के लिए उपयुक्त बड़ा हॉल, जिसमें गद्दे और संकुल सुविधाएं उपलब्ध हैं (नॉन-एसी)।", en: "Spacious community hall perfect for large family groups or pilgrim batches, equipped with comfortable bedding." },
-    type: "Hall",
-    capacity: 25,
-    ratePerDay: 1500,
-    availableRooms: 4,
+    name: { hi: "हॉल सिंगल बेड बुकिंग (Hall Bed Booking)", en: "Hall Bed Booking" },
+    description: {
+      hi: "सामूहिक हॉल के भीतर व्यक्तिगत बेड आबंटन एवं तिजोरी (लॉकर) की वैकल्पिक व्यवस्था। (बेड: ₹200, लॉकर: ₹100)",
+      en: "Individual bed allocation within the hall with optional locker facility. (Bed: INR 200, Locker: INR 100)"
+    },
+    type: "Hall Bed",
+    capacity: 1,
+    ratePerDay: 200,
+    availableRooms: 60,
     amenities: [
-      { hi: "बिछौने व गद्दे", en: "Mattresses & Bedding" },
-      { hi: "पर्याप्त पंखे व हवादार खिड़कियाँ", en: "Ample Fans & Ventilation" },
-      { hi: "साफ बाथरूम", en: "Clean Restroom" }
+      { hi: "एकल गद्दे व बेड", en: "Single Clean Bed" },
+      { hi: "सुरक्षित लॉकर (₹100)", en: "Optional Locker (INR 100)" },
+      { hi: "साफ कॉमन बाथरूम", en: "Clean Shared Bathrooms" }
     ],
-    imageUrl: "https://images.unsplash.com/photo-1544644181-1484b3fdfc62?auto=format&fit=crop&q=80&w=400"
+    imageUrl: "https://images.unsplash.com/photo-1555854877-abab0e564b86?auto=format&fit=crop&q=80&w=400",
+    images: {
+      exterior: "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&q=80&w=600",
+      interior: "https://images.unsplash.com/photo-1555854877-abab0e564b86?auto=format&fit=crop&q=80&w=600",
+      beds: "https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?auto=format&fit=crop&q=80&w=600",
+      washroom: "https://images.unsplash.com/photo-1620626011761-996317b69763?auto=format&fit=crop&q=80&w=600",
+      storage: "https://images.unsplash.com/photo-1549417229-aa67d3263c09?auto=format&fit=crop&q=80&w=600",
+      common: "https://images.unsplash.com/photo-1521791136368-1a46827d0af1?auto=format&fit=crop&q=80&w=600"
+    }
   },
   {
     id: "rc3",
-    name: { hi: "महावीर वातानुकूलित हॉल (Mahaveer A/C Hall)", en: "Mahaveer A/C Hall" },
-    description: { hi: "उत्कृष्ट वातानुकूलित हॉल सामूहिक प्रवास एवं धार्मिक चर्चाओं के लिए पूर्ण अनुकूल।", en: "Premium air-conditioned community hall for holy discourses, community discussions, and large group stays." },
-    type: "Hall",
-    capacity: 30,
-    ratePerDay: 3000,
-    availableRooms: 2,
+    name: { hi: "वातानुकूलित पारिवारिक कमरा - 4 बेड (AC Family Room)", en: "AC Family Room" },
+    description: {
+      hi: "सुरक्षित सुविधाओं और बेहतरीन वातानुकूलन के साथ ४ बेड वाला कमरा परिवारों तथा सम्मानीय यात्रियों के लिए उत्तम चुनाव।",
+      en: "Air-conditioned room with 4 beds suitable for families and visitors."
+    },
+    type: "AC",
+    capacity: 4,
+    ratePerDay: 700,
+    availableRooms: 1,
     amenities: [
-      { hi: "पूर्ण वातानुकूलित", en: "Fully Air Conditioned" },
-      { hi: "पवित्र वातावरण", en: "Holy & Serene Environment" },
-      { hi: "अटैच्ड वाशरूम", en: "Attached Washrooms" }
+      { hi: "चार आरामदेह पलंग", en: "4 Comfortable Beds" },
+      { hi: "शक्तिशाली एसी", en: "High-Cooling A/C" },
+      { hi: "अटैच्ड वाशरूम व गीजर", en: "Private Bathroom & Geyser" },
+      { hi: "वार्डरोब स्टोरेज", en: "Spacious Wardrobe" }
     ],
-    imageUrl: "https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&q=80&w=400"
+    imageUrl: "https://images.unsplash.com/photo-1611891404114-5090f2046b45?auto=format&fit=crop&q=80&w=400",
+    images: {
+      exterior: "https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&q=80&w=600",
+      interior: "https://images.unsplash.com/photo-1611891404114-5090f2046b45?auto=format&fit=crop&q=80&w=600",
+      beds: "https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&q=80&w=600",
+      washroom: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&q=80&w=600",
+      storage: "https://images.unsplash.com/photo-1595428774223-ef52624120d2?auto=format&fit=crop&q=80&w=600",
+      common: "https://images.unsplash.com/photo-1445991842772-097fea258e7b?auto=format&fit=crop&q=80&w=600"
+    }
   }
 ];
 
@@ -323,7 +356,7 @@ export const seedLabhOpportunities: LabhOpportunity[] = [
   // --- VIHARDHAM OPPORTUNITIES ---
   {
     id: "vlo_dhaw",
-    title: { hi: "धर्मशाला विंग निर्माण सहयोग (12 उपलब्ध विंग)", en: "Dharamshala Wing (12 Available Sections)" },
+    title: { hi: "धर्मशाला विंग निर्माण सहयोग (12 विंग उपलब्ध)", en: "Dharamshala Wing (12 Available Sections)" },
     description: { hi: "विहारधाम परिसर की भव्य वातानुकूलित धर्मशाला के किसी एक पूर्ण विंग के निर्माण में स्थायी धर्म सहयोग का पावन अवसर।", en: "Permanent holy collaboration to construct one of the main A/C wings in the Vihardham Dharamshala complex." },
     amount: 1500000,
     isAvailable: true,
@@ -355,7 +388,7 @@ export const seedLabhOpportunities: LabhOpportunity[] = [
   },
   {
     id: "vlo_bpt",
-    title: { hi: "आदिनाथ भोजनशाला स्थायी भोजन तिथि लाभ", en: "Bhojanshala Permanent Meal Tithi" },
+    title: { hi: "शांताबा भोजनशाला स्थायी भोजन तिथि लाभ", en: "Shantaba Bhojanshala Permanent Meal Tithi" },
     description: { hi: "वर्ष के किसी एक पावन स्मृति दिवस (जन्मदिन या पुण्यतिथि) पर यात्रियों एवं साधर्मिकों के लिए भोजनशाला में स्थायी तिथि भोजन का लाभ।", en: "Sponsor a permanent yearly lunch/dinner date (tithi) in remembrance of ancestral souls or family milestones." },
     amount: 27000,
     isAvailable: true,
@@ -363,7 +396,7 @@ export const seedLabhOpportunities: LabhOpportunity[] = [
   },
   {
     id: "vlo_bpbt",
-    title: { hi: "आदिनाथ भोजनशाला स्थायी अल्पाहार तिथि लाभ", en: "Bhojanshala Permanent Breakfast Tithi" },
+    title: { hi: "शांताबा भोजनशाला स्थायी अल्पाहार तिथि लाभ", en: "Shantaba Bhojanshala Permanent Breakfast Tithi" },
     description: { hi: "वर्ष के किसी एक पावन स्मृति दिवस पर यात्रियों एवं पूज्य जनों हेतु भोजनशाला में स्थायी तिथि अल्पाहार (नाश्ता) वितरण।", en: "Sponsor a permanent yearly breakfast date (tithi) for all visiting pilgrims at Vihardham." },
     amount: 15000,
     isAvailable: true,
@@ -517,7 +550,7 @@ export const seedContributors: Contributor[] = [
     family: { hi: "भंडारी राजेश, निलेश, अमोल परिवार", en: "Bhandari Rajesh, Nilesh, Amol Family" },
     tier: "Gold",
     amount: 501000,
-    contributionType: { hi: "आदिनाथ भोजनशाला ब्लॉक एवं मॉडर्न किचन उपकरण", en: "Adinath Bhojanshala kitchen block & modern appliances" },
+    contributionType: { hi: "शान्ताबाय जैन भोजनशाला ब्लॉक एवं मॉडर्न किचन उपकरण", en: "Shantaba Bhojanshala kitchen block & modern appliances" },
     year: 2024,
     message: { hi: "कोई भी साधरम भाई या यात्री डूंगरी पुरा में भूखा न रहे, हमारा यही स्वप्न था।", en: "That no pilgrim or community traveler stays hungry in Dungri Pura was our core prayer." }
   },

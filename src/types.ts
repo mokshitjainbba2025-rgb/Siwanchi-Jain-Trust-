@@ -28,12 +28,20 @@ export interface RoomCategory {
   id: string;
   name: TranslationMap;
   description: TranslationMap;
-  type: 'AC' | 'Non-AC' | 'Deluxe' | 'Suite' | 'Vihardham Stay' | 'Hall';
+  type: 'AC' | 'Hall' | 'Hall Bed' | 'Non-AC' | 'Deluxe' | 'Suite' | 'Vihardham Stay';
   capacity: number;
   ratePerDay: number;
   availableRooms: number;
   amenities: TranslationMap[];
   imageUrl: string;
+  images: {
+    exterior: string;
+    interior: string;
+    beds: string;
+    washroom: string;
+    storage: string;
+    common: string;
+  };
 }
 
 // Room Booking record
@@ -84,7 +92,7 @@ export interface Donation {
   address: string;
   panNumber?: string;
   amount: number;
-  category: 'One Time' | 'Monthly' | 'Construction' | 'Temple' | 'Room' | 'Bhojanshala' | 'General';
+  category: 'General Account' | 'Dev Dravya' | 'Jiv Daya' | 'Other Dharma Sahyog';
   paymentMethod: 'UPI' | 'Bank Transfer' | 'Online';
   transactionId?: string;
   is80GRequested: boolean;

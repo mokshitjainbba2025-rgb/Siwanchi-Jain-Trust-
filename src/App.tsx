@@ -7,8 +7,11 @@ import React, { useState, useEffect } from 'react';
 import { Sparkles, Phone, Mail, Award, X, Heart, Shield, Globe } from 'lucide-react';
 
 // Data types & assets imports
-import { Language, RoomBooking, PalaceBooking, Donation, Contributor, Volunteer, TrustMember, AuditLog, ContactQuery, LabhInquiry, GalleryItem, SlideshowImage } from './types';
-import { staticTranslations, seedContributors, seedNews, seedEvents, seedGallery } from './data';
+import { RoomCategory, Language, RoomBooking, PalaceBooking, Donation, Contributor, Volunteer, TrustMember, AuditLog, ContactQuery, LabhInquiry, GalleryItem, SlideshowImage } from './types';
+import { roomCategories, staticTranslations, seedContributors, seedNews, seedEvents, seedGallery } from './data';
+import { db, auth, OperationType, handleFirestoreError } from './firebase';
+import { collection, getDocs, doc, setDoc, deleteDoc } from 'firebase/firestore';
+import { onAuthStateChanged } from 'firebase/auth';
 // @ts-ignore
 import campusPanoramicLayout from './assets/images/campus_panoramic_layout_1781257618429.jpg';
 
@@ -28,6 +31,22 @@ import ProjectVideoPlayer from './components/ProjectVideoPlayer';
 import GalleryVideosTab from './components/GalleryVideosTab';
 
 export default function App() {
+  const [currentUser, setCurrentUser] = useState<any>(null);
+  const [isAdminUser, setIsAdminUser] = useState<boolean>(false);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setCurrentUser(user);
+      setIsAdminUser(
+        user !== null && (
+          user.email === 'mokshit.jain.bba2025@atlasskilltech.university' ||
+          user.email === 'kamal.bhandari@yahoo.com'
+        )
+      );
+    });
+    return () => unsubscribe();
+  }, []);
+
   const [currentLang, setLang] = useState<Language>('hi');
   const [activeTab, _setActiveTab] = useState<string>(() => {
     const path = window.location.pathname.replace(/^\/|\/$/g, '');
@@ -83,212 +102,374 @@ export default function App() {
   const [auditLogs, setAuditLogs] = useState<AuditLog[]>([]);
   const [galleryItems, setGalleryItems] = useState<GalleryItem[]>([]);
   const [slideshowImages, setSlideshowImages] = useState<SlideshowImage[]>([]);
+  const [roomCategoriesList, setRoomCategoriesList] = useState<RoomCategory[]>(() => {
+    const localCat = localStorage.getItem('siwanchi_room_categories');
+    return localCat ? JSON.parse(localCat) : roomCategories;
+  });
 
   const t = staticTranslations[currentLang];
 
-  // Load Seed Database from LocalStorage or seed on first spin
-  useEffect(() => {
-    // 1. Room bookings seed
-    const localRooms = localStorage.getItem('siwanchi_rooms');
-    if (localRooms) {
-      setRoomBookings(JSON.parse(localRooms));
-    } else {
-      const initialRooms: RoomBooking[] = [
-        {
-          id: "rb_seed_1",
-          bookingCode: "RM382942",
-          name: "सुभाष जी शाह (मेहता)",
-          mobile: "9822340578",
-          email: "subhash.shah@outlook.com",
-          address: "बाड़मेर - सूरत",
-          checkIn: "2026-06-15",
-          checkOut: "2026-06-18",
-          guests: 3,
-          roomType: "A/C Deluxe Room",
-          roomsCount: 1,
-          specialRequests: "Ground floor preferred for grand parents stay",
-          paymentOption: "UPI",
-          paymentStatus: "Approved",
-          approvalStatus: "Approved",
-          totalAmount: 3600,
-          createdAt: new Date().toISOString()
-        }
-      ];
-      setRoomBookings(initialRooms);
-      localStorage.setItem('siwanchi_rooms', JSON.stringify(initialRooms));
-    }
-
-    // 2. Palace bookings seed
-    const localPalace = localStorage.getItem('siwanchi_palace');
-    if (localPalace) {
-      setPalaceBookings(JSON.parse(localPalace));
-    } else {
-      const initialPalace: PalaceBooking[] = [
-        {
-          id: "pb_seed_1",
-          bookingCode: "OP829471",
-          eventType: { hi: "शुभ जैन पाणिग्रहण (विवाह)", en: "Wedding" },
-          date: "2026-11-20",
-          guestCount: 600,
-          organizerName: "शांतिलाल भंडारी",
-          contact: "9426055667",
-          email: "bhandari.wedding@outlook.com",
-          requirements: ["Catering (Pure Organic Meal Service)", "Royal Mandap Flower Decoration"],
-          paymentStatus: "Pending",
-          approvalStatus: "Pending",
-          estimatedCost: 115000,
-          createdAt: new Date().toISOString()
-        }
-      ];
-      setPalaceBookings(initialPalace);
-      localStorage.setItem('siwanchi_palace', JSON.stringify(initialPalace));
-    }
-
-    // 3. Donations seed
-    const localDonations = localStorage.getItem('siwanchi_donations');
-    if (localDonations) {
-      setDonations(JSON.parse(localDonations));
-    } else {
-      const initialDons: Donation[] = [
-        {
-          id: "don_seed_1",
-          receiptNumber: "REC329481",
-          donorName: "कंचनबाई चौधरी",
-          mobile: "9820123740",
-          email: "kanchan.choudhary@gmail.com",
-          address: "समदड़ी - चेन्नई",
-          panNumber: "ABCDE1234F",
-          amount: 251000,
-          category: "Room",
-          paymentMethod: "Bank Transfer",
-          transactionId: "TXN32948719324",
-          is80GRequested: true,
-          createdAt: "2026-06-10T12:00:00Z",
-          city: "Samdari"
-        }
-      ];
-      setDonations(initialDons);
-      localStorage.setItem('siwanchi_donations', JSON.stringify(initialDons));
-    }
-
-    // 4. Contributor Donor Wall seed
-    const localContributors = localStorage.getItem('siwanchi_contributors');
-    if (localContributors) {
-      setContributorsList(JSON.parse(localContributors));
-    } else {
-      setContributorsList(seedContributors);
-      localStorage.setItem('siwanchi_contributors', JSON.stringify(seedContributors));
-    }
-
-    // 5. Volunteers seed
-    const localVols = localStorage.getItem('siwanchi_vols');
-    if (localVols) {
-      setVolunteers(JSON.parse(localVols));
-    } else {
-      const seedVols: Volunteer[] = [
-        {
-          id: "vol_seed_1",
-          name: "प्रमोद मुथा",
-          mobile: "9425023491",
-          email: "pramod.mutha@gmail.com",
-          city: "Meli Siwana",
-          wing: "Youth Wing",
-          skills: "Event Management, Audio systems setups",
-          registeredAt: new Date().toISOString()
-        }
-      ];
-      setVolunteers(seedVols);
-      localStorage.setItem('siwanchi_vols', JSON.stringify(seedVols));
-    }
-
-    // 6. Member list seed
-    const localMembers = localStorage.getItem('siwanchi_members');
-    if (localMembers) {
-      setMembersList(JSON.parse(localMembers));
-    } else {
-      const seedMembers: TrustMember[] = [
-        {
-          id: "mem_seed_1",
-          name: "कमल चंद्र भंडारी",
-          mobile: "9845033481",
-          email: "kamal.bhandari@yahoo.com",
-          city: "Samdari Barmer",
-          memberType: "Life Member",
-          registeredAt: new Date().toISOString()
-        }
-      ];
-      setMembersList(seedMembers);
-      localStorage.setItem('siwanchi_members', JSON.stringify(seedMembers));
-    }
-
-    // 7. Audit log seed
-    const localAudit = localStorage.getItem('siwanchi_audit');
-    if (localAudit) {
-      setAuditLogs(JSON.parse(localAudit));
-    } else {
-      const initialLogs: AuditLog[] = [
-        {
-          id: "log_init",
-          actor: "System Sentinel Daemon",
-          role: "Super Admin",
-          action: "Secure database session boot initialized",
-          details: "All local caches synced, preloaded donor wall parameters operational.",
-          timestamp: new Date().toLocaleTimeString() + " " + new Date().toLocaleDateString()
-        }
-      ];
-      setAuditLogs(initialLogs);
-      localStorage.setItem('siwanchi_audit', JSON.stringify(initialLogs));
-    }
-
-    // 8. Gallery items seed
-    const localGallery = localStorage.getItem('siwanchi_gallery');
-    if (localGallery) {
-      setGalleryItems(JSON.parse(localGallery));
-    } else {
-      setGalleryItems(seedGallery);
-      localStorage.setItem('siwanchi_gallery', JSON.stringify(seedGallery));
-    }
-
-    // 9. Slideshow images seed
-    const localSlideshow = localStorage.getItem('siwanchi_slideshow_images');
-    let parsedSlideshow: SlideshowImage[] = [];
+  // Safe utility to handle Firestore writes without crashing the app flow
+  const safeFirestoreWrite = async (op: () => Promise<any>, opType: OperationType, path: string) => {
     try {
-      parsedSlideshow = localSlideshow ? JSON.parse(localSlideshow) : [];
-    } catch (_) {}
-
-    if (Array.isArray(parsedSlideshow) && parsedSlideshow.length > 0) {
-      setSlideshowImages(parsedSlideshow);
-    } else {
-      const defaultSlideshow: SlideshowImage[] = [
-        {
-          id: "slide_1",
-          url: campusPanoramicLayout,
-          title: { hi: "विहारधाम जैन मंदिर एवं ओसवाल पैलेस संकुल", en: "Vihardham Jain Temple & Oswal Palace Complex" },
-          caption: { hi: "डूंगरी पुरा जैन मंदिर संकुल का विहंगम दृश्य - अध्यात्म एवं संस्कृति का संगम", en: "Panoramic layout overview of the divine spiritual and wedding venue campus" }
-        },
-        {
-          id: "slide_2",
-          url: "https://images.unsplash.com/photo-1545232979-8bf34eb9757b?auto=format&fit=crop&q=80&w=1200",
-          title: { hi: "भव्य श्री आदिनाथ शिखरबद्ध जिनालय", en: "The Grand Shikharbandh Adinath Temple" },
-          caption: { hi: "नवानीर्मित पावन जैन मंदिर - भक्ति, शांति और ध्यान का पावन धाम", en: "Newly built sacred Jain Temple - A hub of devotion, peace, and mindfulness" }
-        },
-        {
-          id: "slide_3",
-          url: "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?auto=format&fit=crop&q=80&w=1200",
-          title: { hi: "ओसवाल पैलेस आलीशान वेडिंग हॉल", en: "Oswal Palace Luxurious Hall" },
-          caption: { hi: "सामाजिक सम्मेलनों, मांगलिक प्रसंगों एवं दिव्य विवाह आयोजनों के लिए उत्कृष्ट स्थल", en: "A premium multi-purpose venue equipped with all modern amenities for marriages" }
-        },
-        {
-          id: "slide_4",
-          url: "https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?auto=format&fit=crop&q=80&w=1200",
-          title: { hi: "साधु-साध्वी पावन विहारधाम परिसर", en: "Vihardham Spiritual Sanctuary" },
-          caption: { hi: "पूज्य जैन संतों के लिए वातानुकूलित कमरे, व्याख्यान हॉल एवं नि:शुल्क सेवाएं", en: "Comfortable air-conditioned rooms, large discourse halls, and free facilities for monks" }
-        }
-      ];
-      setSlideshowImages(defaultSlideshow);
-      localStorage.setItem('siwanchi_slideshow_images', JSON.stringify(defaultSlideshow));
+      await op();
+    } catch (err) {
+      try {
+        handleFirestoreError(err, opType, path);
+      } catch (_) {}
     }
+  };
 
+  // Load Seed Database from Firestore (or fallback to LocalStorage/static seeds)
+  useEffect(() => {
+    async function loadAllFromFirestore() {
+      // 1. Slideshow images
+      try {
+        const slideshowSnap = await getDocs(collection(db, 'slideshow_images'));
+        if (!slideshowSnap.empty) {
+          const list: SlideshowImage[] = [];
+          slideshowSnap.forEach(docSnap => {
+            list.push({ id: docSnap.id, ...docSnap.data() } as SlideshowImage);
+          });
+          setSlideshowImages(list);
+        } else {
+          const defaultSlideshow: SlideshowImage[] = [
+            {
+              id: "slide_1",
+              url: campusPanoramicLayout,
+              title: { hi: "विहारधाम जैन मंदिर एवं ओसवाल पैलेस संकुल", en: "Vihardham Jain Temple & Oswal Palace Complex" },
+              caption: { hi: "डूंगरी पुरा जैन मंदिर संकुल का विहंगम दृश्य - अध्यात्म एवं संस्कृति का संगम", en: "Panoramic layout overview of the divine spiritual and wedding venue campus" }
+            },
+            {
+              id: "slide_2",
+              url: "https://images.unsplash.com/photo-1545232979-8bf34eb9757b?auto=format&fit=crop&q=80&w=1200",
+              title: { hi: "भव्य श्री आदिनाथ शिखरबद्ध जिनालय", en: "The Grand Shikharbandh Adinath Temple" },
+              caption: { hi: "नवानीर्मित पावन जैन मंदिर - भक्ति, शांति और ध्यान का पावन धाम", en: "Newly built sacred Jain Temple - A hub of devotion, peace, and mindfulness" }
+            },
+            {
+              id: "slide_3",
+              url: "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?auto=format&fit=crop&q=80&w=1200",
+              title: { hi: "ओसवाल पैलेस आलीशान वेडिंग हॉल", en: "Oswal Palace Luxurious Hall" },
+              caption: { hi: "सामाजिक सम्मेलनों, मांगलिक प्रसंगों एवं दिव्य विवाह आयोजनों के लिए उत्कृष्ट स्थल", en: "A premium multi-purpose venue equipped with all modern amenities for marriages" }
+            },
+            {
+              id: "slide_4",
+              url: "https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?auto=format&fit=crop&q=80&w=1200",
+              title: { hi: "साधु-साध्वी पावन विहारधाम परिसर", en: "Vihardham Spiritual Sanctuary" },
+              caption: { hi: "पूज्य जैन संतों के लिए वातानुकूलित कमरे, व्याख्यान हॉल एवं नि:शुल्क सेवाएं", en: "Comfortable air-conditioned rooms, large discourse halls, and free facilities for monks" }
+            }
+          ];
+          setSlideshowImages(defaultSlideshow);
+          for (const s of defaultSlideshow) {
+            await safeFirestoreWrite(() => setDoc(doc(db, 'slideshow_images', s.id), s), OperationType.WRITE, `slideshow_images/${s.id}`);
+          }
+        }
+      } catch (err) {
+        try { handleFirestoreError(err, OperationType.GET, 'slideshow_images'); } catch (_) {}
+        const localSlideshow = localStorage.getItem('siwanchi_slideshow_images');
+        if (localSlideshow) {
+          try { setSlideshowImages(JSON.parse(localSlideshow)); } catch (_) {}
+        }
+      }
+
+      // 2. Gallery items
+      try {
+        const gallerySnap = await getDocs(collection(db, 'gallery_items'));
+        if (!gallerySnap.empty) {
+          const list: GalleryItem[] = [];
+          gallerySnap.forEach(docSnap => {
+            list.push({ id: docSnap.id, ...docSnap.data() } as GalleryItem);
+          });
+          setGalleryItems(list);
+        } else {
+          setGalleryItems(seedGallery);
+          for (const g of seedGallery) {
+            await safeFirestoreWrite(() => setDoc(doc(db, 'gallery_items', g.id), g), OperationType.WRITE, `gallery_items/${g.id}`);
+          }
+        }
+      } catch (err) {
+        try { handleFirestoreError(err, OperationType.GET, 'gallery_items'); } catch (_) {}
+        const localGallery = localStorage.getItem('siwanchi_gallery');
+        if (localGallery) {
+          try { setGalleryItems(JSON.parse(localGallery)); } catch (_) {}
+        } else {
+          setGalleryItems(seedGallery);
+        }
+      }
+
+      // 3. Room categories
+      try {
+        const rcSnap = await getDocs(collection(db, 'room_categories'));
+        if (!rcSnap.empty) {
+          const list: RoomCategory[] = [];
+          rcSnap.forEach(docSnap => {
+            list.push({ id: docSnap.id, ...docSnap.data() } as RoomCategory);
+          });
+          setRoomCategoriesList(list);
+        } else {
+          setRoomCategoriesList(roomCategories);
+          for (const rc of roomCategories) {
+            await safeFirestoreWrite(() => setDoc(doc(db, 'room_categories', rc.id), rc), OperationType.WRITE, `room_categories/${rc.id}`);
+          }
+        }
+      } catch (err) {
+        try { handleFirestoreError(err, OperationType.GET, 'room_categories'); } catch (_) {}
+        setRoomCategoriesList(roomCategories);
+      }
+
+      // 4. Room bookings
+      try {
+        const roomsSnap = await getDocs(collection(db, 'room_bookings'));
+        if (!roomsSnap.empty) {
+          const list: RoomBooking[] = [];
+          roomsSnap.forEach(docSnap => {
+            list.push({ id: docSnap.id, ...docSnap.data() } as RoomBooking);
+          });
+          setRoomBookings(list);
+        } else {
+          const initialRooms: RoomBooking[] = [
+            {
+              id: "rb_seed_1",
+              bookingCode: "RM382942",
+              name: "सुभाष जी शाह (मेहता)",
+              mobile: "9822340578",
+              email: "subhash.shah@outlook.com",
+              address: "बाड़मेर - सूरत",
+              checkIn: "2026-06-15",
+              checkOut: "2026-06-18",
+              guests: 3,
+              roomType: "A/C Deluxe Room",
+              roomsCount: 1,
+              specialRequests: "Ground floor preferred for grand parents stay",
+              paymentOption: "UPI",
+              paymentStatus: "Approved",
+              approvalStatus: "Approved",
+              totalAmount: 3600,
+              createdAt: new Date().toISOString()
+            }
+          ];
+          setRoomBookings(initialRooms);
+          for (const rb of initialRooms) {
+            await safeFirestoreWrite(() => setDoc(doc(db, 'room_bookings', rb.id), rb), OperationType.WRITE, `room_bookings/${rb.id}`);
+          }
+        }
+      } catch (err) {
+        try { handleFirestoreError(err, OperationType.GET, 'room_bookings'); } catch (_) {}
+        const localRooms = localStorage.getItem('siwanchi_rooms');
+        if (localRooms) {
+          try { setRoomBookings(JSON.parse(localRooms)); } catch (_) {}
+        }
+      }
+
+      // 5. Palace bookings
+      try {
+        const palaceSnap = await getDocs(collection(db, 'palace_bookings'));
+        if (!palaceSnap.empty) {
+          const list: PalaceBooking[] = [];
+          palaceSnap.forEach(docSnap => {
+            list.push({ id: docSnap.id, ...docSnap.data() } as PalaceBooking);
+          });
+          setPalaceBookings(list);
+        } else {
+          const initialPalace: PalaceBooking[] = [
+            {
+              id: "pb_seed_1",
+              bookingCode: "OP829471",
+              eventType: { hi: "शुभ जैन पाणिग्रहण (विवाह)", en: "Wedding" },
+              date: "2026-11-20",
+              guestCount: 600,
+              organizerName: "शांतिलाल भंडारी",
+              contact: "9426055667",
+              email: "bhandari.wedding@outlook.com",
+              requirements: ["Catering (Pure Organic Meal Service)", "Royal Mandap Flower Decoration"],
+              paymentStatus: "Pending",
+              approvalStatus: "Pending",
+              estimatedCost: 115000,
+              createdAt: new Date().toISOString()
+            }
+          ];
+          setPalaceBookings(initialPalace);
+          for (const pb of initialPalace) {
+            await safeFirestoreWrite(() => setDoc(doc(db, 'palace_bookings', pb.id), pb), OperationType.WRITE, `palace_bookings/${pb.id}`);
+          }
+        }
+      } catch (err) {
+        try { handleFirestoreError(err, OperationType.GET, 'palace_bookings'); } catch (_) {}
+        const localPalace = localStorage.getItem('siwanchi_palace');
+        if (localPalace) {
+          try { setPalaceBookings(JSON.parse(localPalace)); } catch (_) {}
+        }
+      }
+
+      // 6. Donations
+      try {
+        const donationSnap = await getDocs(collection(db, 'donations'));
+        if (!donationSnap.empty) {
+          const list: Donation[] = [];
+          donationSnap.forEach(docSnap => {
+            list.push({ id: docSnap.id, ...docSnap.data() } as Donation);
+          });
+          setDonations(list);
+        } else {
+          const initialDons: Donation[] = [
+            {
+              id: "don_seed_1",
+              receiptNumber: "REC329481",
+              donorName: "कंचनबाई चौधरी",
+              mobile: "9820123740",
+              email: "kanchan.choudhary@gmail.com",
+              address: "समदड़ी - चेन्नई",
+              panNumber: "ABCDE1234F",
+              amount: 251000,
+              category: "General Account",
+              paymentMethod: "Bank Transfer",
+              transactionId: "TXN32948719324",
+              is80GRequested: true,
+              createdAt: "2026-06-10T12:00:00Z",
+              city: "Samdari"
+            }
+          ];
+          setDonations(initialDons);
+          for (const d of initialDons) {
+            await safeFirestoreWrite(() => setDoc(doc(db, 'donations', d.id), d), OperationType.WRITE, `donations/${d.id}`);
+          }
+        }
+      } catch (err) {
+        try { handleFirestoreError(err, OperationType.GET, 'donations'); } catch (_) {}
+        const localDonations = localStorage.getItem('siwanchi_donations');
+        if (localDonations) {
+          try { setDonations(JSON.parse(localDonations)); } catch (_) {}
+        }
+      }
+
+      // 7. Contributors
+      try {
+        const contribSnap = await getDocs(collection(db, 'contributors'));
+        if (!contribSnap.empty) {
+          const list: Contributor[] = [];
+          contribSnap.forEach(docSnap => {
+            list.push({ id: docSnap.id, ...docSnap.data() } as Contributor);
+          });
+          setContributorsList(list);
+        } else {
+          setContributorsList(seedContributors);
+          for (const c of seedContributors) {
+            await safeFirestoreWrite(() => setDoc(doc(db, 'contributors', c.id), c), OperationType.WRITE, `contributors/${c.id}`);
+          }
+        }
+      } catch (err) {
+        try { handleFirestoreError(err, OperationType.GET, 'contributors'); } catch (_) {}
+        const localContributors = localStorage.getItem('siwanchi_contributors');
+        if (localContributors) {
+          try { setContributorsList(JSON.parse(localContributors)); } catch (_) {}
+        } else {
+          setContributorsList(seedContributors);
+        }
+      }
+
+      // 8. Volunteers
+      try {
+        const volSnap = await getDocs(collection(db, 'volunteers'));
+        if (!volSnap.empty) {
+          const list: Volunteer[] = [];
+          volSnap.forEach(docSnap => {
+            list.push({ id: docSnap.id, ...docSnap.data() } as Volunteer);
+          });
+          setVolunteers(list);
+        } else {
+          const seedVols: Volunteer[] = [
+            {
+              id: "vol_seed_1",
+              name: "प्रमोद मुथा",
+              mobile: "9425023491",
+              email: "pramod.mutha@gmail.com",
+              city: "Meli Siwana",
+              wing: "Youth Wing",
+              skills: "Event Management, Audio systems setups",
+              registeredAt: new Date().toISOString()
+            }
+          ];
+          setVolunteers(seedVols);
+          for (const v of seedVols) {
+            await safeFirestoreWrite(() => setDoc(doc(db, 'volunteers', v.id), v), OperationType.WRITE, `volunteers/${v.id}`);
+          }
+        }
+      } catch (err) {
+        try { handleFirestoreError(err, OperationType.GET, 'volunteers'); } catch (_) {}
+        const localVols = localStorage.getItem('siwanchi_vols');
+        if (localVols) {
+          try { setVolunteers(JSON.parse(localVols)); } catch (_) {}
+        }
+      }
+
+      // 9. Members
+      try {
+        const memberSnap = await getDocs(collection(db, 'members'));
+        if (!memberSnap.empty) {
+          const list: TrustMember[] = [];
+          memberSnap.forEach(docSnap => {
+            list.push({ id: docSnap.id, ...docSnap.data() } as TrustMember);
+          });
+          setMembersList(list);
+        } else {
+          const seedMembers: TrustMember[] = [
+            {
+              id: "mem_seed_1",
+              name: "कमल चंद्र भंडारी",
+              mobile: "9845033481",
+              email: "kamal.bhandari@yahoo.com",
+              city: "Samdari Barmer",
+              memberType: "Life Member",
+              registeredAt: new Date().toISOString()
+            }
+          ];
+          setMembersList(seedMembers);
+          for (const m of seedMembers) {
+            await safeFirestoreWrite(() => setDoc(doc(db, 'members', m.id), m), OperationType.WRITE, `members/${m.id}`);
+          }
+        }
+      } catch (err) {
+        try { handleFirestoreError(err, OperationType.GET, 'members'); } catch (_) {}
+        const localMembers = localStorage.getItem('siwanchi_members');
+        if (localMembers) {
+          try { setMembersList(JSON.parse(localMembers)); } catch (_) {}
+        }
+      }
+
+      // 10. Audit Logs
+      try {
+        const auditSnap = await getDocs(collection(db, 'audit_logs'));
+        if (!auditSnap.empty) {
+          const list: AuditLog[] = [];
+          auditSnap.forEach(docSnap => {
+            list.push({ id: docSnap.id, ...docSnap.data() } as AuditLog);
+          });
+          setAuditLogs(list);
+        } else {
+          const initialLogs: AuditLog[] = [
+            {
+              id: "log_init",
+              actor: "System Sentinel Daemon",
+              role: "Super Admin",
+              action: "Secure database session boot initialized",
+              details: "All local caches synced, preloaded donor wall parameters operational.",
+              timestamp: new Date().toLocaleTimeString() + " " + new Date().toLocaleDateString()
+            }
+          ];
+          setAuditLogs(initialLogs);
+          for (const a of initialLogs) {
+            await safeFirestoreWrite(() => setDoc(doc(db, 'audit_logs', a.id), a), OperationType.WRITE, `audit_logs/${a.id}`);
+          }
+        }
+      } catch (err) {
+        try { handleFirestoreError(err, OperationType.GET, 'audit_logs'); } catch (_) {}
+        const localAudit = localStorage.getItem('siwanchi_audit');
+        if (localAudit) {
+          try { setAuditLogs(JSON.parse(localAudit)); } catch (_) {}
+        }
+      }
+    }
+    loadAllFromFirestore();
   }, []);
 
   // Safe localStorage helper to avoid crashing on QuotaExceededError or empty arrays
@@ -300,43 +481,138 @@ export default function App() {
     }
   };
 
-  // Update localStorage automatically whenever states mutate
+  // Sync state modifications dynamically to both LocalStorage and Cloud Firestore
   useEffect(() => {
-    if (roomBookings.length > 0) safeSaveLocal('siwanchi_rooms', roomBookings);
-  }, [roomBookings]);
+    if (roomBookings.length > 0) {
+      safeSaveLocal('siwanchi_rooms', roomBookings);
+      if (isAdminUser) {
+        roomBookings.forEach(async (item) => {
+          await safeFirestoreWrite(() => setDoc(doc(db, 'room_bookings', item.id), item), OperationType.WRITE, `room_bookings/${item.id}`);
+        });
+      }
+    }
+  }, [roomBookings, isAdminUser]);
 
   useEffect(() => {
-    if (palaceBookings.length > 0) safeSaveLocal('siwanchi_palace', palaceBookings);
-  }, [palaceBookings]);
+    if (palaceBookings.length > 0) {
+      safeSaveLocal('siwanchi_palace', palaceBookings);
+      if (isAdminUser) {
+        palaceBookings.forEach(async (item) => {
+          await safeFirestoreWrite(() => setDoc(doc(db, 'palace_bookings', item.id), item), OperationType.WRITE, `palace_bookings/${item.id}`);
+        });
+      }
+    }
+  }, [palaceBookings, isAdminUser]);
 
   useEffect(() => {
-    if (donations.length > 0) safeSaveLocal('siwanchi_donations', donations);
-  }, [donations]);
+    if (donations.length > 0) {
+      safeSaveLocal('siwanchi_donations', donations);
+      if (isAdminUser) {
+        donations.forEach(async (item) => {
+          await safeFirestoreWrite(() => setDoc(doc(db, 'donations', item.id), item), OperationType.WRITE, `donations/${item.id}`);
+        });
+      }
+    }
+  }, [donations, isAdminUser]);
 
   useEffect(() => {
-    if (contributorsList.length > 0) safeSaveLocal('siwanchi_contributors', contributorsList);
-  }, [contributorsList]);
+    if (contributorsList.length > 0) {
+      safeSaveLocal('siwanchi_contributors', contributorsList);
+      if (isAdminUser) {
+        contributorsList.forEach(async (item) => {
+          await safeFirestoreWrite(() => setDoc(doc(db, 'contributors', item.id), item), OperationType.WRITE, `contributors/${item.id}`);
+        });
+      }
+    }
+  }, [contributorsList, isAdminUser]);
 
   useEffect(() => {
-    if (valunteers.length > 0) safeSaveLocal('siwanchi_vols', valunteers);
-  }, [valunteers]);
+    if (valunteers.length > 0) {
+      safeSaveLocal('siwanchi_vols', valunteers);
+      if (isAdminUser) {
+        valunteers.forEach(async (item) => {
+          await safeFirestoreWrite(() => setDoc(doc(db, 'volunteers', item.id), item), OperationType.WRITE, `volunteers/${item.id}`);
+        });
+      }
+    }
+  }, [valunteers, isAdminUser]);
 
   useEffect(() => {
-    if (membersList.length > 0) safeSaveLocal('siwanchi_members', membersList);
-  }, [membersList]);
+    if (membersList.length > 0) {
+      safeSaveLocal('siwanchi_members', membersList);
+      if (isAdminUser) {
+        membersList.forEach(async (item) => {
+          await safeFirestoreWrite(() => setDoc(doc(db, 'members', item.id), item), OperationType.WRITE, `members/${item.id}`);
+        });
+      }
+    }
+  }, [membersList, isAdminUser]);
 
   useEffect(() => {
-    if (auditLogs.length > 0) safeSaveLocal('siwanchi_audit', auditLogs);
-  }, [auditLogs]);
+    if (auditLogs.length > 0) {
+      safeSaveLocal('siwanchi_audit', auditLogs);
+      if (isAdminUser) {
+        auditLogs.forEach(async (item) => {
+          await safeFirestoreWrite(() => setDoc(doc(db, 'audit_logs', item.id), item), OperationType.WRITE, `audit_logs/${item.id}`);
+        });
+      }
+    }
+  }, [auditLogs, isAdminUser]);
 
   useEffect(() => {
-    // Save empty state as well so deletion works seamlessly
     safeSaveLocal('siwanchi_gallery', galleryItems);
-  }, [galleryItems]);
+    if (galleryItems.length > 0) {
+      const syncGallery = async () => {
+        if (isAdminUser) {
+          await safeFirestoreWrite(async () => {
+            for (const item of galleryItems) {
+              await setDoc(doc(db, 'gallery_items', item.id), item);
+            }
+            const snap = await getDocs(collection(db, 'gallery_items'));
+            for (const fDoc of snap.docs) {
+              if (!galleryItems.some(x => x.id === fDoc.id)) {
+                await deleteDoc(doc(db, 'gallery_items', fDoc.id));
+              }
+            }
+          }, OperationType.WRITE, 'gallery_items');
+        }
+      };
+      syncGallery();
+    }
+  }, [galleryItems, isAdminUser]);
 
   useEffect(() => {
     safeSaveLocal('siwanchi_slideshow_images', slideshowImages);
-  }, [slideshowImages]);
+    if (slideshowImages.length > 0) {
+      const syncSlideshow = async () => {
+        if (isAdminUser) {
+          await safeFirestoreWrite(async () => {
+            for (const item of slideshowImages) {
+              await setDoc(doc(db, 'slideshow_images', item.id), item);
+            }
+            const snap = await getDocs(collection(db, 'slideshow_images'));
+            for (const fDoc of snap.docs) {
+              if (!slideshowImages.some(x => x.id === fDoc.id)) {
+                await deleteDoc(doc(db, 'slideshow_images', fDoc.id));
+              }
+            }
+          }, OperationType.WRITE, 'slideshow_images');
+        }
+      };
+      syncSlideshow();
+    }
+  }, [slideshowImages, isAdminUser]);
+
+  useEffect(() => {
+    safeSaveLocal('siwanchi_room_categories', roomCategoriesList);
+    if (roomCategoriesList.length > 0) {
+      if (isAdminUser) {
+        roomCategoriesList.forEach(async (item) => {
+          await safeFirestoreWrite(() => setDoc(doc(db, 'room_categories', item.id), item), OperationType.WRITE, `room_categories/${item.id}`);
+        });
+      }
+    }
+  }, [roomCategoriesList, isAdminUser]);
 
   // Scroll to top automatically when navigation activeTab switches
   useEffect(() => {
@@ -359,14 +635,17 @@ export default function App() {
   // Global Append Handlers
   const handleAddRoomBooking = (booking: RoomBooking) => {
     setRoomBookings(prev => [booking, ...prev]);
+    safeFirestoreWrite(() => setDoc(doc(db, 'room_bookings', booking.id), booking), OperationType.WRITE, `room_bookings/${booking.id}`);
   };
 
   const handleAddPalaceBooking = (booking: PalaceBooking) => {
     setPalaceBookings(prev => [booking, ...prev]);
+    safeFirestoreWrite(() => setDoc(doc(db, 'palace_bookings', booking.id), booking), OperationType.WRITE, `palace_bookings/${booking.id}`);
   };
 
   const handleAddDonation = (donation: Donation) => {
     setDonations(prev => [donation, ...prev]);
+    safeFirestoreWrite(() => setDoc(doc(db, 'donations', donation.id), donation), OperationType.WRITE, `donations/${donation.id}`);
     
     // Also append immediately onto the Donor Wall list dynamically for a unified visual experience!
     const newWallDonor: Contributor = {
@@ -377,21 +656,24 @@ export default function App() {
       tier: donation.amount >= 250000 ? 'Maha Daanveer' : donation.amount >= 100000 ? 'Platinum' : donation.amount >= 50000 ? 'Gold' : donation.amount >= 10000 ? 'Silver' : 'Contributor',
       amount: donation.amount,
       contributionType: { 
-        hi: `${donation.category === 'General' ? 'सामान्य वैयावृत्य' : donation.category === 'Temple' ? 'जिनालय निर्माण' : donation.category === 'Room' ? 'धर्मशाला व्यवस्था' : donation.category === 'Bhojanshala' ? 'भोजनशाला व्यवस्था' : 'परिसर विकास'} धर्म सहयोग`, 
+        hi: `${donation.category === 'General Account' ? 'साधारण खाता' : donation.category === 'Dev Dravya' ? 'देव द्रव्य' : donation.category === 'Jiv Daya' ? 'जीव दया' : 'अन्य धर्म'} सहयोग`, 
         en: `Contributed for ${donation.category} Seva Fund` 
       },
       year: new Date().getFullYear(),
       message: { hi: "जिन शासन सदैव जयवंत हो", en: "Always in services of the holy Jain Samaj" }
     };
     setContributorsList(prev => [newWallDonor, ...prev]);
+    safeFirestoreWrite(() => setDoc(doc(db, 'contributors', newWallDonor.id), newWallDonor), OperationType.WRITE, `contributors/${newWallDonor.id}`);
   };
 
   const handleAddVolunteer = (vol: Volunteer) => {
     setVolunteers(prev => [vol, ...prev]);
+    safeFirestoreWrite(() => setDoc(doc(db, 'volunteers', vol.id), vol), OperationType.WRITE, `volunteers/${vol.id}`);
   };
 
   const handleAddMember = (mem: TrustMember) => {
     setMembersList(prev => [mem, ...prev]);
+    safeFirestoreWrite(() => setDoc(doc(db, 'members', mem.id), mem), OperationType.WRITE, `members/${mem.id}`);
   };
 
   const handleAddContactQuery = (query: ContactQuery) => {
@@ -410,7 +692,7 @@ export default function App() {
         return <AboutTab currentLang={currentLang} />;
         
       case 'vihardham':
-        return <VihardhamTab currentLang={currentLang} onAddRoomBooking={handleAddRoomBooking} />;
+        return <VihardhamTab currentLang={currentLang} onAddRoomBooking={handleAddRoomBooking} roomCategories={roomCategoriesList} />;
         
       case 'palace':
         return <OswalPalaceTab currentLang={currentLang} onAddPalaceBooking={handleAddPalaceBooking} />;
@@ -455,6 +737,8 @@ export default function App() {
             setGalleryItems={setGalleryItems}
             slideshowImages={slideshowImages}
             setSlideshowImages={setSlideshowImages}
+            roomCategories={roomCategoriesList}
+            setRoomCategories={setRoomCategoriesList}
           />
         );
         

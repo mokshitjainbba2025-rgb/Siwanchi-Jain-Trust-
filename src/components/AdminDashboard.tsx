@@ -5,7 +5,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { ShieldCheck, TrendingUp, CheckCircle, ClipboardList, RefreshCcw, Landmark, UserPlus, Heart, Award, FileText, Check, X, ShieldAlert, Sparkles, PlusCircle, Upload, Lock, LogOut } from 'lucide-react';
-import { Language, RoomBooking, PalaceBooking, Donation, Volunteer, TrustMember, Contributor, AuditLog, GalleryItem, SlideshowImage } from '../types';
+import { RoomCategory, Language, RoomBooking, PalaceBooking, Donation, Volunteer, TrustMember, Contributor, AuditLog, GalleryItem, SlideshowImage } from '../types';
 import { auth, googleProvider } from '../firebase';
 import { onAuthStateChanged, signInWithPopup, signOut, User } from 'firebase/auth';
 
@@ -36,6 +36,9 @@ interface AdminDashboardProps {
 
   slideshowImages?: SlideshowImage[];
   setSlideshowImages: React.Dispatch<React.SetStateAction<SlideshowImage[]>>;
+
+  roomCategories: RoomCategory[];
+  setRoomCategories: React.Dispatch<React.SetStateAction<RoomCategory[]>>;
 }
 
 export default function AdminDashboard({
@@ -55,7 +58,9 @@ export default function AdminDashboard({
   galleryItems,
   setGalleryItems,
   slideshowImages = [],
-  setSlideshowImages
+  setSlideshowImages,
+  roomCategories,
+  setRoomCategories
 }: AdminDashboardProps) {
 
   const [activeAdminSub, setActiveAdminSub] = useState<'stats' | 'rooms' | 'palace' | 'donations' | 'add_donor' | 'gallery_mgmt' | 'slideshow_mgmt' | 'people' | 'audit'>('stats');
@@ -125,6 +130,21 @@ export default function AdminDashboard({
   const [slideUrl, setSlideUrl] = useState('');
   const [slideDragActive, setSlideDragActive] = useState(false);
   const [isSlideAddedMsg, setIsSlideAddedMsg] = useState(false);
+
+  // Accommodation Management Panel state
+  const [selectedConfigCatId, setSelectedConfigCatId] = useState<string | null>(null);
+  const [editPrice, setEditPrice] = useState<number>(0);
+  const [editCapacity, setEditCapacity] = useState<number>(0);
+  const [editAvailable, setEditAvailable] = useState<number>(0);
+  
+  const [extViewUrl, setExtViewUrl] = useState('');
+  const [intViewUrl, setIntViewUrl] = useState('');
+  const [bedsViewUrl, setBedsViewUrl] = useState('');
+  const [washViewUrl, setWashViewUrl] = useState('');
+  const [storViewUrl, setStorViewUrl] = useState('');
+  const [commViewUrl, setCommViewUrl] = useState('');
+  
+  const [configSuccessMsg, setConfigSuccessMsg] = useState(false);
 
 
   // Drag and drop states & handlers for image upload
@@ -431,6 +451,60 @@ export default function AdminDashboard({
     }
   };
 
+  const handleSelectCategoryToEdit = (catId: string) => {
+    const cat = roomCategories.find(c => c.id === catId);
+    if (cat) {
+      setSelectedConfigCatId(catId);
+      setEditPrice(cat.ratePerDay);
+      setEditCapacity(cat.capacity);
+      setEditAvailable(cat.availableRooms);
+      
+      setExtViewUrl(cat.images?.exterior || '');
+      setIntViewUrl(cat.images?.interior || '');
+      setBedsViewUrl(cat.images?.beds || '');
+      setWashViewUrl(cat.images?.washroom || '');
+      setStorViewUrl(cat.images?.storage || '');
+      setCommViewUrl(cat.images?.common || '');
+      setConfigSuccessMsg(false);
+    }
+  };
+
+  const handleSaveCategoryConfig = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedConfigCatId) return;
+
+    setRoomCategories(prev => prev.map(c => {
+      if (c.id === selectedConfigCatId) {
+        return {
+          ...c,
+          ratePerDay: editPrice,
+          capacity: editCapacity,
+          availableRooms: editAvailable,
+          images: {
+            exterior: extViewUrl,
+            interior: intViewUrl,
+            beds: bedsViewUrl,
+            washroom: washViewUrl,
+            storage: storViewUrl,
+            common: commViewUrl
+          }
+        };
+      }
+      return c;
+    }));
+
+    const updatedCat = roomCategories.find(c => c.id === selectedConfigCatId);
+    if (updatedCat) {
+      logAction(
+        "Modified Room Stay Configuration",
+        `Configured rooms parameters & view URLs for stay selection: ${updatedCat.name.en}`
+      );
+    }
+
+    setConfigSuccessMsg(true);
+    setTimeout(() => setConfigSuccessMsg(false), 3500);
+  };
+
 
   // Dynamic Statistics Counters
   const totalDonationsAmount = donations.reduce((sum, item) => sum + item.amount, 0);
@@ -710,9 +784,171 @@ export default function AdminDashboard({
 
       {/* SUBVIEW 2: Dharamshala Room Bookings list */}
       {activeAdminSub === 'rooms' && (
-        <div className="space-y-4 animate-fade-in text-xs">
+        <div className="space-y-6 animate-fade-in text-xs font-bold text-charcoal">
+          
+          {/* CONFIGURATION SECTION FOR ACCOMMODATIONS & MULTI-VIEW PHOTOS */}
+          <div className="bg-cream-50 border-2 border-charcoal p-5 rounded-none space-y-6">
+            <div className="flex justify-between items-center border-b border-charcoal/30 pb-3">
+              <div>
+                <h4 className="font-display font-black text-sm uppercase text-maroon-850 flex items-center">
+                  <Sparkles className="w-4.5 h-4.5 text-gold-550 mr-1.5" />
+                  <span>Configure Stays & Slideshow Images</span>
+                </h4>
+                <p className="text-[10px] text-charcoal/60 mt-0.5">Dynamically upload or replace the 6 high-resolution view URLs (Exterior, Interior, Beds, Washroom, Storage, Common) for each stay category.</p>
+              </div>
+            </div>
+
+            {/* Quick Tab Selectable stay buttons */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              {roomCategories.map((c) => (
+                <button
+                  key={c.id}
+                  type="button"
+                  onClick={() => handleSelectCategoryToEdit(c.id)}
+                  className={`p-3 border-2 text-left rounded-none cursor-pointer transition-all ${
+                    selectedConfigCatId === c.id
+                      ? 'bg-gold-400 border-charcoal text-maroon-950 font-black shadow-flat-sm'
+                      : 'bg-white border-charcoal/30 hover:border-charcoal text-charcoal'
+                  }`}
+                >
+                  <span className="block text-xs uppercase tracking-tight">{c.name.en}</span>
+                  <span className="block font-mono text-[10px] text-maroon-801 pt-1 text-maroon-800">
+                    ₹{c.ratePerDay}{c.id === 'rc2' ? '/Bed' : '/Day'} • Cap: {c.capacity}
+                  </span>
+                </button>
+              ))}
+            </div>
+
+            {/* Editing Box */}
+            {selectedConfigCatId && (
+              <form onSubmit={handleSaveCategoryConfig} className="bg-white border-2 border-charcoal p-4 space-y-4 shadow-flat-sm animate-fade-in">
+                <span className="text-maroon-900 bg-cream-100 border border-charcoal/20 px-2.5 py-0.5 rounded text-[10px] uppercase font-mono tracking-wider font-extrabold inline-block">
+                  Editing Stay ID: {selectedConfigCatId} ({roomCategories.find(c => c.id === selectedConfigCatId)?.name.en})
+                </span>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div className="flex flex-col space-y-1">
+                    <label className="text-[10px] uppercase text-charcoal">Rate (INR)</label>
+                    <input
+                      type="number"
+                      required
+                      min="0"
+                      className="p-2.5 border-2 border-charcoal rounded-none text-xs outline-none"
+                      value={editPrice}
+                      onChange={(e) => setEditPrice(Number(e.target.value))}
+                    />
+                  </div>
+                  <div className="flex flex-col space-y-1">
+                    <label className="text-[10px] uppercase text-charcoal">Capacity (Max Guests)</label>
+                    <input
+                      type="number"
+                      required
+                      min="1"
+                      className="p-2.5 border-2 border-charcoal rounded-none text-xs outline-none"
+                      value={editCapacity}
+                      onChange={(e) => setEditCapacity(Number(e.target.value))}
+                    />
+                  </div>
+                  <div className="flex flex-col space-y-1">
+                    <label className="text-[10px] uppercase text-charcoal">Available Units count</label>
+                    <input
+                      type="number"
+                      required
+                      min="1"
+                      className="p-2.5 border-2 border-charcoal rounded-none text-xs outline-none"
+                      value={editAvailable}
+                      onChange={(e) => setEditAvailable(Number(e.target.value))}
+                    />
+                  </div>
+                </div>
+
+                {/* 6 View categories inputs */}
+                <div className="border-t border-charcoal/15 pt-4 space-y-3">
+                  <span className="font-display font-black uppercase text-[10px] text-maroon-800 tracking-wider block">📷 Config Gallery Slideshow Photos (Direct hotlink URLs)</span>
+                  
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="flex flex-col space-y-1">
+                      <label className="text-[9px] uppercase font-mono text-charcoal/70">1. Exterior/Facade View Image URL</label>
+                      <input
+                        type="text"
+                        className="p-2 border-2 border-charcoal rounded-none text-xs font-mono outline-none"
+                        placeholder="https://images.unsplash.com/..."
+                        value={extViewUrl}
+                        onChange={(e) => setExtViewUrl(e.target.value)}
+                      />
+                    </div>
+                    <div className="flex flex-col space-y-1">
+                      <label className="text-[9px] uppercase font-mono text-charcoal/70">2. Interior Room View Image URL</label>
+                      <input
+                        type="text"
+                        className="p-2 border-2 border-charcoal rounded-none text-xs font-mono outline-none"
+                        placeholder="https://images.unsplash.com/..."
+                        value={intViewUrl}
+                        onChange={(e) => setIntViewUrl(e.target.value)}
+                      />
+                    </div>
+                    <div className="flex flex-col space-y-1">
+                      <label className="text-[9px] uppercase font-mono text-charcoal/70">3. Bed Setup View Image URL</label>
+                      <input
+                        type="text"
+                        className="p-2 border-2 border-charcoal rounded-none text-xs font-mono outline-none"
+                        placeholder="https://images.unsplash.com/..."
+                        value={bedsViewUrl}
+                        onChange={(e) => setBedsViewUrl(e.target.value)}
+                      />
+                    </div>
+                    <div className="flex flex-col space-y-1">
+                      <label className="text-[9px] uppercase font-mono text-charcoal/70">4. Washroom & Hygiene Image URL</label>
+                      <input
+                        type="text"
+                        className="p-2 border-2 border-charcoal rounded-none text-xs font-mono outline-none"
+                        placeholder="https://images.unsplash.com/..."
+                        value={washViewUrl}
+                        onChange={(e) => setWashViewUrl(e.target.value)}
+                      />
+                    </div>
+                    <div className="flex flex-col space-y-1">
+                      <label className="text-[9px] uppercase font-mono text-charcoal/70">5. Storage Closets & Lockers URL</label>
+                      <input
+                        type="text"
+                        className="p-2 border-2 border-charcoal rounded-none text-xs font-mono outline-none"
+                        placeholder="https://images.unsplash.com/..."
+                        value={storViewUrl}
+                        onChange={(e) => setStorViewUrl(e.target.value)}
+                      />
+                    </div>
+                    <div className="flex flex-col space-y-1">
+                      <label className="text-[9px] uppercase font-mono text-charcoal/70">6. Common Areas & Corridors URL</label>
+                      <input
+                        type="text"
+                        className="p-2 border-2 border-charcoal rounded-none text-xs font-mono outline-none"
+                        placeholder="https://images.unsplash.com/..."
+                        value={commViewUrl}
+                        onChange={(e) => setCommViewUrl(e.target.value)}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between pt-2 border-t border-charcoal/15">
+                  <button
+                    type="submit"
+                    className="bg-maroon-700 hover:bg-gold-500 hover:text-maroon-950 text-white font-black px-5 py-2.5 rounded-none border-2 border-charcoal uppercase tracking-wider text-xs transition-colors cursor-pointer"
+                  >
+                    Save Picture Configuration
+                  </button>
+                  {configSuccessMsg && (
+                    <span className="text-emerald-700 font-extrabold text-[11px] uppercase tracking-wide bg-emerald-550/10 px-3 py-1.5 border border-emerald-300">
+                      ✓ STAY CONFIGURATION & GALLERY PERSISTED!
+                    </span>
+                  )}
+                </div>
+              </form>
+            )}
+          </div>
+
           <div className="border-b border-gold-400/20 pb-2">
-            <h3 className="font-display font-bold text-lg text-maroon-800">Dharamshala Room Bookings Index</h3>
+            <h3 className="font-display font-bold text-lg text-maroon-800">Dharamshala Guest Bookings Index</h3>
             <p className="text-[10px] text-charcoal/40">Review, approve, and cancel incoming guest room reservations.</p>
           </div>
 

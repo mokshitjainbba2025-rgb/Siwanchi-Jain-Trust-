@@ -20,7 +20,7 @@ export default function DonationSystem({ currentLang, onAddDonation }: DonationS
   const [email, setEmail] = useState('');
   const [city, setCity] = useState('');
   const [panNumber, setPanNumber] = useState('');
-  const [category, setCategory] = useState<'One Time' | 'Monthly' | 'Construction' | 'Temple' | 'Room' | 'Bhojanshala' | 'General'>('General');
+  const [category, setCategory] = useState<'General Account' | 'Dev Dravya' | 'Jiv Daya' | 'Other Dharma Sahyog'>('General Account');
   const [paymentMethod, setPaymentMethod] = useState<'UPI' | 'Bank Transfer' | 'Online'>('UPI');
   const [is80GRequested, setIs80GRequested] = useState(false);
 
@@ -176,13 +176,10 @@ export default function DonationSystem({ currentLang, onAddDonation }: DonationS
                   value={category}
                   onChange={(e: any) => setCategory(e.target.value)}
                 >
-                  <option value="General">📍 {currentLang === 'hi' ? "सामान्य संघ वैयावृत्य एवं व्यवस्था कोष" : "General Trust Upkeep & Seva Fund"}</option>
-                  <option value="Temple">🪔 {currentLang === 'hi' ? "नवनिर्माणाधीन मकराना पाषाण जिनालय निर्माण" : "Temple White Marble Carving & Prathistha"}</option>
-                  <option value="Room">🛌 {currentLang === 'hi' ? "धर्मशाला व्यवस्था एवं कक्ष संवर्धन निधि" : "Dharamshala Room Renovation & Maintenance"}</option>
-                  <option value="Bhojanshala">🍲 {currentLang === 'hi' ? "आदिनाथ भोजनशाला साधर्मिक स्वात्सल्य भोजन" : "Adinath Bhojanshala Free Meals Sponsorship"}</option>
-                  <option value="Construction">🚧 {currentLang === 'hi' ? "विहारधाम परिसर आधारभूत ढांचा विकास" : "Vihardham Campus Civil Infrastructure Work"}</option>
-                  <option value="Monthly">📅 {currentLang === 'hi' ? "मासिक सहयोगात्मक परिवार (Sahyogi Parivar)" : "Sahyogi Parivar Regular Monthly Enrollment"}</option>
-                  <option value="One Time">❤️ {currentLang === 'hi' ? "एकदिवसीय विशिष्ट मांगलिक तिथि प्रभावना" : "One-Time Divine Tithi Manglik Prabhavna"}</option>
+                  <option value="General Account">📍 {currentLang === 'hi' ? "साधारण खाता (General Account)" : "General Account"}</option>
+                  <option value="Dev Dravya">🪔 {currentLang === 'hi' ? "देव द्रव्य (Dev Dravya)" : "Dev Dravya"}</option>
+                  <option value="Jiv Daya">🌾 {currentLang === 'hi' ? "जीव दया (Jiv Daya)" : "Jiv Daya"}</option>
+                  <option value="Other Dharma Sahyog">❤️ {currentLang === 'hi' ? "अन्य धर्म सहयोग (Other Dharma Sahyog)" : "Other Dharma Sahyog"}</option>
                 </select>
               </div>
 

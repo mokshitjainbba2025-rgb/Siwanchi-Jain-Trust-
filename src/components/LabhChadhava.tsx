@@ -82,7 +82,7 @@ export default function LabhChadhava({ currentLang, onAddLabhInquiry }: LabhChad
       case 'Temple': return currentLang === 'hi' ? "जिनालय / कीर्तिस्तंभ" : "Temple / Pillar";
       case 'Dharamshala': return currentLang === 'hi' ? "धर्मशाला कक्ष विकास" : "Dharamshala Chambers";
       case 'Palace': return currentLang === 'hi' ? "ओसवाल पैलेस सामाजिक भाग" : "Oswal Palace Complex";
-      case 'Bhojanshala': return currentLang === 'hi' ? "आदिनाथ भोजनशाला" : "Adinath Bhojanshala";
+      case 'Bhojanshala': return currentLang === 'hi' ? "शांताबा भोजनशाला" : "Shantaba Bhojanshala";
       default: return currentLang === 'hi' ? "सामान्य ट्रस्ट सामाजिक" : "General Samaj";
     }
   };

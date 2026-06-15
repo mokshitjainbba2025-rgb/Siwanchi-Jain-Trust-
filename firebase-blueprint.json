@@ -1,0 +1,90 @@
+{
+  "entities": {
+    "SlideshowImage": {
+      "title": "SlideshowImage",
+      "description": "Image slide shown in the home hero banner",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "url": { "type": "string" },
+        "title": { "type": "object" },
+        "caption": { "type": "object" }
+      },
+      "required": ["id", "url", "title"]
+    },
+    "GalleryItem": {
+      "title": "GalleryItem",
+      "description": "Media item in the photogrid / gallery tab",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "object" },
+        "category": { "type": "string" },
+        "type": { "type": "string" },
+        "url": { "type": "string" }
+      },
+      "required": ["id", "title", "category", "type", "url"]
+    },
+    "RoomCategory": {
+      "title": "RoomCategory",
+      "description": "Dharamshala room parameters configured by admin",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "object" },
+        "description": { "type": "object" },
+        "type": { "type": "string" },
+        "capacity": { "type": "number" },
+        "ratePerDay": { "type": "number" },
+        "availableRooms": { "type": "number" },
+        "amenities": { "type": "array" },
+        "imageUrl": { "type": "string" },
+        "images": { "type": "object" }
+      },
+      "required": ["id", "name", "type", "capacity", "ratePerDay", "availableRooms", "imageUrl"]
+    },
+    "RoomBooking": {
+      "title": "RoomBooking",
+      "description": "Pilgrim room booking request",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "bookingCode": { "type": "string" },
+        "name": { "type": "string" },
+        "mobile": { "type": "string" },
+        "email": { "type": "string" },
+        "address": { "type": "string" },
+        "checkIn": { "type": "string" },
+        "checkOut": { "type": "string" },
+        "guests": { "type": "number" },
+        "roomType": { "type": "string" },
+        "roomsCount": { "type": "number" },
+        "specialRequests": { "type": "string" },
+        "paymentOption": { "type": "string" },
+        "paymentStatus": { "type": "string" },
+        "approvalStatus": { "type": "string" },
+        "totalAmount": { "type": "number" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "bookingCode", "name", "mobile", "checkIn", "checkOut", "roomType", "roomsCount", "totalAmount", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/slideshow_images/{slideId}": {
+      "schema": "SlideshowImage",
+      "description": "Slideshow images displayed on the homepage slideshow"
+    },
+    "/gallery_items/{galleryId}": {
+      "schema": "GalleryItem",
+      "description": "Media records uploaded/managed in the image gallery"
+    },
+    "/room_categories/{categoryId}": {
+      "schema": "RoomCategory",
+      "description": "Dharamshala room configuration details"
+    },
+    "/room_bookings/{bookingId}": {
+      "schema": "RoomBooking",
+      "description": "Dharamshala guest reservations and booking logs"
+    }
+  }
+}

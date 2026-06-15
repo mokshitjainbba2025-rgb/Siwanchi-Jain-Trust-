@@ -196,6 +196,78 @@ export default function OswalPalaceTab({ currentLang, onAddPalaceBooking }: Oswa
         </div>
       </div>
 
+      {/* SECTION 2.5: Special Social Welfare & Event Support Integrations */}
+      <div className="space-y-8 bg-amber-50/40 p-6 sm:p-8 border-2 border-amber-500/20 rounded-none">
+        <div className="text-center max-w-2xl mx-auto space-y-2">
+          <span className="text-maroon-800 text-xs font-black uppercase tracking-widest block font-mono">🌟 सामाजिक कल्याण व धार्मिक सेवा प्रभाग 🌟</span>
+          <h2 className="font-display font-black text-2xl sm:text-3xl text-maroon-850 uppercase">सामूहिक विवाह, टेंट एवं शुद्ध खाद्य व्यवस्था</h2>
+          <p className="text-xs text-charcoal font-semibold mt-1">Specialized non-profit alignments ensuring auspicious execution of your events at minimal to zero costs.</p>
+          <div className="w-24 h-0.5 bg-amber-500 mx-auto mt-2"></div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* Card 1: Samuhik Vivah Facilities */}
+          <div className="bg-white border-2 border-charcoal p-5 flex flex-col justify-between space-y-4 shadow-flat-sm">
+            <div>
+              <div className="w-10 h-10 bg-rose-50 border border-rose-300 text-rose-700 flex items-center justify-center text-xl font-bold mb-3">
+                💝
+              </div>
+              <h3 className="font-display font-black text-sm uppercase text-maroon-800 tracking-tight">
+                {currentLang === 'hi' ? "सामूहिक विवाह व्यवस्था सहयोग" : "Samuhik Vivah Support"}
+              </h3>
+              <p className="text-charcoal leading-relaxed text-xs mt-2 font-semibold">
+                {currentLang === 'hi' ? (
+                  "समाज कल्याण के पावन उद्देश्य हेतु हम सामूहिक विवाह (समूह विवाह) प्रसंगों का पूर्ण समर्थन और व्यवस्था सहयोग करते हैं। यह सेवा पूर्णतः निःशुल्क नहीं है, परंतु इसमें अत्यंत कम खर्च (Minimal Expenses) आता है, जिससे परिवारों पर कोई भारी वित्तीय भार नहीं पड़ता।"
+                ) : (
+                  "For community welfare, we support and facilitate mass marriages (Samuhik Vivah). While not completely free, it incurs highly reduced, minimal expenses to prevent heavy financial burdens on families."
+                )}
+              </p>
+            </div>
+            <span className="text-[10px] text-maroon-700 font-mono tracking-wider uppercase block font-black border-t pt-2 border-charcoal/10">★ Minimal & Highly Economical Costs</span>
+          </div>
+
+          {/* Card 2: Event Support Services */}
+          <div className="bg-white border-2 border-charcoal p-5 flex flex-col justify-between space-y-4 shadow-flat-sm">
+            <div>
+              <div className="w-10 h-10 bg-blue-50 border border-blue-300 text-blue-700 flex items-center justify-center text-xl font-bold mb-3">
+                🎪
+              </div>
+              <h3 className="font-display font-black text-sm uppercase text-maroon-800 tracking-tight">
+                {currentLang === 'hi' ? "मांगलिक टेंट एवं कैटरिंग व्यवस्था" : "Tent & Catering Arrangements"}
+              </h3>
+              <p className="text-charcoal leading-relaxed text-xs mt-2 font-semibold">
+                {currentLang === 'hi' ? (
+                  "मांगलिक प्रसंगों को यादगार बनाने हेतु हम उच्च गुणवत्ता (High Quality) वाली टेंट सजावट, मांगलिक साउंड और सात्विक जैन कैटरर/रसोईया सेवा को बेहद कम और किफायती दामों (Low Price) पर बुक व व्यवस्थित कराने में पूरा सहयोग करते हैं।"
+                ) : (
+                  "To streamline divine wedding events, we help you arrange high-quality tent setups, decorators, pure Jain catering services, and sound systems at exceptionally low and optimized rates."
+                )}
+              </p>
+            </div>
+            <span className="text-[10px] text-maroon-700 font-mono tracking-wider uppercase block font-black border-t pt-2 border-charcoal/10">★ Low Price & High Quality</span>
+          </div>
+
+          {/* Card 3: Pure Flour & Kirana Facility */}
+          <div className="bg-white border-2 border-charcoal p-5 flex flex-col justify-between space-y-4 shadow-flat-sm">
+            <div>
+              <div className="w-10 h-10 bg-emerald-50 border border-emerald-300 text-emerald-700 flex items-center justify-center text-xl font-bold mb-3">
+                🌾
+              </div>
+              <h3 className="font-display font-black text-sm uppercase text-maroon-800 tracking-tight">
+                {currentLang === 'hi' ? "शुद्ध आटा चक्की व किराना आपूर्ति" : "Pure Flour & Grocery Support"}
+              </h3>
+              <p className="text-charcoal leading-relaxed text-xs mt-2 font-semibold">
+                {currentLang === 'hi' ? (
+                  "हम परिसर में पारंपरिक हाइजीनिक आटा चक्की (शुद्ध पिसाई) का संचालन करने के साथ-साथ दैनिक व मांगलिक प्रसंगों हेतु उच्च गुणवत्ता वाले राशन व आवश्यक किराना सामान (Kirana Items) भी अत्यंत उचित और वाजिब दामों (Best Price Range) पर उपलब्ध कराते हैं।"
+                ) : (
+                  "Along with our traditional, hygiene-audited flour mill (Aata Chakki Setup), we coordinate high-quality essential grocery and Kirana items at incredibly competitive and affordable price ranges."
+                )}
+              </p>
+            </div>
+            <span className="text-[10px] text-maroon-700 font-mono tracking-wider uppercase block font-black border-t pt-2 border-charcoal/10">★ In-House Milling & Best Price Kirana</span>
+          </div>
+        </div>
+      </div>
+
       {/* SECTION 3: Virtual Project Walkthrough Video */}
       <div className="bg-cream-100/55 border-3 border-charcoal p-6 sm:p-10 rounded-none shadow-flat space-y-8">
         <div className="text-center max-w-2xl mx-auto space-y-2">

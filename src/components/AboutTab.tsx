@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { Phone, Mail, Award, MapPin, MessageSquare, History, Check, Heart, Shield, Landmark } from 'lucide-react';
+import { Phone, Mail, Award, MapPin, MessageSquare, History, Check, Heart, Shield, Landmark, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Language, Trustee } from '../types';
 import { seedTrustees } from '../data';
 
@@ -14,6 +14,25 @@ interface AboutTabProps {
 
 export default function AboutTab({ currentLang }: AboutTabProps) {
   const trustees: Trustee[] = seedTrustees;
+  
+  const [activeIdx, setActiveIdx] = React.useState(0);
+  const [isHovered, setIsHovered] = React.useState(false);
+
+  React.useEffect(() => {
+    if (isHovered) return;
+    const timer = setInterval(() => {
+      setActiveIdx((prev) => (prev + 1) % trustees.length);
+    }, 6000);
+    return () => clearInterval(timer);
+  }, [isHovered, trustees.length]);
+
+  const handlePrev = () => {
+    setActiveIdx((prev) => (prev === 0 ? trustees.length - 1 : prev - 1));
+  };
+
+  const handleNext = () => {
+    setActiveIdx((prev) => (prev + 1) % trustees.length);
+  };
 
   // Timeline events representing correct historical markers
   const timelineEvents = [
@@ -181,58 +200,6 @@ export default function AboutTab({ currentLang }: AboutTabProps) {
         </div>
       </div>
 
-      {/* NEW SECTION B: BHOJANSHALA SPOTLIGHT (OPERATIONAL LIVE) */}
-      <div className="bg-maroon-gradient text-white border-3 border-charcoal p-8 sm:p-12 shadow-flat relative overflow-hidden">
-        <div className="absolute bottom-[-20px] left-[-20px] w-60 h-60 bg-gold-400/10 rounded-full blur-3xl pointer-events-none"></div>
-        
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-          <div className="lg:col-span-4 rounded-none border-2 border-charcoal overflow-hidden shadow-flat">
-            <img 
-              src="https://images.unsplash.com/photo-1627856013091-fed6e4e30025?auto=format&fit=crop&q=80&w=400" 
-              alt="Adinath Bhojanshala Operational kitchen" 
-              className="w-full h-64 object-cover"
-            />
-          </div>
-          
-          <div className="lg:col-span-8 space-y-5">
-            <div className="inline-flex items-center space-x-2 bg-gold-400 text-maroon-950 px-3 py-1 text-[10px] font-black uppercase border border-charcoal shadow-flat-sm">
-              ✨ {currentLang === 'hi' ? "वर्तमान स्थिति: पूर्णतः क्रियाशील" : "CURRENT STATUS: FULLY OPERATIONAL"}
-            </div>
-            
-            <h3 className="font-display font-black text-2xl sm:text-3xl text-gold-300 uppercase tracking-tight">
-              {currentLang === 'hi' ? "श्री आदिनाथ भोजनशाला - निरंतर सेवा" : "Shri Adinath Bhojanshala - Serving Daily"}
-            </h3>
-            
-            <p className="text-cream-50 font-semibold text-xs sm:text-sm leading-relaxed">
-              {currentLang === 'hi' ? (
-                <>
-                  हर्ष का विषय है कि हमारी <strong> भोजनशाला</strong> वर्तमान में पूर्णतः चालू है और यहाँ प्रतिदिन डूंगरी पुरा आने वाले श्रद्धालुओं, नवकारशी तपस्वियों, मुमुक्षुओं एवं साधार्मिक बंधुओं को शुद्ध वस्त्रधारी रसोईयों द्वारा तैयार १००% सात्विक औषधीय भोजन परोसा जा रहा है। यहाँ स्वच्छ जल पियू (Pyau) की भी सुंदर व्यवस्था पूर्ण हो चुकी है।
-                </>
-              ) : (
-                <>
-                  We are extremely pleased to highlight that the <strong> Bhojanshala</strong> is fully operational and successfully serving sacred organic Jain meals daily. Adhering to strict traditional codes of wellness, specialized cooks in sacred attire prepare wholesome meals. Complimentary pristine drinking water booths (Pyau) are also active.
-                </>
-              )}
-            </p>
-
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-1 text-center font-mono">
-              <div className="bg-maroon-800/80 border border-gold-500/20 p-3">
-                <span className="block text-[10px] text-gold-300 font-bold uppercase">{currentLang === 'hi' ? "सुबह नवकारशी" : "Morning Navkarshi"}</span>
-                <span className="block text-xs font-black mt-1">08:15 AM - 09:15 AM</span>
-              </div>
-              <div className="bg-maroon-800/80 border border-gold-500/20 p-3">
-                <span className="block text-[10px] text-gold-300 font-bold uppercase">{currentLang === 'hi' ? "दोपहर भोजन" : "Afternoon Prasad"}</span>
-                <span className="block text-xs font-black mt-1">11:30 AM - 01:15 PM</span>
-              </div>
-              <div className="bg-maroon-800/80 border border-gold-500/20 p-3">
-                <span className="block text-[10px] text-gold-300 font-bold uppercase">{currentLang === 'hi' ? "चौविहार पूर्व भोजन" : "Chauvihar (Sunset) Meal"}</span>
-                <span className="block text-xs font-black mt-1">{currentLang === 'hi' ? "सूर्यास्त से ४८ मिनट पूर्व" : "48 Min Before Sunset"}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
       {/* NEW SECTION C: COMMUNITY IMPACT & REINVESTMENT PHILOSOPHY */}
       <div className="bg-cream-100 border-3 border-charcoal p-8 sm:p-12 shadow-flat grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
         <div className="lg:col-span-8 space-y-5">
@@ -316,61 +283,141 @@ export default function AboutTab({ currentLang }: AboutTabProps) {
         <div className="text-center max-w-2xl mx-auto space-y-2">
           <span className="text-gold-600 text-xs font-black uppercase tracking-widest block font-mono">Governing Board of Trustees</span>
           <h2 className="font-display font-black text-3xl text-maroon-800 uppercase tracking-tight">मुख्य प्रबंधन कार्यकारिणी एवं ट्रस्टी मंडल</h2>
+          <p className="text-xs text-charcoal font-semibold mt-1">Our governing board members guide the mission with volunteer stewardship and financial devotion.</p>
           <div className="w-24 h-1 bg-charcoal mx-auto mt-2"></div>
         </div>
 
-        {/* Trustees Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {trustees.map((tr) => (
-            <div 
-              key={tr.id} 
-              className="bg-white border-3 border-charcoal rounded-none shadow-flat hover:shadow-flat-lg hover:-translate-y-1 transition-all group relative flex flex-col justify-between"
-            >
-              <div className="relative h-60 overflow-hidden bg-cream-50 border-b-2 border-charcoal">
-                <img 
-                  src={tr.photoUrl} 
-                  alt={tr.name[currentLang]} 
-                  className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
-                />
-                
-                <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-charcoal to-transparent p-4 pt-10 text-white">
-                  <span className="text-gold-400 text-[10px] font-black uppercase tracking-widest block font-mono">
-                    {tr.designation[currentLang]}
-                  </span>
-                  <span className="font-display font-black text-base sm:text-lg block mt-0.5">
-                    {tr.name[currentLang]}
-                  </span>
-                </div>
-              </div>
+        {/* Big Interactive Slider without Photos */}
+        <div 
+          className="relative bg-white border-3 border-charcoal p-8 sm:p-14 shadow-flat-lg flex flex-col justify-between items-center text-center overflow-hidden min-h-[380px] group transition-all"
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+        >
+          {/* Big decorative quote marks in background */}
+          <span className="absolute -top-3 left-4 text-maroon-750/5 text-[150px] sm:text-[200px] font-serif select-none pointer-events-none font-bold">
+            “
+          </span>
+          <span className="absolute -bottom-24 right-4 text-maroon-750/5 text-[150px] sm:text-[200px] font-serif select-none pointer-events-none font-bold">
+            ”
+          </span>
 
-              <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
-                <div className="space-y-2">
-                  <div className="flex items-center text-xs text-charcoal font-bold font-mono uppercase">
-                    <MapPin className="w-3.5 h-3.5 text-gold-600 mr-1.5" />
-                    <span>{tr.city[currentLang]}</span>
-                  </div>
+          {/* Previous/Next Manual Side Buttons */}
+          <button
+            type="button"
+            onClick={handlePrev}
+            className="absolute left-3 top-1/2 -translate-y-1/2 w-11 h-11 bg-white border-2 border-charcoal hover:bg-gold-400 text-maroon-900 transition-all flex items-center justify-center cursor-pointer shadow-flat-sm active:translate-y-[-48%] active:shadow-none z-10"
+            aria-label="Previous Trustee"
+          >
+            <ChevronLeft className="w-6 h-6" />
+          </button>
+          
+          <button
+            type="button"
+            onClick={handleNext}
+            className="absolute right-3 top-1/2 -translate-y-1/2 w-11 h-11 bg-white border-2 border-charcoal hover:bg-gold-400 text-maroon-900 transition-all flex items-center justify-center cursor-pointer shadow-flat-sm active:translate-y-[-48%] active:shadow-none z-10"
+            aria-label="Next Trustee"
+          >
+            <ChevronRight className="w-6 h-6" />
+          </button>
 
-                  <p className="text-charcoal/90 text-xs leading-relaxed italic border-l-2 border-maroon-700 pl-3.5 pt-0.5 relative">
-                    <MessageSquare className="w-3 h-3 text-gold-500 absolute -top-1 -left-1 opacity-50" />
-                    "{tr.message[currentLang]}"
-                  </p>
-                </div>
-
-                <div className="pt-3 border-t-2 border-charcoal flex flex-col space-y-2 text-xs font-bold font-mono">
-                  {tr.id === 'tr1' && (
-                    <a href={`tel:${tr.phone}`} className="flex items-center text-charcoal hover:text-maroon-700 transition-colors">
-                      <Phone className="w-3.5 h-3.5 text-maroon-700 mr-2" />
-                      <span>{tr.phone}</span>
-                    </a>
-                  )}
-                  <a href={`mailto:${tr.email}`} className="flex items-center text-charcoal hover:text-maroon-700 transition-colors truncate">
-                    <Mail className="w-3.5 h-3.5 text-maroon-700 mr-2" />
-                    <span className="truncate">{tr.email}</span>
-                  </a>
-                </div>
-              </div>
+          {/* Slide Content wrapper */}
+          <div className="w-full max-w-4xl mx-auto space-y-6 px-4 py-2 animate-fade-in">
+            {/* Designation & City Badge Row */}
+            <div className="flex flex-wrap justify-center items-center gap-2.5">
+              <span className="px-3.5 py-1 bg-maroon-800 text-gold-300 font-extrabold text-[10px] sm:text-xs uppercase border border-charcoal shadow-flat-sm font-mono tracking-wider">
+                {trustees[activeIdx].designation[currentLang]}
+              </span>
+              <span className="px-3 py-1 bg-cream-50 border border-charcoal/30 text-[10px] sm:text-xs text-charcoal font-black uppercase font-mono tracking-wide flex items-center shadow-flat-sm">
+                <MapPin className="w-3.5 h-3.5 text-gold-600 mr-1" />
+                {trustees[activeIdx].city[currentLang]}
+              </span>
             </div>
-          ))}
+
+            {/* Quote / Personal Message */}
+            <blockquote className="text-charcoal font-semibold text-lg sm:text-xl lg:text-2xl leading-relaxed italic max-w-3xl mx-auto block py-4 text-maroon-950 font-display">
+              "{trustees[activeIdx].message[currentLang]}"
+            </blockquote>
+
+            {/* Trustee Name */}
+            <div className="border-t-2 border-dashed border-gold-400/50 pt-5 max-w-xl mx-auto">
+              <h3 className="font-display font-black text-xl sm:text-2xl lg:text-3xl text-maroon-850 uppercase tracking-tight">
+                {trustees[activeIdx].name[currentLang]}
+              </h3>
+              <p className="text-[10px] text-charcoal/50 uppercase tracking-widest font-mono mt-1">श्री सिवांची जैन सेवा समिति ट्रस्ट मंडल • Pune / Rajasthan</p>
+            </div>
+
+            {/* Quick action Contacts */}
+            {['tr1', 'tr2', 'tr3', 'tr4'].includes(trustees[activeIdx].id) && (
+              <div className="flex flex-wrap items-center justify-center gap-4 pt-2 font-mono text-xs font-black">
+                {trustees[activeIdx].phone && (
+                  <a 
+                    href={`tel:${trustees[activeIdx].phone}`} 
+                    className="flex items-center bg-white border-2 border-charcoal hover:bg-gold-350 text-charcoal hover:text-maroon-950 px-4 py-2 shadow-flat-sm transition-all"
+                  >
+                    <Phone className="w-4 h-4 text-maroon-700 mr-2" />
+                    <span>{trustees[activeIdx].phone}</span>
+                  </a>
+                )}
+                {trustees[activeIdx].email && (
+                  <a 
+                    href={`mailto:${trustees[activeIdx].email}`} 
+                    className="flex items-center bg-white border-2 border-charcoal hover:bg-gold-350 text-charcoal hover:text-maroon-950 px-4 py-2 shadow-flat-sm transition-all truncate max-w-xs"
+                  >
+                    <Mail className="w-4 h-4 text-maroon-700 mr-2" />
+                    <span className="truncate">{trustees[activeIdx].email}</span>
+                  </a>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Navigation dots */}
+          <div className="flex items-center justify-center gap-1.5 mt-8 flex-wrap">
+            {trustees.map((tr, idx) => (
+              <button
+                key={tr.id}
+                type="button"
+                onClick={() => setActiveIdx(idx)}
+                className={`w-3.5 h-3.5 border-2 border-charcoal transition-all cursor-pointer ${
+                  idx === activeIdx 
+                    ? 'bg-maroon-800 w-7' 
+                    : 'bg-white hover:bg-gold-400'
+                }`}
+                aria-label={`Go to slide ${idx + 1}`}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Directory Navigator (shows all names so user can jump directly or see "every name" at a glance) */}
+        <div className="mt-6 bg-cream-50/50 border-2 border-charcoal p-4 group">
+          <div className="text-center md:text-left mb-3">
+            <h4 className="font-display font-black text-xs sm:text-sm text-maroon-800 uppercase tracking-wide">
+              {currentLang === 'hi' ? "त्वरित चयन निर्देशिका: सभी ट्रस्टीगण" : "Quick Selection Directory: All Trustees"}
+            </h4>
+            <p className="text-[10px] text-charcoal/60 font-semibold">Click any name below to view their message above.</p>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2.5">
+            {trustees.map((tr, idx) => (
+              <button
+                key={tr.id}
+                type="button"
+                onClick={() => setActiveIdx(idx)}
+                className={`p-2.5 border text-left rounded-none cursor-pointer transition-all ${
+                  idx === activeIdx
+                    ? 'bg-gold-400 border-charcoal text-maroon-950 font-black shadow-flat-sm'
+                    : 'bg-white border-charcoal/20 hover:border-charcoal hover:bg-cream-50 text-charcoal font-semibold'
+                }`}
+              >
+                <span className="block text-[11px] font-bold line-clamp-1 leading-snug">
+                  {tr.name[currentLang]}
+                </span>
+                <span className="block text-[9px] text-maroon-700 font-mono tracking-wider uppercase font-semibold mt-0.5">
+                  {tr.designation[currentLang].split('(')[0].trim()}
+                </span>
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
