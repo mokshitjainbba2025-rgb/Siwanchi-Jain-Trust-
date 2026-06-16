@@ -33,7 +33,6 @@ export const staticTranslations = {
     oswalPalace: "ओसवाल पैलेस",
     bookings: "बुकिंग",
     donations: "धर्म सहयोग अवसर",
-    donorWall: "लाभार्थी पट्ट (Labharthi Wall)",
     vatsalyaDham: "वात्सल्य धाम",
     events: "आयोजन",
     gallery: "गैलरी और वीडियो",
@@ -84,7 +83,6 @@ export const staticTranslations = {
     oswalPalace: "Oswal Palace",
     bookings: "Bookings",
     donations: "Dharma Sahyog",
-    donorWall: "Labharthi Wall",
     vatsalyaDham: "Vatsalya Dham",
     events: "Events",
     gallery: "Gallery & Videos",
@@ -515,64 +513,6 @@ export const seedLabhOpportunities: LabhOpportunity[] = [
     amount: 54000,
     isAvailable: true,
     category: "Palace"
-  }
-];
-
-// Seed Donor Wall Contributors
-export const seedContributors: Contributor[] = [
-  {
-    id: "d1",
-    name: { hi: "श्रीमती हीरादेवी धर्मपत्नी चम्पालाल जी गुलेच्छा", en: "Smt. Heeradevi W/o Champalal Ji Gulechha" },
-    city: { hi: "मेली - बंगलुरु", en: "Meli - Bengaluru" },
-    family: { hi: "श्री सम्पतराज, अशोक, अरविन्द गुलेच्छा परिवार", en: "Shri Sampatraj, Ashok, Arvind Gulechha Family" },
-    tier: "Maha Daanveer",
-    amount: 2500000,
-    contributionType: { hi: "मुख्य मंदिर भूमि एवं वीहड़धाम मुख्य भूखंड", en: "Main Temple Land and Vihardham Main Plot Donation" },
-    year: 2023,
-    message: { hi: "परमात्मा की असीम कृपा से ही समाज की सेवा का यह परम अवसर प्राप्त हुआ है।", en: "By divine blessings alone, we have been bestowed with this noble responsibility." },
-    photoUrl: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=300"
-  },
-  {
-    id: "d2",
-    name: { hi: "शाह जेठालाल जी हेमराज जी मुथा", en: "Shah Jethalal Ji Hemraj Ji Mutha" },
-    city: { hi: "डूंगरी पुरा - मुंबई", en: "Dungri Pura - Mumbai" },
-    family: { hi: "मुथा शांतिलाल, रमणिकलाल, किरणकुमार मुथा परिवार", en: "Mutha Shantilal, Ramniklal, Kirankumar Mutha Family" },
-    tier: "Platinum",
-    amount: 1100000,
-    contributionType: { hi: "ओसवाल पैलेस मुख्य केंद्रीय एयर-कूल्ड वैडिंग हॉल", en: "Oswal Palace Central air-cooled grand wedding hall" },
-    year: 2024,
-    message: { hi: "समाज का धन समाज के कल्याण में ही लगे, यही सच्ची जिन शासन की सेवा है।", en: "Moneys of the community must uplift the community. This is true devotion to Jain principles." }
-  },
-  {
-    id: "d3",
-    name: { hi: "श्री माणकचंद जी केसरीमल जी भंडारी", en: "Shri Manakchand Ji Kesarimal Ji Bhandari" },
-    city: { hi: "सिवाना - पुणे", en: "Siwana - Pune" },
-    family: { hi: "भंडारी राजेश, निलेश, अमोल परिवार", en: "Bhandari Rajesh, Nilesh, Amol Family" },
-    tier: "Gold",
-    amount: 501000,
-    contributionType: { hi: "शान्ताबाय जैन भोजनशाला ब्लॉक एवं मॉडर्न किचन उपकरण", en: "Shantaba Bhojanshala kitchen block & modern appliances" },
-    year: 2024,
-    message: { hi: "कोई भी साधरम भाई या यात्री डूंगरी पुरा में भूखा न रहे, हमारा यही स्वप्न था।", en: "That no pilgrim or community traveler stays hungry in Dungri Pura was our core prayer." }
-  },
-  {
-    id: "d4",
-    name: { hi: "श्रीमती कंचनबाई चौधरी", en: "Smt. Kanchanbai Choudhary" },
-    city: { hi: "समदड़ी - चेन्नई", en: "Samdari - Chennai" },
-    family: { hi: "चौधरी दिलीप भाई, जितेन्द्र भाई परिवार", en: "Choudhary Dilip Bhai, Jitendra Bhai Family" },
-    tier: "Silver",
-    amount: 251000,
-    contributionType: { hi: "वीहारधाम ए.सी. अतिथि शयनगृह निर्माण सहयोग", en: "Vihardham Deluxe A.C guest suites support" },
-    year: 2025
-  },
-  {
-    id: "d5",
-    name: { hi: "शाह वसंतराज जी धर्मचंद जी सिंगवी", en: "Shah Vasantraj Ji Dharamchand Ji Singvi" },
-    city: { hi: "कोटड़ी - सूरत", en: "Kotri - Surat" },
-    family: { hi: "सिंगवी मयूर, वैभव, संयम परिवार", en: "Singvi Mayur, Vaibhav, Sanyam Family" },
-    tier: "Contributor",
-    amount: 51000,
-    contributionType: { hi: "श्री आदिनाथ जिनालय संगमरमर सुंदर स्तंभ", en: "Carving of Adinath Jinalay pristine marble pillars" },
-    year: 2025
   }
 ];
 

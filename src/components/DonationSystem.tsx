@@ -147,12 +147,21 @@ export default function DonationSystem({ currentLang, onAddDonation }: DonationS
             <h4 className="font-display font-black text-gold-400 text-base uppercase tracking-wider">
               {currentLang === 'hi' ? "धर्म सहयोग का सदुपयोग कहाँ?" : "Utilization of Your Dharma Sahyog"}
             </h4>
-            <div className="grid grid-cols-1 gap-3.5 text-xs text-gold-200/90 font-bold font-sans">
-              <p>🪔 <strong>जिनालय संवर्धन</strong> (Pure Macrana Marble architecture & idol prathisthas)</p>
-              <p>🛏️ <strong>धर्मशाला रख-रखाव</strong> (AC rooms cleanings & solar electrical backings)</p>
-              <p>🍲 <strong>भोजनशाला अनुदान</strong> (Sponsoring daily swasthya meals and barefoot pilgrims)</p>
-              <p>🕊️ <strong>साधु निहार कुटीर</strong> (Maintenance of pure wood stay beds, medicine and parsad)</p>
-            </div>
+            {currentLang === 'hi' ? (
+              <div className="grid grid-cols-1 gap-3.5 text-xs text-gold-200/90 font-bold font-sans">
+                <p>🪔 <strong>जिनालय संवर्धन</strong> (शुद्ध मकराना संगमरमर नक्काशी एवं जिनबिम्ब अंजनशलाका प्रतिष्ठा)</p>
+                <p>🛏️ <strong>धर्मशाला रख-रखाव</strong> (AC कमरों की सफाई एवं सौर ऊर्जा विद्युत विन्यास)</p>
+                <p>🍲 <strong>भोजनशाला अनुदान</strong> (दैनिक स्वास्थ्यप्रद सात्विक भोजन एवं पदयात्रियों का सहयोग)</p>
+                <p>🕊️ <strong>साधु निहार कुटीर</strong> (काष्ठ शय्या व्यवस्था, औषधि सहयोग एवं प्रासुक पारणा व्यवस्था)</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 gap-3.5 text-xs text-gold-200/90 font-bold font-sans">
+                <p>🪔 <strong>Jinalay Samvardhan</strong> (Pure Makrana Marble architecture & idol prathisthas)</p>
+                <p>🛏️ <strong>Dharamshala Maintenance</strong> (AC rooms cleanings & solar electrical backings)</p>
+                <p>🍲 <strong>Bhojanshala Donation</strong> (Sponsoring daily swasthya meals and barefoot pilgrims)</p>
+                <p>🕊️ <strong>Sadhu Nihar Kuteer</strong> (Maintenance of pure wood stay beds, medicine and parsad)</p>
+              </div>
+            )}
           </div>
         </div>
 

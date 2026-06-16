@@ -64,8 +64,8 @@ export default function Hero({ currentLang, onNavigate, onOpenVideoModal, slides
   // Custom statistics counter variables
   const stats = [
     { value: '12 Acres', label: t.statArea, icon: '🏛️' },
-    { value: '150+ Rooms', label: t.statRooms, icon: '🏨' },
-    { value: '1,200+', label: t.statDonors, icon: '📜' }
+    { value: '150+', label: currentLang === 'hi' ? '150+ से अधिक लोगों की क्षमता' : 'capacity of more than 150+ peoples', icon: '🏨' },
+    { value: '200+', label: currentLang === 'hi' ? 'labharthi' : 'labharthi', icon: '📜' }
   ];
 
   return (

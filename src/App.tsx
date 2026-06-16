@@ -7,8 +7,8 @@ import React, { useState, useEffect } from 'react';
 import { Sparkles, Phone, Mail, Award, X, Heart, Shield, Globe } from 'lucide-react';
 
 // Data types & assets imports
-import { RoomCategory, Language, RoomBooking, PalaceBooking, Donation, Contributor, Volunteer, TrustMember, AuditLog, ContactQuery, LabhInquiry, GalleryItem, SlideshowImage } from './types';
-import { roomCategories, staticTranslations, seedContributors, seedNews, seedEvents, seedGallery } from './data';
+import { RoomCategory, Language, RoomBooking, PalaceBooking, Donation, Volunteer, TrustMember, AuditLog, ContactQuery, LabhInquiry, GalleryItem, SlideshowImage } from './types';
+import { roomCategories, staticTranslations, seedNews, seedEvents, seedGallery } from './data';
 import { db, auth, OperationType, handleFirestoreError } from './firebase';
 import { collection, getDocs, doc, setDoc, deleteDoc } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
@@ -23,7 +23,6 @@ import VihardhamTab from './components/VihardhamTab';
 import OswalPalaceTab from './components/OswalPalaceTab';
 import DonationSystem from './components/DonationSystem';
 import LabhChadhava from './components/LabhChadhava';
-import DonorWall from './components/DonorWall';
 import VatsalyaDhamTab from './components/VatsalyaDhamTab';
 import ContactTab from './components/ContactTab';
 import AdminDashboard from './components/AdminDashboard';
@@ -52,7 +51,7 @@ export default function App() {
     const path = window.location.pathname.replace(/^\/|\/$/g, '');
     if (path === 'dharma-sahyog' || path === 'donations') return 'donations';
     if (path === 'oswal-palace' || path === 'palace') return 'palace';
-    const validTabs = ['home', 'about', 'vihardham', 'palace', 'vatsalya', 'donations', 'donorwall', 'gallery', 'contact', 'admin'];
+    const validTabs = ['home', 'about', 'vihardham', 'palace', 'vatsalya', 'donations', 'gallery', 'contact', 'admin'];
     return validTabs.includes(path) ? path : 'home';
   });
 
@@ -83,7 +82,7 @@ export default function App() {
         _setActiveTab('palace');
         return;
       }
-      const validTabs = ['home', 'about', 'vihardham', 'palace', 'vatsalya', 'donations', 'donorwall', 'gallery', 'contact', 'admin'];
+      const validTabs = ['home', 'about', 'vihardham', 'palace', 'vatsalya', 'donations', 'gallery', 'contact', 'admin'];
       _setActiveTab(validTabs.includes(path) ? path : 'home');
     };
     window.addEventListener('popstate', handlePopState);
@@ -94,7 +93,6 @@ export default function App() {
   const [roomBookings, setRoomBookings] = useState<RoomBooking[]>([]);
   const [palaceBookings, setPalaceBookings] = useState<PalaceBooking[]>([]);
   const [donations, setDonations] = useState<Donation[]>([]);
-  const [contributorsList, setContributorsList] = useState<Contributor[]>([]);
   const [valunteers, setVolunteers] = useState<Volunteer[]>([]);
   const [membersList, setMembersList] = useState<TrustMember[]>([]);
   const [contactQueries, setContactQueries] = useState<ContactQuery[]>([]);
@@ -160,8 +158,10 @@ export default function App() {
             }
           ];
           setSlideshowImages(defaultSlideshow);
-          for (const s of defaultSlideshow) {
-            await safeFirestoreWrite(() => setDoc(doc(db, 'slideshow_images', s.id), s), OperationType.WRITE, `slideshow_images/${s.id}`);
+          if (isAdminUser) {
+            for (const s of defaultSlideshow) {
+              await safeFirestoreWrite(() => setDoc(doc(db, 'slideshow_images', s.id), s), OperationType.WRITE, `slideshow_images/${s.id}`);
+            }
           }
         }
       } catch (err) {
@@ -183,8 +183,10 @@ export default function App() {
           setGalleryItems(list);
         } else {
           setGalleryItems(seedGallery);
-          for (const g of seedGallery) {
-            await safeFirestoreWrite(() => setDoc(doc(db, 'gallery_items', g.id), g), OperationType.WRITE, `gallery_items/${g.id}`);
+          if (isAdminUser) {
+            for (const g of seedGallery) {
+              await safeFirestoreWrite(() => setDoc(doc(db, 'gallery_items', g.id), g), OperationType.WRITE, `gallery_items/${g.id}`);
+            }
           }
         }
       } catch (err) {
@@ -208,8 +210,10 @@ export default function App() {
           setRoomCategoriesList(list);
         } else {
           setRoomCategoriesList(roomCategories);
-          for (const rc of roomCategories) {
-            await safeFirestoreWrite(() => setDoc(doc(db, 'room_categories', rc.id), rc), OperationType.WRITE, `room_categories/${rc.id}`);
+          if (isAdminUser) {
+            for (const rc of roomCategories) {
+              await safeFirestoreWrite(() => setDoc(doc(db, 'room_categories', rc.id), rc), OperationType.WRITE, `room_categories/${rc.id}`);
+            }
           }
         }
       } catch (err) {
@@ -249,8 +253,10 @@ export default function App() {
             }
           ];
           setRoomBookings(initialRooms);
-          for (const rb of initialRooms) {
-            await safeFirestoreWrite(() => setDoc(doc(db, 'room_bookings', rb.id), rb), OperationType.WRITE, `room_bookings/${rb.id}`);
+          if (isAdminUser) {
+            for (const rb of initialRooms) {
+              await safeFirestoreWrite(() => setDoc(doc(db, 'room_bookings', rb.id), rb), OperationType.WRITE, `room_bookings/${rb.id}`);
+            }
           }
         }
       } catch (err) {
@@ -289,8 +295,10 @@ export default function App() {
             }
           ];
           setPalaceBookings(initialPalace);
-          for (const pb of initialPalace) {
-            await safeFirestoreWrite(() => setDoc(doc(db, 'palace_bookings', pb.id), pb), OperationType.WRITE, `palace_bookings/${pb.id}`);
+          if (isAdminUser) {
+            for (const pb of initialPalace) {
+              await safeFirestoreWrite(() => setDoc(doc(db, 'palace_bookings', pb.id), pb), OperationType.WRITE, `palace_bookings/${pb.id}`);
+            }
           }
         }
       } catch (err) {
@@ -330,8 +338,10 @@ export default function App() {
             }
           ];
           setDonations(initialDons);
-          for (const d of initialDons) {
-            await safeFirestoreWrite(() => setDoc(doc(db, 'donations', d.id), d), OperationType.WRITE, `donations/${d.id}`);
+          if (isAdminUser) {
+            for (const d of initialDons) {
+              await safeFirestoreWrite(() => setDoc(doc(db, 'donations', d.id), d), OperationType.WRITE, `donations/${d.id}`);
+            }
           }
         }
       } catch (err) {
@@ -339,31 +349,6 @@ export default function App() {
         const localDonations = localStorage.getItem('siwanchi_donations');
         if (localDonations) {
           try { setDonations(JSON.parse(localDonations)); } catch (_) {}
-        }
-      }
-
-      // 7. Contributors
-      try {
-        const contribSnap = await getDocs(collection(db, 'contributors'));
-        if (!contribSnap.empty) {
-          const list: Contributor[] = [];
-          contribSnap.forEach(docSnap => {
-            list.push({ id: docSnap.id, ...docSnap.data() } as Contributor);
-          });
-          setContributorsList(list);
-        } else {
-          setContributorsList(seedContributors);
-          for (const c of seedContributors) {
-            await safeFirestoreWrite(() => setDoc(doc(db, 'contributors', c.id), c), OperationType.WRITE, `contributors/${c.id}`);
-          }
-        }
-      } catch (err) {
-        try { handleFirestoreError(err, OperationType.GET, 'contributors'); } catch (_) {}
-        const localContributors = localStorage.getItem('siwanchi_contributors');
-        if (localContributors) {
-          try { setContributorsList(JSON.parse(localContributors)); } catch (_) {}
-        } else {
-          setContributorsList(seedContributors);
         }
       }
 
@@ -390,8 +375,10 @@ export default function App() {
             }
           ];
           setVolunteers(seedVols);
-          for (const v of seedVols) {
-            await safeFirestoreWrite(() => setDoc(doc(db, 'volunteers', v.id), v), OperationType.WRITE, `volunteers/${v.id}`);
+          if (isAdminUser) {
+            for (const v of seedVols) {
+              await safeFirestoreWrite(() => setDoc(doc(db, 'volunteers', v.id), v), OperationType.WRITE, `volunteers/${v.id}`);
+            }
           }
         }
       } catch (err) {
@@ -424,8 +411,10 @@ export default function App() {
             }
           ];
           setMembersList(seedMembers);
-          for (const m of seedMembers) {
-            await safeFirestoreWrite(() => setDoc(doc(db, 'members', m.id), m), OperationType.WRITE, `members/${m.id}`);
+          if (isAdminUser) {
+            for (const m of seedMembers) {
+              await safeFirestoreWrite(() => setDoc(doc(db, 'members', m.id), m), OperationType.WRITE, `members/${m.id}`);
+            }
           }
         }
       } catch (err) {
@@ -437,16 +426,44 @@ export default function App() {
       }
 
       // 10. Audit Logs
-      try {
-        const auditSnap = await getDocs(collection(db, 'audit_logs'));
-        if (!auditSnap.empty) {
-          const list: AuditLog[] = [];
-          auditSnap.forEach(docSnap => {
-            list.push({ id: docSnap.id, ...docSnap.data() } as AuditLog);
-          });
-          setAuditLogs(list);
+      if (isAdminUser) {
+        try {
+          const auditSnap = await getDocs(collection(db, 'audit_logs'));
+          if (!auditSnap.empty) {
+            const list: AuditLog[] = [];
+            auditSnap.forEach(docSnap => {
+              list.push({ id: docSnap.id, ...docSnap.data() } as AuditLog);
+            });
+            setAuditLogs(list);
+          } else {
+            const initialLogs: AuditLog[] = [
+              {
+                id: "log_init",
+                actor: "System Sentinel Daemon",
+                role: "Super Admin",
+                action: "Secure database session boot initialized",
+                details: "All local caches synced, preloaded donor wall parameters operational.",
+                timestamp: new Date().toLocaleTimeString() + " " + new Date().toLocaleDateString()
+              }
+            ];
+            setAuditLogs(initialLogs);
+            for (const a of initialLogs) {
+              await safeFirestoreWrite(() => setDoc(doc(db, 'audit_logs', a.id), a), OperationType.WRITE, `audit_logs/${a.id}`);
+            }
+          }
+        } catch (err) {
+          try { handleFirestoreError(err, OperationType.GET, 'audit_logs'); } catch (_) {}
+          const localAudit = localStorage.getItem('siwanchi_audit');
+          if (localAudit) {
+            try { setAuditLogs(JSON.parse(localAudit)); } catch (_) {}
+          }
+        }
+      } else {
+        const localAudit = localStorage.getItem('siwanchi_audit');
+        if (localAudit) {
+          try { setAuditLogs(JSON.parse(localAudit)); } catch (_) {}
         } else {
-          const initialLogs: AuditLog[] = [
+          setAuditLogs([
             {
               id: "log_init",
               actor: "System Sentinel Daemon",
@@ -455,22 +472,12 @@ export default function App() {
               details: "All local caches synced, preloaded donor wall parameters operational.",
               timestamp: new Date().toLocaleTimeString() + " " + new Date().toLocaleDateString()
             }
-          ];
-          setAuditLogs(initialLogs);
-          for (const a of initialLogs) {
-            await safeFirestoreWrite(() => setDoc(doc(db, 'audit_logs', a.id), a), OperationType.WRITE, `audit_logs/${a.id}`);
-          }
-        }
-      } catch (err) {
-        try { handleFirestoreError(err, OperationType.GET, 'audit_logs'); } catch (_) {}
-        const localAudit = localStorage.getItem('siwanchi_audit');
-        if (localAudit) {
-          try { setAuditLogs(JSON.parse(localAudit)); } catch (_) {}
+          ]);
         }
       }
     }
     loadAllFromFirestore();
-  }, []);
+  }, [isAdminUser]);
 
   // Safe localStorage helper to avoid crashing on QuotaExceededError or empty arrays
   const safeSaveLocal = (key: string, data: any) => {
@@ -514,17 +521,6 @@ export default function App() {
       }
     }
   }, [donations, isAdminUser]);
-
-  useEffect(() => {
-    if (contributorsList.length > 0) {
-      safeSaveLocal('siwanchi_contributors', contributorsList);
-      if (isAdminUser) {
-        contributorsList.forEach(async (item) => {
-          await safeFirestoreWrite(() => setDoc(doc(db, 'contributors', item.id), item), OperationType.WRITE, `contributors/${item.id}`);
-        });
-      }
-    }
-  }, [contributorsList, isAdminUser]);
 
   useEffect(() => {
     if (valunteers.length > 0) {
@@ -646,24 +642,6 @@ export default function App() {
   const handleAddDonation = (donation: Donation) => {
     setDonations(prev => [donation, ...prev]);
     safeFirestoreWrite(() => setDoc(doc(db, 'donations', donation.id), donation), OperationType.WRITE, `donations/${donation.id}`);
-    
-    // Also append immediately onto the Donor Wall list dynamically for a unified visual experience!
-    const newWallDonor: Contributor = {
-      id: "donor_auto_" + Date.now(),
-      name: { hi: donation.donorName, en: donation.donorName },
-      city: { hi: donation.city, en: donation.city },
-      family: { hi: "सहयोगी परिवार", en: "Sahyogi Parivar" },
-      tier: donation.amount >= 250000 ? 'Maha Daanveer' : donation.amount >= 100000 ? 'Platinum' : donation.amount >= 50000 ? 'Gold' : donation.amount >= 10000 ? 'Silver' : 'Contributor',
-      amount: donation.amount,
-      contributionType: { 
-        hi: `${donation.category === 'General Account' ? 'साधारण खाता' : donation.category === 'Dev Dravya' ? 'देव द्रव्य' : donation.category === 'Jiv Daya' ? 'जीव दया' : 'अन्य धर्म'} सहयोग`, 
-        en: `Contributed for ${donation.category} Seva Fund` 
-      },
-      year: new Date().getFullYear(),
-      message: { hi: "जिन शासन सदैव जयवंत हो", en: "Always in services of the holy Jain Samaj" }
-    };
-    setContributorsList(prev => [newWallDonor, ...prev]);
-    safeFirestoreWrite(() => setDoc(doc(db, 'contributors', newWallDonor.id), newWallDonor), OperationType.WRITE, `contributors/${newWallDonor.id}`);
   };
 
   const handleAddVolunteer = (vol: Volunteer) => {
@@ -705,9 +683,6 @@ export default function App() {
           </div>
         );
         
-      case 'donorwall':
-        return <DonorWall currentLang={currentLang} contributorsList={contributorsList} />;
-        
       case 'vatsalya':
         return <VatsalyaDhamTab currentLang={currentLang} />;
         
@@ -727,8 +702,6 @@ export default function App() {
             setPalaceBookings={setPalaceBookings}
             donations={donations}
             setDonations={setDonations}
-            contributorsList={contributorsList}
-            setContributorsList={setContributorsList}
             valunteers={valunteers}
             membersList={membersList}
             auditLogs={auditLogs}
@@ -827,8 +800,9 @@ export default function App() {
               </div>
             </div>
             
-            <p className="text-gold-300/80 text-xs leading-relaxed max-w-sm font-semibold">
-              Supporting spiritual ascension, Jain traveling monk rest shelters, and social weddings in Barmer, Rajasthan. All administrative expenditures are strictly audited.
+            <p className="text-gold-300/80 text-xs leading-relaxed max-w-sm font-semibold space-y-2">
+              <span className="block">Supporting spiritual ascension, Jain traveling monk rest shelters, and social weddings in Barmer, Rajasthan. All administrative expenditures are strictly audited.</span>
+              <span className="block text-[11px] text-cream-205/90 font-medium">आध्यात्मिक उन्नति, जैन पदयात्री साधु-साध्वी विश्राम गृह (विहारधाम) और बाड़मेर, राजस्थान में सामाजिक विवाह आयोजनों में सहयोग। सभी प्रशासनिक व्यय कड़ाई से ऑडिट किए जाते हैं।</span>
             </p>
 
             <div className="text-[10px] text-gold-400 font-mono font-bold block pt-1">
@@ -840,19 +814,24 @@ export default function App() {
           <div className="md:col-span-3 space-y-4 text-xs font-bold text-cream-200">
             <h5 className="text-gold-400 uppercase tracking-widest font-black font-display text-[11px]">Quick Directories</h5>
             <ul className="space-y-2 block">
-              <li><button onClick={() => setActiveTab('about')} className="hover:text-white transition-colors cursor-pointer">About Governing Trustees</button></li>
-              <li><button onClick={() => setActiveTab('vihardham')} className="hover:text-white transition-colors cursor-pointer">Dharamshala Room Listings</button></li>
-              <li><button onClick={() => setActiveTab('palace')} className="hover:text-white transition-colors cursor-pointer">Oswal Palace Reservations</button></li>
-              <li><button onClick={() => setActiveTab('donations')} className="hover:text-white transition-colors cursor-pointer">Spiritual Sponsoring (धर्म सहयोग)</button></li>
+              <li><button onClick={() => setActiveTab('home')} className="hover:text-white transition-colors cursor-pointer text-left">{currentLang === 'hi' ? 'मुख्य पृष्ठ' : 'Home'}</button></li>
+              <li><button onClick={() => setActiveTab('about')} className="hover:text-white transition-colors cursor-pointer text-left">{currentLang === 'hi' ? 'ट्रस्ट के बारे में' : 'About Trust'}</button></li>
+              <li><button onClick={() => setActiveTab('vihardham')} className="hover:text-white transition-colors cursor-pointer text-left">{currentLang === 'hi' ? 'विहारधाम' : 'Vihardham'}</button></li>
+              <li><button onClick={() => setActiveTab('palace')} className="hover:text-white transition-colors cursor-pointer text-left">{currentLang === 'hi' ? 'ओसवाल पैलेस' : 'Oswal Palace'}</button></li>
+              <li><button onClick={() => setActiveTab('vatsalya')} className="hover:text-white transition-colors cursor-pointer text-left">{currentLang === 'hi' ? 'वात्सल्य धाम' : 'Vatsalya Dham'}</button></li>
+              <li><button onClick={() => setActiveTab('donations')} className="hover:text-white transition-colors cursor-pointer text-left">{currentLang === 'hi' ? 'धर्म सहयोग' : 'Dharma Sahyog'}</button></li>
+              <li><button onClick={() => setActiveTab('gallery')} className="hover:text-white transition-colors cursor-pointer text-left">{currentLang === 'hi' ? 'गैलरी और वीडियो' : 'Gallery & Videos'}</button></li>
+              <li><button onClick={() => setActiveTab('contact')} className="hover:text-white transition-colors cursor-pointer text-left">{currentLang === 'hi' ? 'संपर्क करें' : 'Contact Us'}</button></li>
             </ul>
           </div>
 
           {/* Col 3: Direct contact details */}
           <div className="md:col-span-4 space-y-4 text-xs font-semibold text-cream-205">
             <h5 className="text-gold-400 uppercase tracking-widest font-black font-display text-[11px] block">Immediate Contact Office</h5>
-            <p className="leading-relaxed">
-              📍 Siwana-Samdari Road,Opp Bhagvanti Petrol Pump DurgaPura (Meli) District Barmer, Rajasthan, India
-            </p>
+            <div className="leading-relaxed space-y-1 block">
+              <p className="font-semibold">📍 Siwana-Samdari Road, Opp Bhagvanti Petrol Pump, DurgaPura (Meli), District Barmer, Rajasthan, India</p>
+              <p className="text-gold-300 font-medium text-[11px]">📍 सिवाना-समदड़ी मार्ग, भगवती पेट्रोल पंप के सामने, दुर्गापुरा (मेली), जिला बाड़मेर, राजस्थान, भारत</p>
+            </div>
             <div className="space-y-1 block font-mono">
               <a href="tel:+919426055667" className="block hover:text-white transition-colors">📞 Phone: +91 9822538635</a>
               <a href="mailto:connect@siwanchitrust.org" className="block hover:text-white transition-colors text-xs">✉️ Email: connect@siwanchitrust.org</a>

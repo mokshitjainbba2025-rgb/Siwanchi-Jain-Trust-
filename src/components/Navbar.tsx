@@ -26,7 +26,6 @@ export default function Navbar({ currentLang, setLang, activeTab, setActiveTab }
     { id: 'palace', label: t.oswalPalace },
     { id: 'vatsalya', label: t.vatsalyaDham },
     { id: 'donations', label: t.donations },
-    { id: 'donorwall', label: t.donorWall },
     { id: 'gallery', label: t.gallery },
     { id: 'contact', label: t.contact },
   ];
