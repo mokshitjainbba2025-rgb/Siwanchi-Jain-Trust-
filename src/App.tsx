@@ -791,6 +791,11 @@ export default function App() {
             <a href="#admin" onClick={(e) => { e.preventDefault(); setActiveTab('admin'); }} className="hover:text-white">Admin Portal Secure entry</a>
           </div>
         </div>
+
+        {/* Dedicated Pure Devotion Credit Statement */}
+        <div className="max-w-7xl mx-auto mt-5 text-center text-[11px] sm:text-xs text-gold-400/75 font-medium tracking-wide border-t border-gold-500/10 pt-4">
+          <p>Website crafted and made by <span className="font-bold text-gold-300">Mokshit ratanji salecha</span> with pure devotion</p>
+        </div>
       </footer>
 
       {/* TEMPLE VIDEO INTERACTIVE OVERLAY MODAL */}
