@@ -97,10 +97,34 @@ export default function OswalPalaceTab({ currentLang, onAddPalaceBooking }: Oswa
   };
 
   const features = [
-    { title: "Grand Wedding Hall", desc: "Spacious air-cooled pillarless assembly hall holding up to 1,500 guests with marble elevations." },
-    { title: "Sanctified Dining Block", desc: "Separated, fully equipped kitchen maintaining strictly pure, onion-garlic-free food guidelines." },
-    { title: "Luxury Guest Suites", desc: "Over 20 attached air-conditioned suites with fine closets, ideal for welcoming wedding parties." },
-    { title: "Massive Parking Area", desc: "Secured outer parking driveway accommodating more than 150 light vehicles smoothly." }
+    { 
+      title: { hi: "२ विशाल AC हॉल्स (6000 sqft)", en: "2 Grand AC Halls (6000 sqft)" }, 
+      desc: { 
+        hi: "६००० वर्ग फीट के २ पूर्णतः वातानुकूलित सभागार (AC Halls), बड़े सम्मेलनों व मांगलिक उत्सवों हेतु उपयुक्त।", 
+        en: "Two massive 6,000 sqft fully air-conditioned halls inside Oswal Palace, ideal for grand weddings and assembly gatherings." 
+      } 
+    },
+    { 
+      title: { hi: "४ छोटे हॉल्स", en: "4 Small Utility Halls" }, 
+      desc: { 
+        hi: "विभिन्न मांगलिक रस्मों, धार्मिक अनुष्ठानों एवं बैठक प्रसंगों के लिए ४ आरामदेह छोटे हॉल्स।", 
+        en: "Four compact utility spaces / smaller halls tailored for intimate family ceremonies, prayers, and meeting sessions." 
+      } 
+    },
+    { 
+      title: { hi: "२ मुख्य लक्ज़री सूट्स Room", en: "2 Luxury Guest Suites" }, 
+      desc: { 
+        hi: "वर और वधू (दूल्हा-दुल्हन) के लिए विशेष रूप से तैयार किए गए २ वातानुकूलित लक्ज़री सुइट रूम्स।", 
+        en: "Two exquisite attached air-conditioned luxury suites—specially designated, one for the groom and one for the bride." 
+      } 
+    },
+    { 
+      title: { hi: "५०० आरामदायक बेड आवास", en: "500 Beds Facility" }, 
+      desc: { 
+        hi: "ओसवाल पैलेस परिसर में मेहमानों और बारातियों के आरामदायक विश्राम हेतु पूर्णतः ५०० बिस्तरों (beds) की व्यवस्था।", 
+        en: "Comfortable room and hall lodging layouts equipped with 500 clean, premium beds for wedding guests." 
+      } 
+    }
   ];
 
   return (
@@ -117,17 +141,45 @@ export default function OswalPalaceTab({ currentLang, onAddPalaceBooking }: Oswa
             ओसवाल पैलेस: समाज कल्याण का भव्य मांगलिक केंद्र
           </h1>
 
-          <p className="text-charcoal/80 text-sm sm:text-base leading-relaxed">
+          <p className="text-charcoal/80 text-sm sm:text-base leading-relaxed font-semibold">
             {currentLang === 'hi' ? (
               <>
-                <strong>ओसवाल पैलेस</strong> की स्थापना का मूल सिद्धांत अत्यंत पवित्र है: समाज का धन समाज के ही सेवा कार्यों में पुनर्निवेशित हो। सिवांची जैन समाज के परिवारों के विवाह प्रसंग, धार्मिक सम्मलेन व मांगलिक उत्सवों के आयोजन से प्राप्त नाममात्र किराया राशि को सीधे वृद्ध आश्रम, अनाथ सहायता व जरूरतमंद विद्यार्थियों की शिक्षा निधि में प्रदान किया जाता है।
+                <strong>ओसवाल पैलेस</strong> की स्थापना का मूल सिद्धांत अत्यंत पवित्र है: समाज का धन समाज के ही सेवा कार्यों में पुनर्निवेशित हो। सिवांची जैन समाज के परिवारों के विवाह प्रसंग, धार्मिक सम्मलेन व मांगलिक उत्सवों के आयोजन से प्राप्त नाममात्र किराया राशि को सीधे ट्रस्ट के कल्याणकारी कार्यों में प्रयुक्त कर समाज के विकास तथा समाज हित में लगाया जाता है।
               </>
             ) : (
               <>
-                The sacred philosophy of <strong>Oswal Palace</strong> is simple: community wealth remains within the community for social welfare. The basic rentals generated from organizing Jain weddings, conferences, and Samaj celebrations are immediately transferred into maintaining senior citizen stays, widow security programs, and merit-based education funds.
+                The sacred philosophy of <strong>Oswal Palace</strong> is simple: community wealth remains within the community for social welfare. The basic rentals generated from organizing weddings, conferences, and Samaj celebrations are utilized entirely for trust welfare initiatives and overall community development and benefit.
               </>
             )}
           </p>
+
+          {/* Key Infrastructure Specs */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-2">
+            <div className="bg-cream-100/90 border border-charcoal/30 p-3 shadow-flat-sm text-center">
+              <span className="text-[9px] uppercase font-black tracking-wider text-charcoal/65 block font-mono">
+                {currentLang === 'hi' ? "ओसवाल पैलेस सभागार" : "Oswal Palace Halls"}
+              </span>
+              <span className="text-xs sm:text-sm font-extrabold text-maroon-850 block mt-1">
+                {currentLang === 'hi' ? "२ AC हॉल (६००० Sqft) व ४ छोटे हॉल्स" : "2 AC Halls (6000 Sqft) & 4 Small Halls"}
+              </span>
+            </div>
+            <div className="bg-cream-100/90 border border-charcoal/30 p-3 shadow-flat-sm text-center">
+              <span className="text-[9px] uppercase font-black tracking-wider text-charcoal/65 block font-mono">
+                {currentLang === 'hi' ? "मेहमान आवास क्षमता" : "Lodging & Suites"}
+              </span>
+              <span className="text-xs sm:text-sm font-extrabold text-maroon-850 block mt-1">
+                {currentLang === 'hi' ? "५०० आरामदायक बेड व २ लक्ज़री सुइट्स" : "500 Beds & 2 Groom-Bride Suites"}
+              </span>
+            </div>
+            <div className="bg-cream-100/90 border border-charcoal/30 p-3 shadow-flat-sm text-center">
+              <span className="text-[9px] uppercase font-black tracking-wider text-charcoal/65 block font-mono">
+                {currentLang === 'hi' ? "विहारधाम परिसर" : "Vihardham Inventory"}
+              </span>
+              <span className="text-xs sm:text-sm font-extrabold text-maroon-850 block mt-1">
+                {currentLang === 'hi' ? "२० कमरे व ४ हॉल उपलब्ध" : "20 Rooms & 4 Halls Available"}
+              </span>
+            </div>
+          </div>
 
           <div className="bg-cream-100 border-l-4 border-gold-500 p-4 rounded-xl italic text-xs sm:text-sm text-maroon-800 font-semibold space-y-1 block">
             <span>"Money spent by the community should remain within the community and be used for social welfare."</span>
@@ -160,6 +212,7 @@ export default function OswalPalaceTab({ currentLang, onAddPalaceBooking }: Oswa
               src="https://images.unsplash.com/photo-1519167758481-83f550bb49b3?auto=format&fit=crop&q=80&w=650" 
               alt="Oswal Palace Hall Reception" 
               className="rounded-xl w-full h-80 object-cover group-hover:scale-103 transition-transform duration-500" 
+              referrerPolicy="no-referrer"
             />
             <div className="absolute bottom-5 left-5 right-5 bg-black/50 backdrop-blur-xs p-3.5 rounded-xl text-white">
               <span className="text-[10px] text-gold-300 uppercase font-black block">Central Assembly hall</span>
@@ -184,8 +237,8 @@ export default function OswalPalaceTab({ currentLang, onAddPalaceBooking }: Oswa
                 <div className="w-10 h-10 bg-maroon-50ed rounded-lg text-maroon-700 font-bold text-lg flex items-center justify-center mb-3">
                   ✨
                 </div>
-                <h4 className="font-display font-extrabold text-base text-maroon-850">{feat.title}</h4>
-                <p className="text-charcoal/70 text-xs. sm:text-sm leading-relaxed mt-1.5">{feat.desc}</p>
+                <h4 className="font-display font-extrabold text-base text-maroon-850">{feat.title[currentLang]}</h4>
+                <p className="text-charcoal/70 text-xs sm:text-sm leading-relaxed mt-1.5">{feat.desc[currentLang]}</p>
               </div>
               <div className="text-xs text-gold-600 font-bold flex items-center">
                 <span>Fully Configured</span>
@@ -285,7 +338,7 @@ export default function OswalPalaceTab({ currentLang, onAddPalaceBooking }: Oswa
           }}
           description={{
             hi: "ओसवाल पैलेस के केंद्रीय एयर-कूल्ड वैडिंग हॉल, रसोई ब्लॉक और संगमरमर सुइट्स की निर्माण शैली का पूर्ण वीडियो विवरण।",
-            en: "Comprehensive structural tour showcasing the centralized air-cooled assembly block, separate pure bhojanshala dining setup, and fine marble elevations scheduled at Oswal Palace, Dungri Pura campus."
+            en: "Comprehensive structural tour showcasing the centralized air-cooled assembly block, separate pure bhojanshala dining setup, and fine marble elevations scheduled at Oswal Palace, Meli Gaon / Siwana Samdari Road campus."
           }}
           category="Oswal Palace Preview"
         />

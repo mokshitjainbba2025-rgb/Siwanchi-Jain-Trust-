@@ -70,7 +70,7 @@ export default function GalleryVideosTab({ currentLang, galleryItems }: GalleryV
         </h1>
         <p className="text-charcoal text-xs sm:text-sm font-bold leading-relaxed">
           {currentLang === 'hi' 
-            ? "घर बैठे डूंगरी पुरा नवनिर्मित शिखरबद्ध जैन मंदिर, विहारधाम और ओसवाल पैलेस की मनमोहक तस्वीरें व ड्रोन टूर देखें।"
+            ? "घर बैठे मेली गाँव (सिवाना समदड़ी मार्ग) नवनिर्मित शिखरबद्ध जैन मंदिर, विहारधाम और ओसवाल पैलेस की मनमोहक तस्वीरें व ड्रोन टूर देखें।"
             : "Explore beautiful visual memories, aerial drone video tours, and snapshots of our newly inaugurated holy pilgrimage center."}
         </p>
         <div className="w-24 h-0.5 bg-gold-500 mx-auto mt-2"></div>
@@ -156,8 +156,8 @@ export default function GalleryVideosTab({ currentLang, galleryItems }: GalleryV
                     videoId={videoId}
                     title={item.title}
                     description={{
-                      hi: `अधिकारिक ड्रोन वीडियो ओवरव्यू। डूंगरी पुरा (मेली) रोड पर स्थित इस भव्य आध्यात्मिक परिसर का विहंगम और अद्भुत दृश्य का आनंद लें।`,
-                      en: `Official high-definition drone overview tour of Dungri Pura (Meli Road) campus. Witness the structural marvel and natural visual alignments of the completed temple complex.`
+                      hi: `अधिकारिक ड्रोन वीडियो ओवरव्यू। मेली गाँव (सिवाना समदड़ी मार्ग) पर स्थित इस भव्य आध्यात्मिक परिसर का विहंगम और अद्भुत दृश्य का आनंद लें।`,
+                      en: `Official high-definition drone overview tour of Meli Gaon / Siwana Samdari Road campus. Witness the structural marvel and natural visual alignments of the completed temple complex.`
                     }}
                     category={item.category}
                   />

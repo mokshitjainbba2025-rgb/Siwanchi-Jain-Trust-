@@ -208,6 +208,7 @@ export default function CommunityEvents({ currentLang, onAddVolunteer, onAddMemb
                     src={item.imageUrl} 
                     alt={item.title[currentLang]} 
                     className="w-full h-full object-cover rounded-none" 
+                    referrerPolicy="no-referrer"
                   />
                   <div className="absolute top-2.5 left-2.5 bg-maroon-700 text-gold-300 text-[10px] font-black uppercase tracking-wider px-2 py-1 rounded-none border-2 border-charcoal shadow-flat-sm">
                     {item.category}
@@ -227,7 +228,7 @@ export default function CommunityEvents({ currentLang, onAddVolunteer, onAddMemb
                   
                   {/* Detailed summary button */}
                   <div className="border-t-2 border-charcoal pt-3.5 flex items-center justify-between text-[11px] font-black font-mono uppercase tracking-wide">
-                    <span className="text-gold-600 block leading-none">Dungri Pura construction Desk</span>
+                    <span className="text-gold-600 block leading-none">Meli Gaon construction Desk</span>
                     <button 
                       onClick={() => alert(`Full Log:\n\n${item.content[currentLang]}`)}
                       className="text-maroon-800 hover:text-gold-600 flex items-center cursor-pointer font-black"

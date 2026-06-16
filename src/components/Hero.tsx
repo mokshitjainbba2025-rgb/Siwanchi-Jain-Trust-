@@ -25,7 +25,7 @@ export default function Hero({ currentLang, onNavigate, onOpenVideoModal, slides
       id: 'default_col',
       url: campusPanoramicLayout,
       title: { hi: "विहारधाम जैन मंदिर एवं ओसवाल पैलेस संकुल", en: "Vihardham Jain Temple & Oswal Palace Complex" },
-      caption: { hi: "डूंगरी पुरा जैन मंदिर संकुल का विहंगम दृश्य - अध्यात्म एवं संस्कृति का संगम", en: "Panoramic layout overview of the divine spiritual and wedding venue campus" }
+      caption: { hi: "मेली गाँव (सिवाना समदड़ी मार्ग) जैन मंदिर संकुल का विहंगम दृश्य - अध्यात्म एवं संस्कृति का संगम", en: "Panoramic layout overview of the divine spiritual and wedding venue campus" }
     }
   ];
 
@@ -64,8 +64,8 @@ export default function Hero({ currentLang, onNavigate, onOpenVideoModal, slides
   // Custom statistics counter variables
   const stats = [
     { value: '12 Acres', label: t.statArea, icon: '🏛️' },
-    { value: '150+', label: currentLang === 'hi' ? '150+ से अधिक लोगों की क्षमता' : 'capacity of more than 150+ peoples', icon: '🏨' },
-    { value: '200+', label: currentLang === 'hi' ? 'labharthi' : 'labharthi', icon: '📜' }
+    { value: '250+', label: currentLang === 'hi' ? '250+ लाभार्थी परिवार' : '250+ labharthi families', icon: '📜' },
+    { value: '600+', label: currentLang === 'hi' ? '600+ लोगों के लिए बिस्तर सहित सुविधा' : '600+ people bed sahit suvidha', icon: '🛏️' }
   ];
 
   return (

@@ -105,7 +105,7 @@ export default function DonationSystem({ currentLang, onAddDonation }: DonationS
         </h1>
         <p className="text-charcoal text-xs sm:text-sm font-bold max-w-xl mx-auto md:leading-relaxed">
           {currentLang === 'hi' 
-            ? "आपके द्वारा समर्पित धर्म सहयोग राशि का शत-प्रतिशत उपयोग डूंगरी पुरा श्री संघ विहारधाम, जिनालय रख-रखाव व साधु-साध्वी वैयावृत्य में किया जाता है।"
+            ? "आपके द्वारा समर्पित धर्म सहयोग राशि का शत-प्रतिशत उपयोग मेली गाँव (सिवाना समदड़ी मार्ग) श्री संघ विहारधाम, जिनालय रख-रखाव व साधु-साध्वी वैयावृत्य में किया जाता है।"
             : "Every rupee committed to the trust is utilized transparently for Vihardham holy stays, temple marble-masonry, and monastic support programs."}
         </p>
         {/* Registration & exemption details hidden at trust request */}
@@ -346,8 +346,8 @@ export default function DonationSystem({ currentLang, onAddDonation }: DonationS
                       <div className="flex justify-between border-b-2 border-charcoal pb-4">
                         <div>
                           <span className="font-display font-black text-base text-maroon-800 block">{t.trustName}</span>
-                          <span className="text-[9px] text-charcoal block uppercase font-black tracking-widest leading-none mt-1">Dungri Pura - Seva Mandir Trust</span>
-                          <span className="text-[8px] text-charcoal/60 block mt-0.5">Dungri Pura, Rajasthan, India (Authorized Spiritual Receipt)</span>
+                          <span className="text-[9px] text-charcoal block uppercase font-black tracking-widest leading-none mt-1">Meli Gaon - Seva Mandir Trust</span>
+                          <span className="text-[8px] text-charcoal/60 block mt-0.5">Meli Gaon / Siwana Samdari Road, Rajasthan, India (Authorized Spiritual Receipt)</span>
                         </div>
                         <div className="text-right">
                           <span className="bg-maroon-800 text-gold-300 font-extrabold text-[9px] px-2.5 py-1 rounded-none border border-charcoal block">DHARMIC RECEIPT</span>

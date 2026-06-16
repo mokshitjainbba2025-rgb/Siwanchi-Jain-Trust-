@@ -7,6 +7,7 @@ import React from 'react';
 import { Phone, Mail, Award, MapPin, MessageSquare, History, Check, Heart, Shield, Landmark, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Language, Trustee } from '../types';
 import { seedTrustees } from '../data';
+import templeAboutStone from '../assets/images/temple_about_stone_1781623735251.jpg';
 
 interface AboutTabProps {
   currentLang: Language;
@@ -39,27 +40,27 @@ export default function AboutTab({ currentLang }: AboutTabProps) {
     {
       year: "2018",
       title: { hi: "ट्रस्ट की स्थापना और भूमि रजिस्ट्री", en: "Trust Registration & Land Acquisition" },
-      desc: { hi: "मेली रोड, डूंगरी पुरा में ४.५ एकड़ पवित्र कृषि भूमि का ट्रस्ट के नाम अधिग्रहण और कानूनी पंजीयन पूर्ण हुआ।", en: "Legally acquired 4.5 acres of highly serene road-touch land at Dungri Pura for constructing Vihardham and temple complex." }
+      desc: { hi: "मेली रोड, मेली गाँव (सिवाना समदड़ी मार्ग) में ४.५ एकड़ पवित्र कृषि भूमि का ट्रस्ट के नाम अधिग्रहण और कानूनी पंजीयन पूर्ण हुआ।", en: "Legally acquired 4.5 acres of highly serene road-touch land at Meli Gaon / Siwana Samdari Road for constructing Vihardham and temple complex." }
     },
     {
-      year: "2020",
-      title: { hi: "मंदिर निर्माण का शिलान्यास", en: "Foundation Stone Laying Ceremony" },
-      desc: { hi: "परम पूज्य संतों के आशीर्वाद से भूमि पूजन और सर्वोत्कृष्ट सोमपुरा शिल्पी द्वारा प्रथम पत्थर की स्थापना हुई।", en: "Grand foundation stone laying ceremony performed in the presence of hundred of householders and holy monks." }
+      year: "2019",
+      title: { hi: "मन्दिर निर्माण का भव्य शिलान्यास", en: "Grand Temple Foundation Stone Laying (Shilanyas)" },
+      desc: { hi: "परम पूज्य संतों के पावन आशीर्वाद से मंदिर निर्माण का भूमि पूजन और शिलान्यास पूर्वक प्रथम पत्थर की स्थापना हुई।", en: "Sacred foundation stone laying ceremony (Shilanyas) for the temple completed with the divine blessings of highly revered Jain Saints." }
     },
     {
       year: "2022",
-      title: { hi: " भोजनशाला शुभारंभ", en: "Inauguration of Shanataba Bhojanshala" },
-      desc: { hi: "तीर्थ यात्रियों एवं साधार्मिक बंधुओं के लिए सात्विक व ताजे भोजन की व्यवस्था के लिए अत्याधुनिक डायनिंग ब्लॉक शुरू हुआ।", en: "Successfully commissioned dining block providing fresh pure organic foods, clean water, and nutritional support." }
-    },
-    {
-      year: "2024",
-      title: { hi: "ओसवाल पैलेस की संरचना पूर्ण", en: "Oswal Palace Core Structuring Finished" },
-      desc: { hi: "विशाल सामुदायिक उत्सव भवन, संगमरमर फर्श, स्टेज और कमरे की संरचना सफलतापूर्वक तैयार की गयी।", en: "Finished construction on the master marriage and reception hall called Oswal Palace with over 20 integrated premium rooms." }
+      title: { hi: "भोजनशाला, शिखर ध्वजारोहण व भव्य प्राण प्रतिष्ठा", en: "Bhojanshala, Shikar Dhwaja & Grand Pratistha" },
+      desc: { hi: "शान्ताबाय जैन भोजनशाला का शुभारंभ, शिखरबद्ध मन्दिर का शिखर ध्वजारोहण तथा मंगल प्राण प्रतिष्ठा महामहोत्सव सफलतापूर्वक संपन्न हुआ।", en: "Inauguration of the pure Shantaba Bhojanshala kitchen system, alongside Shikar Dhwaja hoisting and grand temple idol Pratistha rituals." }
     },
     {
       year: "2026",
-      title: { hi: "शिखर ध्वज रोहण व प्राण प्रतिष्ठा (आगामी)", en: "Gran-Prestige & Prathishtha (Upcoming)" },
-      desc: { hi: "नवीन शिखरबद्ध जैन मन्दिर की मंगल अंजनशलाका प्रतिष्ठा उत्सव की भव्य तैयारियां गतिमान हैं।", en: "Nearing final touch-ups, the grand idol installing and flag-hoisting rituals are scheduled for the coming season." }
+      title: { hi: "विहारधाम बुकिंग प्रारंभ (अभी बुक करें)", en: "Vihardham Bookings Officially Open" },
+      desc: { hi: "साधु-साध्वी विहारधाम एवं धर्मशाला के २० सुसज्जित कमरों व ४ विशाल हॉलों की बुकिंग श्रद्धालुओं एवं यात्रियों हेतु सफलतापूर्वक प्रारंभ कर दी गई है।", en: "Online/offline bookings for Vihardham's 20 luxurious guest rooms and 4 spacious halls have officially opened for all patrons." }
+    },
+    {
+      year: "2026",
+      title: { hi: "ओसवाल पैलेस की भव्य पूर्णता (वर्ष के अंत तक)", en: "Oswal Palace Scheduled Completion (By End of 2026)" },
+      desc: { hi: "अत्याधुनिक सर्वसुविधायुक्त सामुदायिक उत्सव भवन 'ओसवाल पैलेस' का निर्माण कार्य वर्ष २०२६ के अंत तक पूर्ण हो जाएगा।", en: "The construction of highly detailed, air-cooled grand Oswal Palace wedding hall with guest suites is scheduled for full completion by late 2026." }
     }
   ];
 
@@ -83,7 +84,7 @@ export default function AboutTab({ currentLang }: AboutTabProps) {
           <p className="text-charcoal text-xs sm:text-sm font-bold leading-relaxed">
             {currentLang === 'hi' ? (
               <>
-                श्री सिवांची जैन समाज के इतिहास में डूंगरी पुरा की धरा पर एक ऐसे केन्द्र की कमी सदैव महसूस की जाती थी जहाँ हमारे पूज्य साधु-साध्वी विहार के दौरान विश्राम कर सकें और समाज के परिवार अपने मांगलिक प्रसंगों को एक ही परिसर में संस्कारी वातावरण में मना सकें। इसी लक्ष्य के साथ सन् २०१८ में वरिष्ठ समाजसेवियों के मार्गदर्शन में <strong>श्री सिवांची जैन सेवा समिति ट्रस्ट</strong> का बीजारोपण किया गया।
+                श्री सिवांची जैन समाज के इतिहास में मेली गाँव (सिवाना समदड़ी मार्ग) की पावन धरा पर एक ऐसे केन्द्र की कमी सदैव महसूस की जाती थी जहाँ हमारे पूज्य साधु-साध्वी विहार के दौरान विश्राम कर सकें और समाज के परिवार अपने मांगलिक प्रसंगों को एक ही परिसर में संस्कारी वातावरण में मना सकें। इसी लक्ष्य के साथ सन् २०१८ में वरिष्ठ समाजसेवियों के मार्गदर्शन में <strong>श्री सिवांची जैन सेवा समिति ट्रस्ट</strong> का बीजारोपण किया गया।
               </>
             ) : (
               <>
@@ -126,9 +127,10 @@ export default function AboutTab({ currentLang }: AboutTabProps) {
           
           <div className="p-4 bg-white border-3 border-charcoal rounded-none shadow-flat-lg relative overflow-hidden">
             <img 
-              src="https://images.unsplash.com/photo-1545232979-8bf34eb9757b?auto=format&fit=crop&q=80&w=600" 
+              src={templeAboutStone} 
               alt="Jain Temple Construction" 
               className="w-full h-80 object-cover border border-charcoal"
+              referrerPolicy="no-referrer"
             />
             <div className="mt-4 p-4 bg-maroon-700 text-gold-300 rounded-none border-2 border-charcoal shadow-flat text-center">
               <span className="text-lg font-black block tracking-wider font-display">ॐ नमो अरिहंताणं</span>
@@ -170,10 +172,10 @@ export default function AboutTab({ currentLang }: AboutTabProps) {
                 icon: "🏛️"
               },
               {
-                title: { hi: "सांस्कृतिक जैन विवाह स्थल", en: "Jain Wedding Venues" },
+                title: { hi: "सांस्कृतिक विवाह स्थल", en: "Cultural Wedding Venues" },
                 desc: { 
-                  hi: "व्यावसायिक रिसॉर्ट्स जैन मूल्यों (मर्यादित सात्विक भोजन, रात्रि भोजन निषेध, जीव हिंसा बचाव) के विरुद्ध काम करते हैं। ओसवाल पैलेस एक शुद्ध जैन-अनुकूल विकल्प देता है।", 
-                  en: "Commercial resorts operate against traditional Jain ethics. Oswal Palace offers a grand, customized luxury venue that respects strict Jain values." 
+                  hi: "व्यावसायिक रिसॉर्ट्स पारंपरिक मूल्यों (मर्यादित सात्विक भोजन, जीव हिंसा बचाव) के विरुद्ध काम करते हैं। ओसवाल पैलेस एक शुद्ध एवं अनुकूल विकल्प देता है।", 
+                  en: "Commercial resorts operate against traditional values. Oswal Palace offers a grand, customized luxury venue that respects strict cultural values." 
                 },
                 icon: "🎡"
               },
@@ -215,15 +217,15 @@ export default function AboutTab({ currentLang }: AboutTabProps) {
           <p className="text-charcoal font-bold text-xs sm:text-sm leading-relaxed">
             {currentLang === 'hi' ? (
               <>
-                अक्सर हमारे मांगलिक विवाह प्रसंगों में समाज के परिवार भारी मात्रा में धन बाहरी व्यावसायिक होटलों व रिसॉर्ट्स में व्यर्थ खर्च कर देते हैं। वह राशि जैन संस्कारों को ठेस पहुँचाने के साथ ही कभी भी समाज हित में नहीं लग पाती। 
+                अक्सर हमारे मांगलिक विवाह प्रसंगों में समाज के परिवार भारी मात्रा में धन बाहरी व्यावसायिक होटलों व रिसॉर्ट्स में व्यर्थ खर्च कर देते हैं। वह राशि हमारे पारंपरिक संस्कारों को ठेस पहुँचाने के साथ ही कभी भी समाज हित में नहीं लग पाती। 
                 <br /><br />
-                <strong>ओसवाल पैलेस</strong> की स्थापना का मूल ध्येय यही है कि हमारे विवाह समारोह एक ही भव्य, जैन-अनुकूल परिवेश में संपन्न हों। यहाँ से जो भी बुकिंग राशि प्राप्त होगी, उसका एक-एक पैसा पूज्य साधु-साध्वी विहारधाम की वैयावृत्य, जैन मंदिर रख-रखाव, छात्रवृत्ति व समाज सुधार कल्याण के पवित्र कार्यों में पुनर्निवेशित किया जायेगा।
+                <strong>ओसवाल पैलेस</strong> की स्थापना का मूल ध्येय यही है कि हमारे विवाह समारोह एक भव्य एवं अनुकूल परिवेश में संपन्न हों। यहाँ से जो भी बुकिंग राशि प्राप्त होगी, उसका एक-एक पैसा समाज में ही रहेगा और पूर्ण रूप से समाज के विकास तथा समाज हित के कल्याणकारी कार्यों में उपयोग किया जाएगा।
               </>
             ) : (
               <>
-                For decades, community families spent exorbitant fortunes booking commercial luxury hotels and resorts for marriages. This capital left our social network forever, frequently endorsing venues violating Jain vegetarianism. 
+                For decades, community families spent exorbitant fortunes booking commercial luxury hotels and resorts for marriages. This capital left our social network forever, frequently endorsing venues violating traditional values. 
                 <br /><br />
-                The baseline philosophy of <strong>Oswal Palace</strong> is to capture this economic potential. By selecting our fully-equipped, modern community wedding venue, you guarantee that 100% of event bookings stay within our system. This capital directly funds traveling monk service teams, temple upkeep, medical support, and future community projects.
+                The baseline philosophy of <strong>Oswal Palace</strong> is to capture this economic potential. By selecting our fully-equipped, modern community wedding venue, you guarantee that 100% of event bookings stay within our community and are utilized entirely for overall community development and welfare benefits.
               </>
             )}
           </p>

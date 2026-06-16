@@ -107,7 +107,7 @@ export const staticTranslations = {
     playAudio: "Play Devotional Audio",
     stopAudio: "Stop Audio",
     activeLive: "Temple Live Camera (Simulated)",
-    liveDarshanDesc: "Experience virtual divine blessings live from the main Shikharbandh Jain Temple of Dungri Pura.",
+    liveDarshanDesc: "Experience virtual divine blessings live from the main Shikharbandh Jain Temple of Meli Gaon / Siwana Samdari Road.",
     
     donorTiers: {
       'Maha Daanveer': 'Maha Labharthi ❤️',
@@ -140,8 +140,8 @@ export const seedTrustees: Trustee[] = [
     designation: { hi: "उपाध्यक्ष (Vice President)", en: "Vice President" },
     city: { hi: "पुणे (गढ़ सिवाना)", en: "Pune (Garh Siwana)" },
     message: { 
-      hi: "डूंगरी पुरा परिसर हमारे संपूर्ण सिवांची समाज की आस्था और गौरव शाली ऐतिहासिक धरोहर का जीवंत रूप है।", 
-      en: "The Dungri Pura complex represents the heart of our spiritual heritage and the collective power of the Siwanchi community."
+      hi: "मेली गाँव (सिवाना समदड़ी मार्ग) परिसर हमारे संपूर्ण सिवांची समाज की आस्था और गौरव शाली ऐतिहासिक धरोहर का जीवंत रूप है।", 
+      en: "The Meli Gaon / Siwana Samdari Road complex represents the heart of our spiritual heritage and the collective power of the Siwanchi community."
     },
     phone: "+91 98221 18776",
     email: "mangilal.n@siwanchitrust.org",
@@ -180,7 +180,7 @@ export const seedTrustees: Trustee[] = [
     city: { hi: "पुणे (गढ़ सिवाना)", en: "Pune (Garh Siwana)" },
     message: { 
       hi: "ट्रस्ट के सेवा कार्य निस्वार्थ रूप से समाज के हर वर्ग तक पहुँचे, यही हमारा ध्येय है।", 
-      en: "Our ultimate goal is to ensure every pilgrim visiting Dungri Pura experiences profound peace."
+      en: "Our ultimate goal is to ensure every pilgrim visiting Meli Gaon / Siwana Samdari Road experiences profound peace."
     },
     phone: "",
     email: "",
@@ -218,8 +218,8 @@ export const seedTrustees: Trustee[] = [
     designation: { hi: "ट्रस्टी (Trustee)", en: "Trustee" },
     city: { hi: "पुणे (गढ़ सिवाना)", en: "Pune (Garh Siwana)" },
     message: { 
-      hi: "हर तीर्थ यात्री डूंगरी पुरा आकर आध्यात्मिक शांति का अनुभव करे, यही हमारा मूल संकल्प है।", 
-      en: "Our ultimate goal is that every pilgrim visits Dungri Pura and experiences spiritual peace."
+      hi: "हर तीर्थ यात्री मेली गाँव (सिवाना समदड़ी मार्ग) आकर आध्यात्मिक शांति का अनुभव करे, यही हमारा मूल संकल्प है।", 
+      en: "Our ultimate goal is that every pilgrim visits Meli Gaon / Siwana Samdari Road and experiences spiritual peace."
     },
     phone: "",
     email: "",
@@ -520,11 +520,11 @@ export const seedLabhOpportunities: LabhOpportunity[] = [
 export const seedNews: NewsItem[] = [
   {
     id: "n1",
-    title: { hi: "डूंगरी पुरा जिनालय का गर्भगृह संगमरमर नक्काशी कार्य पूर्ण", en: "Sanctum Marble Engraving Architecture Complete" },
+    title: { hi: "मेली गाँव (सिवाना समदड़ी मार्ग) जिनालय का गर्भगृह संगमरमर नक्काशी कार्य पूर्ण", en: "Sanctum Marble Engraving Architecture Complete" },
     summary: { hi: "राजस्थान के कुशल कारीगरों द्वारा मकराना संगमरमर का अलौकिक नक्काशी कार्य सम्पन्न हो चुका है।", en: "Highly skilled artisans from Mewar have finished the divine white Makrana marble ceiling carvings." },
     content: { 
-      hi: "परम हर्ष के साथ सूचित किया जाता है कि हमारी मुख्य मन्दिर मन्दिर मेली रोड स्थित डूंगरी पुरा में मुख्य गर्भगृह का अलौकिक श्वेत मकराना संगमरमर नक्काशी कार्य पूजनीय संतों के आशीर्वाद से सफलता पूर्वक पूर्ण कर लिया गया है। इस वर्ष के अंत में भव्य अंजनशलाका प्रतिष्ठा महोत्सव का आयोजन किए जाने की योजना है।", 
-      en: "We are joyous to announce that the intricate marble work of our principal temple under construction at Dungri Pura has been successfully completed. Highly refined white marble columns and pristine designs now adorn the sanctum. The grand Pratishtha Mahotsav is planned by the end of this year." 
+      hi: "परम हर्ष के साथ सूचित किया जाता है कि हमारी मुख्य मन्दिर मन्दिर मेली रोड स्थित मेली गाँव (सिवाना समदड़ी मार्ग) में मुख्य गर्भगृह का अलौकिक श्वेत मकराना संगमरमर नक्काशी कार्य पूजनीय संतों के आशीर्वाद से सफलता पूर्वक पूर्ण कर लिया गया है। इस वर्ष के अंत में भव्य अंजनशलाका प्रतिष्ठा महोत्सव का आयोजन किए जाने की योजना है।", 
+      en: "We are joyous to announce that the intricate marble work of our principal temple under construction at Meli Gaon / Siwana Samdari Road has been successfully completed. Highly refined white marble columns and pristine designs now adorn the sanctum. The grand Pratishtha Mahotsav is planned by the end of this year." 
     },
     category: "Construction",
     date: "2026-05-20",
@@ -532,11 +532,11 @@ export const seedNews: NewsItem[] = [
   },
   {
     id: "n2",
-    title: { hi: "विहारधाम में परम पूज्य साधु-साध्वी भगवंतों का अभूतपूर्व आगमन व चातुर्मास स्थापना", en: "Revered Jain Monks Enter Dungri Pura Vihardham for Chaturmas" },
-    summary: { hi: "परम पूज्य गच्छाधिपति भगवंतों के पावन चरण डूंगरी पुरा विहारधाम की पावन धरा पर पड़े।", en: "A massive group of holy Jain monks and nuns arrived at our newly built Vihar stay suites." },
+    title: { hi: "विहारधाम में परम पूज्य साधु-साध्वी भगवंतों का अभूतपूर्व आगमन व चातुर्मास स्थापना", en: "Revered Jain Monks Enter Meli Gaon / Siwana Samdari Road Vihardham for Chaturmas" },
+    summary: { hi: "परम पूज्य गच्छाधिपति भगवंतों के पावन चरण मेली गाँव (सिवाना समदड़ी मार्ग) विहारधाम की पावन धरा पर पड़े।", en: "A massive group of holy Jain monks and nuns arrived at our newly built Vihar stay suites." },
     content: { 
-      hi: "डूंगरी पुरा (मेली) स्थित श्री सिवांची जैन विहारधाम में आगामी चातुर्मास हेतु पूज्य संतों का मंगल प्रवेश संपन्न हुआ। विहारधाम की व्यवस्थाओं से प्रभावित होकर पूज्य संतों ने संपूर्ण चातुर्मास यही व्यतीत करने की सहर्ष स्वीकृति दी है। प्रतिदिन प्रातः व्याख्यान एवं सांय भक्तामर प्रवचन माला का आयोजन किया जा रहा है।", 
-      en: "The Siwanchi Jain community organized a grand welcome procession for the traveling sadhus who arrived in Dungri Pura. Impressed with the strict non-electric and pure warm water management facilities at Vihardham, they have agreed to stay for the holy four-month Chaturmas. Lectures take place daily between 8 AM and 10 AM." 
+      hi: "मेली गाँव (सिवाना समदड़ी मार्ग) स्थित श्री सिवांची जैन विहारधाम में आगामी चातुर्मास हेतु पूज्य संतों का मंगल प्रवेश संपन्न हुआ। विहारधाम की व्यवस्थाओं से प्रभावित होकर पूज्य संतों ने संपूर्ण चातुर्मास यही व्यतीत करने की सहर्ष स्वीकृति दी है। प्रतिदिन प्रातः व्याख्यान एवं सांय भक्तामर प्रवचन माला का आयोजन किया जा रहा है।", 
+      en: "The Siwanchi Jain community organized a grand welcome procession for the traveling sadhus who arrived at Meli Gaon / Siwana Samdari Road. Impressed with the strict non-electric and pure warm water management facilities at Vihardham, they have agreed to stay for the holy four-month Chaturmas. Lectures take place daily between 8 AM and 10 AM." 
     },
     category: "Religious",
     date: "2026-06-05",
@@ -566,7 +566,7 @@ export const seedEvents: EventItem[] = [
     startDate: "2026-11-15",
     endDate: "2026-12-31",
     category: "Updhan",
-    location: { hi: "डूंगरी पुरा जैन मंदिर संकुल", en: "Dungri Pura Temple & Upashray Complex" },
+    location: { hi: "मेली गाँव (सिवाना समदड़ी मार्ग) जैन मंदिर संकुल", en: "Meli Gaon / Siwana Samdari Road Temple & Upashray Complex" },
     coordinator: "श्री माणकचंद गुलेच्छा",
     coordinatorContact: "+91 98450 33445",
     isRegistrationRequired: true,

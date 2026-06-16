@@ -39,7 +39,8 @@ export default function App() {
       setIsAdminUser(
         user !== null && (
           user.email === 'mokshit.jain.bba2025@atlasskilltech.university' ||
-          user.email === 'kamal.bhandari@yahoo.com'
+          user.email === 'kamal.bhandari@yahoo.com' ||
+          user.email === 'team.siwanchitrust@gmail.com'
         )
       );
     });
@@ -136,7 +137,7 @@ export default function App() {
               id: "slide_1",
               url: campusPanoramicLayout,
               title: { hi: "विहारधाम जैन मंदिर एवं ओसवाल पैलेस संकुल", en: "Vihardham Jain Temple & Oswal Palace Complex" },
-              caption: { hi: "डूंगरी पुरा जैन मंदिर संकुल का विहंगम दृश्य - अध्यात्म एवं संस्कृति का संगम", en: "Panoramic layout overview of the divine spiritual and wedding venue campus" }
+              caption: { hi: "मेली गाँव (सिवाना समदड़ी मार्ग) जैन मंदिर संकुल का विहंगम दृश्य - अध्यात्म एवं संस्कृति का संगम", en: "Panoramic layout overview of the divine spiritual and wedding venue campus" }
             },
             {
               id: "slide_2",
@@ -224,131 +225,72 @@ export default function App() {
       // 4. Room bookings
       try {
         const roomsSnap = await getDocs(collection(db, 'room_bookings'));
-        if (!roomsSnap.empty) {
-          const list: RoomBooking[] = [];
-          roomsSnap.forEach(docSnap => {
+        const list: RoomBooking[] = [];
+        roomsSnap.forEach(docSnap => {
+          if (docSnap.id !== "rb_seed_1") {
             list.push({ id: docSnap.id, ...docSnap.data() } as RoomBooking);
-          });
-          setRoomBookings(list);
-        } else {
-          const initialRooms: RoomBooking[] = [
-            {
-              id: "rb_seed_1",
-              bookingCode: "RM382942",
-              name: "सुभाष जी शाह (मेहता)",
-              mobile: "9822340578",
-              email: "subhash.shah@outlook.com",
-              address: "बाड़मेर - सूरत",
-              checkIn: "2026-06-15",
-              checkOut: "2026-06-18",
-              guests: 3,
-              roomType: "A/C Deluxe Room",
-              roomsCount: 1,
-              specialRequests: "Ground floor preferred for grand parents stay",
-              paymentOption: "UPI",
-              paymentStatus: "Approved",
-              approvalStatus: "Approved",
-              totalAmount: 3600,
-              createdAt: new Date().toISOString()
-            }
-          ];
-          setRoomBookings(initialRooms);
-          if (isAdminUser) {
-            for (const rb of initialRooms) {
-              await safeFirestoreWrite(() => setDoc(doc(db, 'room_bookings', rb.id), rb), OperationType.WRITE, `room_bookings/${rb.id}`);
-            }
+          } else {
+            // Cleanup the default seed document from database
+            safeFirestoreWrite(() => deleteDoc(doc(db, 'room_bookings', 'rb_seed_1')), OperationType.DELETE, 'room_bookings/rb_seed_1');
           }
-        }
+        });
+        setRoomBookings(list);
       } catch (err) {
         try { handleFirestoreError(err, OperationType.GET, 'room_bookings'); } catch (_) {}
         const localRooms = localStorage.getItem('siwanchi_rooms');
         if (localRooms) {
-          try { setRoomBookings(JSON.parse(localRooms)); } catch (_) {}
+          try {
+            const parsed = JSON.parse(localRooms).filter((r: any) => r.id !== "rb_seed_1");
+            setRoomBookings(parsed);
+          } catch (_) {}
         }
       }
 
       // 5. Palace bookings
       try {
         const palaceSnap = await getDocs(collection(db, 'palace_bookings'));
-        if (!palaceSnap.empty) {
-          const list: PalaceBooking[] = [];
-          palaceSnap.forEach(docSnap => {
+        const list: PalaceBooking[] = [];
+        palaceSnap.forEach(docSnap => {
+          if (docSnap.id !== "pb_seed_1") {
             list.push({ id: docSnap.id, ...docSnap.data() } as PalaceBooking);
-          });
-          setPalaceBookings(list);
-        } else {
-          const initialPalace: PalaceBooking[] = [
-            {
-              id: "pb_seed_1",
-              bookingCode: "OP829471",
-              eventType: { hi: "शुभ जैन पाणिग्रहण (विवाह)", en: "Wedding" },
-              date: "2026-11-20",
-              guestCount: 600,
-              organizerName: "शांतिलाल भंडारी",
-              contact: "9426055667",
-              email: "bhandari.wedding@outlook.com",
-              requirements: ["Catering (Pure Organic Meal Service)", "Royal Mandap Flower Decoration"],
-              paymentStatus: "Pending",
-              approvalStatus: "Pending",
-              estimatedCost: 115000,
-              createdAt: new Date().toISOString()
-            }
-          ];
-          setPalaceBookings(initialPalace);
-          if (isAdminUser) {
-            for (const pb of initialPalace) {
-              await safeFirestoreWrite(() => setDoc(doc(db, 'palace_bookings', pb.id), pb), OperationType.WRITE, `palace_bookings/${pb.id}`);
-            }
+          } else {
+            // Cleanup the default seed document from database
+            safeFirestoreWrite(() => deleteDoc(doc(db, 'palace_bookings', 'pb_seed_1')), OperationType.DELETE, 'palace_bookings/pb_seed_1');
           }
-        }
+        });
+        setPalaceBookings(list);
       } catch (err) {
         try { handleFirestoreError(err, OperationType.GET, 'palace_bookings'); } catch (_) {}
         const localPalace = localStorage.getItem('siwanchi_palace');
         if (localPalace) {
-          try { setPalaceBookings(JSON.parse(localPalace)); } catch (_) {}
+          try {
+            const parsed = JSON.parse(localPalace).filter((p: any) => p.id !== "pb_seed_1");
+            setPalaceBookings(parsed);
+          } catch (_) {}
         }
       }
 
       // 6. Donations
       try {
         const donationSnap = await getDocs(collection(db, 'donations'));
-        if (!donationSnap.empty) {
-          const list: Donation[] = [];
-          donationSnap.forEach(docSnap => {
+        const list: Donation[] = [];
+        donationSnap.forEach(docSnap => {
+          if (docSnap.id !== "don_seed_1") {
             list.push({ id: docSnap.id, ...docSnap.data() } as Donation);
-          });
-          setDonations(list);
-        } else {
-          const initialDons: Donation[] = [
-            {
-              id: "don_seed_1",
-              receiptNumber: "REC329481",
-              donorName: "कंचनबाई चौधरी",
-              mobile: "9820123740",
-              email: "kanchan.choudhary@gmail.com",
-              address: "समदड़ी - चेन्नई",
-              panNumber: "ABCDE1234F",
-              amount: 251000,
-              category: "General Account",
-              paymentMethod: "Bank Transfer",
-              transactionId: "TXN32948719324",
-              is80GRequested: true,
-              createdAt: "2026-06-10T12:00:00Z",
-              city: "Samdari"
-            }
-          ];
-          setDonations(initialDons);
-          if (isAdminUser) {
-            for (const d of initialDons) {
-              await safeFirestoreWrite(() => setDoc(doc(db, 'donations', d.id), d), OperationType.WRITE, `donations/${d.id}`);
-            }
+          } else {
+            // Cleanup the default seed document from database
+            safeFirestoreWrite(() => deleteDoc(doc(db, 'donations', 'don_seed_1')), OperationType.DELETE, 'donations/don_seed_1');
           }
-        }
+        });
+        setDonations(list);
       } catch (err) {
         try { handleFirestoreError(err, OperationType.GET, 'donations'); } catch (_) {}
         const localDonations = localStorage.getItem('siwanchi_donations');
         if (localDonations) {
-          try { setDonations(JSON.parse(localDonations)); } catch (_) {}
+          try {
+            const parsed = JSON.parse(localDonations).filter((d: any) => d.id !== "don_seed_1");
+            setDonations(parsed);
+          } catch (_) {}
         }
       }
 
@@ -730,13 +672,13 @@ export default function App() {
             <div className="bg-cream-100/50 border-t-3 border-b-3 border-charcoal py-16">
               <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
                 <div className="text-center space-y-2">
-                  <span className="text-maroon-700 text-xs font-black uppercase tracking-widest block font-mono">🕊️ Experience Dungri Pura Campus Live</span>
+                  <span className="text-maroon-700 text-xs font-black uppercase tracking-widest block font-mono">🕊️ Experience Meli Gaon / Siwana Samdari Road Campus Live</span>
                   <h2 className="font-display font-black text-3xl sm:text-4xl text-maroon-850 uppercase tracking-tight font-sans">
                     {currentLang === 'hi' ? "विहारधाम एवं ओसवाल पैलेस - वर्चुअल ट्यूर" : "Virtual Tour: Vihardham & Oswal Palace"}
                   </h2>
                   <p className="text-charcoal/80 text-xs sm:text-sm font-bold max-w-2xl mx-auto md:leading-relaxed">
                     {currentLang === 'hi' 
-                      ? "डूंगरी पुरा परिसर की विहंगम दृश्य गैलरी और नवनिर्मित शिखरबद्ध जिनालय का भव्य वीडियो ट्यूर अनुभव करें।"
+                      ? "मेली गाँव (सिवाना समदड़ी मार्ग) परिसर की विहंगम दृश्य गैलरी और नवनिर्मित शिखरबद्ध जिनालय का भव्य वीडियो ट्यूर अनुभव करें।"
                       : "Experience the official high-resolution walkthrough of our upcoming spiritual oasis and social welfare event venues."}
                   </p>
                   <div className="w-24 h-0.5 bg-gold-450 mx-auto mt-2"></div>
@@ -829,12 +771,12 @@ export default function App() {
           <div className="md:col-span-4 space-y-4 text-xs font-semibold text-cream-205">
             <h5 className="text-gold-400 uppercase tracking-widest font-black font-display text-[11px] block">Immediate Contact Office</h5>
             <div className="leading-relaxed space-y-1 block">
-              <p className="font-semibold">📍 Siwana-Samdari Road, Opp Bhagvanti Petrol Pump, DurgaPura (Meli), District Barmer, Rajasthan, India</p>
-              <p className="text-gold-300 font-medium text-[11px]">📍 सिवाना-समदड़ी मार्ग, भगवती पेट्रोल पंप के सामने, दुर्गापुरा (मेली), जिला बाड़मेर, राजस्थान, भारत</p>
+              <p className="font-semibold">📍 Siwana-Samdari Road, Opp Bhagvanti Petrol Pump, Meli Gaon, Siwana Samdari Road, District Barmer, Rajasthan, India</p>
+              <p className="text-gold-300 font-medium text-[11px]">📍 सिवाना-समदड़ी मार्ग, भगवती पेट्रोल पंप के सामने, मेली गाँव (सिवाना समदड़ी मार्ग), जिला बाड़मेर, राजस्थान, भारत</p>
             </div>
             <div className="space-y-1 block font-mono">
               <a href="tel:+919426055667" className="block hover:text-white transition-colors">📞 Phone: +91 9822538635</a>
-              <a href="mailto:connect@siwanchitrust.org" className="block hover:text-white transition-colors text-xs">✉️ Email: connect@siwanchitrust.org</a>
+              <a href="mailto:team.siwanchitrust@gmail.com" className="block hover:text-white transition-colors text-xs">✉️ Email: team.siwanchitrust@gmail.com</a>
             </div>
           </div>
 
@@ -842,7 +784,7 @@ export default function App() {
 
         {/* Legal copyrights line */}
         <div className="max-w-7xl mx-auto mt-12 pt-8 border-t border-gold-500/20 text-center text-[10px] text-gold-350 flex flex-col sm:flex-row justify-between items-center space-y-3 sm:space-y-0 text-gold-300/60 font-medium">
-          <p>© {new Date().getFullYear()} Shri Siwanchi Jain Seva Samiti Trust Dungri Pura. All Rights Reserved.</p>
+          <p>© {new Date().getFullYear()} Shri Siwanchi Jain Seva Samiti Trust Meli Gaon / Siwana Samdari Road. All Rights Reserved.</p>
           <div className="flex space-x-4">
             <a href="#terms" onClick={(e) => { e.preventDefault(); alert("Jain monastic disciplines are strictly applicable inside the school campus."); }} className="hover:text-white">Monastic Code Mandate</a>
             <span className="text-gold-500/30">|</span>

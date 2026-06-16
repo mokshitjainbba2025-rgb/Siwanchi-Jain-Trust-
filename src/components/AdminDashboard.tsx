@@ -91,8 +91,12 @@ export default function AdminDashboard({
     }
   };
 
-  const AUTHORIZED_EMAIL = 'mokshit.jain.bba2025@atlasskilltech.university';
-  const isAuthorized = currentUser && currentUser.email === AUTHORIZED_EMAIL;
+  const AUTHORIZED_EMAILS = [
+    'mokshit.jain.bba2025@atlasskilltech.university',
+    'kamal.bhandari@yahoo.com',
+    'team.siwanchitrust@gmail.com'
+  ];
+  const isAuthorized = currentUser && AUTHORIZED_EMAILS.includes(currentUser.email);
 
   // New Gallery Item Upload Form state
   const [newMediaTitleHI, setNewMediaTitleHI] = useState('');

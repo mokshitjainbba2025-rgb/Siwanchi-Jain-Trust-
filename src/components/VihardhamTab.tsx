@@ -193,7 +193,11 @@ export default function VihardhamTab({ currentLang, onAddRoomBooking, roomCatego
             विहारधाम और सुविधायुक्त धर्मशाला परिसर
           </h1>
           <p className="text-charcoal text-sm sm:text-base max-w-3xl mx-auto font-bold leading-relaxed">
-            पूज्य साधु-साध्वी भगवंतों के पद-विहार आनंद और गृहस्थों के सात्विक आध्यात्मिक विश्राम के लिए डूंगरी पुरा में उत्कृष्ट धार्मिक पर्यावरण समन्वित परिसर।
+            {currentLang === 'hi' ? (
+              "पूज्य साधु-साध्वी भगवंतों के पद-विहार आनंद और गृहस्थों के सात्विक आध्यात्मिक विश्राम के लिए मेली गाँव (सिवाना समदड़ी मार्ग) में उत्कृष्ट धार्मिक पर्यावरण समन्वित परिसर (विहारधाम में २० सुसज्जित कमरे और ४ विशाल हॉल उपलब्ध हैं)।"
+            ) : (
+              "A serene, value-aligned religious complex located at Meli Gaon / Siwana Samdari Road, designed for the holy walks of Jain ascetics and pure stays of patrons (Vihardham: 20 rooms and 4 halls fully equipped)."
+            )}
           </p>
           <div className="w-32 h-1 bg-charcoal mx-auto mt-2"></div>
         </div>
@@ -353,9 +357,24 @@ export default function VihardhamTab({ currentLang, onAddRoomBooking, roomCatego
           <div className="border-b-2 border-charcoal pb-4">
             <h3 className="font-display font-black text-xl sm:text-2xl text-maroon-800 flex items-center uppercase tracking-tight">
               <Building className="w-6 h-6 mr-2 text-maroon-700" />
-              <span>धर्मशाला अतिथि गृह: उपलब्ध कमरे</span>
+              <span>{currentLang === 'hi' ? "धर्मशाला अतिथि गृह: उपलब्ध कमरे" : "Dharamshala Guest Stays"}</span>
             </h3>
-            <p className="text-xs text-charcoal font-semibold mt-1">Book clean, premium, values-aligned rooms inside the Vihardham campus instantly.</p>
+            <p className="text-xs text-charcoal font-semibold mt-1">
+              {currentLang === 'hi' 
+                ? "मेली गाँव (सिवाना समदड़ी मार्ग) परिसर के भीतर सुंदर, स्वच्छ, सात्विक पर्यावरण युक्त कमरे बुक करें।" 
+                : "Book clean, premium, values-aligned rooms inside the Vihardham campus instantly."}
+            </p>
+            
+            <div className="mt-4 grid grid-cols-2 gap-3">
+              <div className="bg-amber-50/90 border border-charcoal p-2.5 text-center shadow-flat-sm">
+                <span className="text-[9px] uppercase font-mono font-black text-charcoal/60 block">{currentLang === 'hi' ? "विहारधाम इन्वेंटरी" : "Vihardham Inventory"}</span>
+                <span className="text-xs sm:text-sm font-extrabold text-maroon-950 block mt-0.5">{currentLang === 'hi' ? "२० सुसज्जित कमरे व ४ विशाल हॉल" : "20 Rooms & 4 Halls Equipped"}</span>
+              </div>
+              <div className="bg-amber-50/90 border border-charcoal p-2.5 text-center shadow-flat-sm">
+                <span className="text-[9px] uppercase font-mono font-black text-charcoal/60 block">{currentLang === 'hi' ? "संबद्ध ओसवाल पैलेस" : "Oswal Palace Capacity"}</span>
+                <span className="text-xs sm:text-sm font-extrabold text-maroon-950 block mt-0.5">{currentLang === 'hi' ? "२ AC हॉल, ४ हॉल व ५०० बेड" : "2 AC Halls, 4 Halls & 500 Beds"}</span>
+              </div>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -415,7 +434,7 @@ export default function VihardhamTab({ currentLang, onAddRoomBooking, roomCatego
       </div>
 
       {/* SECTION 2: Virtual Project Walkthrough Video */}
-      <div className="bg-cream-105 border-3 border-charcoal/30 p-6 sm:p-10 rounded-none shadow-flat space-y-8">
+      <div className="bg-[#FFFDF0] border-3 border-charcoal/30 p-6 sm:p-10 rounded-none shadow-flat space-y-8">
         <div className="text-center max-w-2xl mx-auto space-y-2">
           <span className="text-maroon-700 text-xs font-black uppercase tracking-widest block font-mono">🎥 Video Guide Tour</span>
           <h2 className="font-display font-black text-3xl text-maroon-850 uppercase">Vihardham Dharamshala Walkthrough</h2>
@@ -430,115 +449,316 @@ export default function VihardhamTab({ currentLang, onAddRoomBooking, roomCatego
             en: "Vihardham Complex - Spiritual Resting Sanctuary & Pilgrim Walkthrough"
           }}
           description={{
-            hi: "परम पावन डूंगरी पुरा में साधु-साध्वी भगवंतों के लिए नवनिर्मित विहारधाम, धर्मशाला ब्लॉक एवं प्राकृतिक बगीचे का सम्पूर्ण वीडियो ट्यूर।",
+            hi: "परम पावन मेली गाँव (सिवाना समदड़ी मार्ग) में साधु-साध्वी भगवंतों के लिए नवनिर्मित विहारधाम, धर्मशाला ब्लॉक एवं प्राकृतिक बगीचे का सम्पूर्ण वीडियो ट्यूर।",
             en: "Interactive visual walk of the custom-built Vihardham rooms, pure-meal Shantaba Bhojanshala kitchen system, and serene organic gardens designed for traveling Jain Monks and holy patrons."
           }}
           category="Vihardham Preview"
         />
       </div>
-
-      {/* BOOKING PROCESS MODAL */}
+                      {/* BOOKING PROCESS MODAL */}
       {showBookingModal && selectedRoomCategory && (
         <div className="fixed inset-0 z-50 overflow-y-auto bg-black/60 flex items-center justify-center p-4 col-span-2">
-          <div className="relative bg-cream-50 w-full max-w-2xl rounded-none border-3 border-charcoal shadow-flat-lg overflow-hidden animate-fade-in">
+          <div className="relative bg-cream-50 w-full max-w-2xl rounded-none border-3 border-charcoal shadow-flat-lg overflow-hidden animate-fade-in my-8">
             
-                   {/* Modal Content */}
-            <div className="p-6 max-h-[75vh] overflow-y-auto space-y-6 relative">
+            {/* Modal Content */}
+            <div className="p-6 max-h-[85vh] overflow-y-auto relative">
               <button 
+                type="button"
                 onClick={handleCloseBooking}
-                className="absolute top-4 right-4 p-1.5 border-2 border-charcoal hover:bg-cream-100 text-charcoal transition-colors cursor-pointer"
+                className="absolute top-4 right-4 p-1.5 border-2 border-charcoal hover:bg-cream-100 text-charcoal transition-colors cursor-pointer z-10"
                 title="Close"
               >
                 <X className="w-4 h-4" />
               </button>
               
-              <div className="text-center p-4 space-y-6">
-                <div className="w-16 h-16 bg-cream-100 border-2 border-charcoal text-maroon-700 rounded-none flex items-center justify-center text-3xl mx-auto shadow-flat animate-bounce">
-                  🗓️
-                </div>
-                
-                <div className="space-y-3">
-                  <h4 className="font-display font-black text-xl sm:text-2xl text-maroon-850 uppercase tracking-tight">
-                    {currentLang === 'hi' ? "ऑनलाइन धर्मशाला बुकिंग: शीघ्र ही प्रारंभ" : "Online Room Booking: Coming Soon"}
-                  </h4>
-                  
-                  <div className="text-maroon-800 bg-amber-50 border border-amber-300 px-3 py-1 text-[11px] font-black uppercase font-mono tracking-widest inline-block shadow-flat-sm">
-                    {currentLang === 'hi' ? "ऑफलाइन बुकिंग उपलब्ध है (Offline Booking is Active)" : "Offline Booking is fully available"}
+              {isBookedSuccess && generatedBooking ? (
+                <div className="p-4 text-center space-y-6">
+                  <div className="w-16 h-16 bg-green-50 border-2 border-green-600 text-green-600 rounded-none flex items-center justify-center text-3xl mx-auto shadow-flat">
+                    ✓
                   </div>
-                  
-                  <p className="text-charcoal text-xs sm:text-sm font-semibold leading-relaxed">
-                    {currentLang === 'hi' ? (
-                      <>
-                        विहारधाम धर्मशाला में कमरों की <strong>ऑनलाइन बुकिंग सेवा शीघ्र ही शुरू की जाएगी</strong>। वर्तमान में यात्रीगण व तीर्थयात्री <strong>सीधे आगमन पर (Offline) अथवा ट्रस्ट पदाधिकारियों से दूरभाष पर संपर्क करके</strong> अपना प्रस्थान कक्ष पूर्व-सुरक्षित करा सकते हैं।
-                      </>
-                    ) : (
-                      <>
-                        The <strong>online booking system is currently scheduled to open soon</strong>. However, <strong>offline bookings and arrival reservations are fully active</strong> and operational. You can book your stay seamlessly on arrival or by contacting the Trust management beforehand.
-                      </>
-                    )}
-                  </p>
-                </div>
+                  <div className="space-y-2">
+                    <h4 className="font-display font-black text-2xl text-green-700 uppercase tracking-tight">
+                      {currentLang === 'hi' ? "बुकिंग अनुरोध प्राप्त हुआ!" : "Reservation Request Sent!"}
+                    </h4>
+                    <p className="text-xs text-charcoal font-bold max-w-md mx-auto leading-relaxed">
+                      {currentLang === 'hi' 
+                        ? "आपका बुकिंग अनुरोध सफलतापूर्वक दर्ज कर लिया गया है। समीक्षा और अनुमोदन के पश्चात ट्रस्ट के प्रबंधक आपसे संपर्क करेंगे।" 
+                        : "Your booking request has been securely recorded. Trust managers will contact you shortly after reviewing the availability."}
+                    </p>
+                  </div>
 
-                {/* Selected Room Metadata for reference */}
-                <div className="bg-white border-2 border-charcoal p-3.5 rounded-none flex items-center justify-between shadow-flat-sm text-left">
-                  <div className="flex items-center space-x-3">
-                    <img 
-                      src={selectedRoomCategory.imageUrl} 
-                      alt="selected room" 
-                      className="w-14 h-14 object-cover rounded-none border border-charcoal" 
+                  <div className="bg-white border-2 border-charcoal p-5 text-left text-xs font-semibold text-charcoal space-y-3 shadow-flat-sm font-mono max-w-md mx-auto">
+                    <div className="border-b-2 border-charcoal/20 pb-2 text-center">
+                      <span className="text-maroon-800 font-black tracking-widest block uppercase text-[11px] font-display">Shri Siwanchi Jain Seva Samiti</span>
+                      <span className="text-[10px] text-charcoal/60">Meli - Dharamshala Reservation Receipt</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-charcoal/50">BOOKING CODE:</span>
+                      <span className="font-black text-maroon-705">{generatedBooking.bookingCode}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-charcoal/50">PATRON NAME:</span>
+                      <span className="font-black text-charcoal">{generatedBooking.name}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-charcoal/50">MOBILE NO:</span>
+                      <span className="font-black text-charcoal">{generatedBooking.mobile}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-charcoal/50">ROOM TYPE:</span>
+                      <span className="font-black text-charcoal uppercase">{generatedBooking.roomType}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-charcoal/50">ROOMS / GUESTS:</span>
+                      <span className="font-black text-charcoal">{generatedBooking.roomsCount} R / {generatedBooking.guests} G</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-charcoal/50 font-mono">CHECK-IN:</span>
+                      <span className="font-black text-charcoal">{generatedBooking.checkIn}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-charcoal/50 font-mono">CHECK-OUT:</span>
+                      <span className="font-black text-charcoal">{generatedBooking.checkOut}</span>
+                    </div>
+                    <div className="flex justify-between border-t border-dashed border-charcoal/30 pt-2 text-sm">
+                      <span className="text-charcoal font-black">ESTIMATED RATE:</span>
+                      <span className="font-black text-maroon-800">₹{generatedBooking.totalAmount}</span>
+                    </div>
+                  </div>
+
+                  <div className="pt-2">
+                    <button
+                      type="button"
+                      onClick={handleCloseBooking}
+                      className="bg-maroon-700 text-gold-300 font-extrabold text-xs px-8 py-3 rounded-none border-2 border-charcoal shadow-flat hover:bg-gold-500 hover:text-maroon-950 transition-colors uppercase cursor-pointer"
+                    >
+                      {currentLang === 'hi' ? "पूर्ण करें (खिड़की बंद करें)" : "Complete & Close Portal"}
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <form onSubmit={handleSubmitBooking} className="space-y-4 text-left p-2">
+                  <div className="text-center pb-2 border-b-2 border-charcoal/10">
+                    <h4 className="font-display font-black text-lg sm:text-xl text-maroon-850 uppercase tracking-tight">
+                      {currentLang === 'hi' ? "धर्मशाला कक्ष बुकिंग प्रपत्र" : "Dharamshala Room Booking Form"}
+                    </h4>
+                    <p className="text-[10px] font-bold text-gray-500 uppercase tracking-wider font-mono">
+                      {selectedRoomCategory.name[currentLang]} — ₹{selectedRoomCategory.ratePerDay}/Night
+                    </p>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {/* Full Name */}
+                    <div className="space-y-1">
+                      <label className="block text-[10px] font-black uppercase text-charcoal">
+                        {currentLang === 'hi' ? "यात्री का पूरा नाम *" : "Full Name of Traveler *"}
+                      </label>
+                      <div className="relative">
+                        <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-charcoal/40">
+                          <User className="w-4 h-4" />
+                        </span>
+                        <input
+                          type="text"
+                          required
+                          value={fullName}
+                          onChange={(e) => setFullName(e.target.value)}
+                          placeholder={currentLang === 'hi' ? "जैसे: राजेश जैन" : "e.g. Rajesh Jain"}
+                          className="w-full pl-9 pr-3 py-2 bg-white text-xs font-bold text-charcoal border-2 border-charcoal rounded-none focus:outline-none focus:border-gold-500 transition-all font-mono"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Mobile Number */}
+                    <div className="space-y-1">
+                      <label className="block text-[10px] font-black uppercase text-charcoal">
+                        {currentLang === 'hi' ? "मोबाइल नंबर *" : "Mobile Number *"}
+                      </label>
+                      <div className="relative">
+                        <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-charcoal/40">
+                          <Phone className="w-4 h-4" />
+                        </span>
+                        <input
+                          type="tel"
+                          required
+                          value={mobile}
+                          onChange={(e) => setMobile(e.target.value)}
+                          placeholder="e.g. 98xxxxxxxx"
+                          className="w-full pl-9 pr-3 py-2 bg-white text-xs font-bold text-charcoal border-2 border-charcoal rounded-none focus:outline-none focus:border-gold-500 transition-all font-mono"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Email */}
+                    <div className="space-y-1">
+                      <label className="block text-[10px] font-black uppercase text-charcoal">
+                        {currentLang === 'hi' ? "ईमेल आईडी (वैकल्पिक)" : "Email ID (Optional)"}
+                      </label>
+                      <div className="relative">
+                        <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-charcoal/40">
+                          <Mail className="w-4 h-4" />
+                        </span>
+                        <input
+                          type="email"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          placeholder="e.g. rajesh@example.com"
+                          className="w-full pl-9 pr-3 py-2 bg-white text-xs font-bold text-charcoal border-2 border-charcoal rounded-none focus:outline-none focus:border-gold-500 transition-all font-mono"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Address */}
+                    <div className="space-y-1">
+                      <label className="block text-[10px] font-black uppercase text-charcoal">
+                        {currentLang === 'hi' ? "मूल निवासी शहर/पता *" : "City / Native Address *"}
+                      </label>
+                      <div className="relative">
+                        <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-charcoal/40">
+                          <MapPin className="w-4 h-4" />
+                        </span>
+                        <input
+                          type="text"
+                          required
+                          value={address}
+                          onChange={(e) => setAddress(e.target.value)}
+                          placeholder={currentLang === 'hi' ? "जैसे: मुंबई, महाराष्ट्र" : "e.g. Mumbai, Maharashtra"}
+                          className="w-full pl-9 pr-3 py-2 bg-white text-xs font-bold text-charcoal border-2 border-charcoal rounded-none focus:outline-none focus:border-gold-500 transition-all font-mono"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Check-In Date */}
+                    <div className="space-y-1">
+                      <label className="block text-[10px] font-black uppercase text-charcoal">
+                        {currentLang === 'hi' ? "आगमन तिथि (Check-In) *" : "Check-In Date *"}
+                      </label>
+                      <div className="relative">
+                        <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-charcoal/40">
+                          <Calendar className="w-4 h-4" />
+                        </span>
+                        <input
+                          type="date"
+                          required
+                          value={checkIn}
+                          onChange={(e) => setCheckIn(e.target.value)}
+                          className="w-full pl-9 pr-3 py-2 bg-white text-xs font-bold text-charcoal border-2 border-charcoal rounded-none focus:outline-none focus:border-gold-500 transition-all font-mono"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Check-Out Date */}
+                    <div className="space-y-1">
+                      <label className="block text-[10px] font-black uppercase text-charcoal">
+                        {currentLang === 'hi' ? "प्रस्थान तिथि (Check-Out) *" : "Check-Out Date *"}
+                      </label>
+                      <div className="relative">
+                        <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-charcoal/40">
+                          <Calendar className="w-4 h-4" />
+                        </span>
+                        <input
+                          type="date"
+                          required
+                          value={checkOut}
+                          onChange={(e) => setCheckOut(e.target.value)}
+                          className="w-full pl-9 pr-3 py-2 bg-white text-xs font-bold text-charcoal border-2 border-charcoal rounded-none focus:outline-none focus:border-gold-500 transition-all font-mono"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Guest Count */}
+                    <div className="space-y-1">
+                      <label className="block text-[10px] font-black uppercase text-charcoal">
+                        {currentLang === 'hi' ? "कुल यात्रियों की संख्या *" : "Total Guests *"}
+                      </label>
+                      <input
+                        type="number"
+                        min={1}
+                        required
+                        value={guestCount}
+                        onChange={(e) => setGuestCount(Number(e.target.value))}
+                        className="w-full px-3 py-2 bg-white text-xs font-bold text-charcoal border-2 border-charcoal rounded-none focus:outline-none focus:border-gold-500 transition-all font-mono"
+                      />
+                    </div>
+
+                    {/* Rooms Count */}
+                    <div className="space-y-1">
+                      <label className="block text-[10px] font-black uppercase text-charcoal">
+                        {currentLang === 'hi' ? "वांछित कमरों की संख्या *" : "Rooms Required *"}
+                      </label>
+                      <input
+                        type="number"
+                        min={1}
+                        required
+                        value={roomsRequired}
+                        onChange={(e) => setRoomsRequired(Number(e.target.value))}
+                        className="w-full px-3 py-2 bg-white text-xs font-bold text-charcoal border-2 border-charcoal rounded-none focus:outline-none focus:border-gold-500 transition-all font-mono"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Special Requests */}
+                  <div className="space-y-1">
+                    <label className="block text-[10px] font-black uppercase text-charcoal">
+                      {currentLang === 'hi' ? "विशेष आग्रह / धार्मिक नियमावली सहमति टिप्पणी" : "Special Requests / Monastic Guidelines Accord"}
+                    </label>
+                    <textarea
+                      rows={2}
+                      value={specialRequests}
+                      onChange={(e) => setSpecialRequests(e.target.value)}
+                      placeholder={currentLang === 'hi' ? "जैसे: शांत परिसर की आवश्यकता, परिवार के साथ प्रवास..." : "e.g. elder parents traveling, silent wing stay request..."}
+                      className="w-full p-3 bg-white text-xs font-bold text-charcoal border-2 border-charcoal rounded-none focus:outline-none focus:border-gold-500 transition-all font-mono"
                     />
-                    <div>
-                      <span className="text-[10px] text-maroon-800 block font-bold uppercase tracking-wide">Selected Suite Type:</span>
-                      <span className="font-display font-black text-sm text-charcoal tracking-tight block uppercase">{selectedRoomCategory.name[currentLang]}</span>
-                    </div>
                   </div>
-                  <div className="text-right">
-                    <span className="text-[10px] text-charcoal/60 block font-bold uppercase">Rate / Night:</span>
-                    <span className="text-maroon-700 font-extrabold text-sm block">₹{selectedRoomCategory.ratePerDay}</span>
+
+                  {/* Payment Method Option selector */}
+                  <div className="space-y-1">
+                    <label className="block text-[10px] font-black uppercase text-charcoal">
+                      {currentLang === 'hi' ? "भुगतान विकल्प *" : "Preferred Donation Option *"}
+                    </label>
+                    <select
+                      value={paymentOption}
+                      onChange={(e) => setPaymentOption(e.target.value as any)}
+                      className="w-full px-3 py-2 bg-white text-xs font-bold text-charcoal border-2 border-charcoal rounded-none focus:outline-none focus:border-gold-500 transition-all font-mono"
+                    >
+                      <option value="Pay at Counter">{currentLang === 'hi' ? "काउंटर पर नकद दान (समर्पण)" : "Pay Cash Donation at Dharamshala Counter"}</option>
+                      <option value="UPI">{currentLang === 'hi' ? "यूपीआई पेमेंट (UPI Transfer)" : "UPI Transfer"}</option>
+                      <option value="Bank Transfer">{currentLang === 'hi' ? "बैंक ट्रांसफर (Direct Account Deposit)" : "Direct Bank Account Transfer"}</option>
+                    </select>
                   </div>
-                </div>
 
-                {/* Direct Contact Numbers box */}
-                <div className="bg-cream-100 border-2 border-charcoal p-4 rounded-none text-left space-y-3 shadow-flat-sm font-sans">
-                  <span className="text-maroon-900 block text-xs font-black uppercase tracking-widest border-b-2 border-charcoal/20 pb-1">
-                    📞 {currentLang === 'hi' ? "तत्काल ऑफलाइन बुकिंग हेतु संपर्क सूत्र:" : "Direct Room Reservation lines:"}
-                  </span>
-                  
-                  <div className="font-mono text-xs text-charcoal font-bold space-y-1.5">
-                    <div className="flex justify-between items-center text-maroon-850">
-                      <span>• {currentLang === 'hi' ? "श्री शांतिलाल मुथा (मुख्य प्रबंधक)" : "Shantilal Mutha (Manager)"}:</span>
-                      <a href="tel:+919426055667" className="underline font-black hover:text-gold-650">+91 94260 55667</a>
-                    </div>
-                    <div className="flex justify-between items-center text-maroon-850">
-                      <span>• {currentLang === 'hi' ? "श्री राजमलजी भंसाली (अध्यक्ष)" : "Rajmalji Bhansali (President)"}:</span>
-                      <a href="tel:+919822538635" className="underline font-black hover:text-gold-650">+91 98225 38635</a>
-                    </div>
+                  {/* Micro guidelines alert */}
+                  <div className="bg-amber-50 border border-amber-300 p-2.5 text-[9px] text-amber-900 font-bold uppercase rounded-none font-mono flex items-start space-x-2">
+                    <span>⚠️</span>
+                    <span>
+                      {currentLang === 'hi' 
+                        ? "चूँकि यह परिसर धार्मिक मर्यादा के सिद्धांतों के अधीन संचालित है, अतः केवल पूर्ण सात्विक शुद्ध जैन-अनुकूल शाकाहारी भोजन ही मान्य है। रात्रि भोजन निषेध एवं नशा-धूम्रपान सर्वथा वर्जित है।"
+                        : "Because this tabernacle complies strictly with ascetic parameters, only pure vegetarian cuisine is supported. Absolute prohibition against alcohol, smoking, and night dining is enforced."}
+                    </span>
                   </div>
-                </div>
 
-                {/* Rules Footer */}
-                <div className="bg-white/80 border border-charcoal/30 p-3 text-[10px] text-charcoal font-bold font-mono uppercase text-center leading-normal">
-                  ⚠️ {currentLang === 'hi' 
-                    ? "धार्मिक मर्यादा का पालन अनिवार्य है (शुद्ध शाकाहारी भोजन, धूम्रपान/शराब वर्जित है)" 
-                    : "Strict Jain parameters applicable (Pure vegetarian food only, absolutely no meat or liquor)"}
-                </div>
-
-                <div className="pt-2">
-                  <button
-                    onClick={handleCloseBooking}
-                    className="bg-maroon-700 text-gold-300 font-extrabold text-xs px-8 py-3 rounded-none border-2 border-charcoal shadow-flat hover:bg-gold-500 hover:text-maroon-950 transition-colors uppercase cursor-pointer"
-                  >
-                    {currentLang === 'hi' ? "खिड़की बंद करें" : "Close Portal Window"}
-                  </button>
-                </div>
-
-              </div>
+                  {/* Actions */}
+                  <div className="pt-2 flex space-x-3">
+                    <button
+                      type="button"
+                      onClick={handleCloseBooking}
+                      className="flex-1 bg-white hover:bg-neutral-100 text-charcoal font-black text-xs py-3 rounded-none border-2 border-charcoal shadow-flat uppercase tracking-wider transition-all cursor-pointer"
+                    >
+                      {currentLang === 'hi' ? "निरस्त करें" : "Cancel"}
+                    </button>
+                    <button
+                      type="submit"
+                      className="flex-1 bg-maroon-gradient text-gold-300 hover:bg-gold-550 hover:text-maroon-950 font-black text-xs py-3 rounded-none border-2 border-charcoal shadow-flat uppercase tracking-wider transition-all cursor-pointer"
+                    >
+                      {currentLang === 'hi' ? "बुकिंग अनुरोध प्रेषित करें" : "Send Reservation request"}
+                    </button>
+                  </div>
+                </form>
+              )}
             </div>
 
           </div>
         </div>
       )}
-
     </div>
   );
 }

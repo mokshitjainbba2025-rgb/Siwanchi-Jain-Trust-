@@ -28,7 +28,7 @@ export default function VatsalyaDhamTab({ currentLang }: VatsalyaDhamTabProps) {
             </div>
             
             <h1 className="font-display font-black text-3xl sm:text-4.5xl lg:text-5xl text-gold-300 uppercase tracking-tight leading-tight">
-              {currentLang === 'hi' ? "श्री वात्सल्य धाम विहार" : "Shri Vatsalya Dham"}
+              {currentLang === 'hi' ? "श्री वात्सल्य धाम" : "Shri Vatsalya Dham"}
             </h1>
             
             <p className="text-cream-50 font-semibold text-sm sm:text-base leading-relaxed">

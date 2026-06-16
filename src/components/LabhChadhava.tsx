@@ -99,7 +99,7 @@ export default function LabhChadhava({ currentLang, onAddLabhInquiry }: LabhChad
         <p className="text-charcoal text-xs sm:text-sm font-bold mt-1 max-w-xl mx-auto md:leading-relaxed">
           {currentLang === 'hi' ? (
             <>
-              अपने पूजनीय माता-पिता, पूर्वजों अथवा परिवार की पुण्यावली में डूंगरी पुरा (मेली) संकुल के धार्मिक व सामाजिक अंग निर्माण में स्थायी सहयोग कर सुवर्ण अक्षरों में नाम अंकन का लाभ लें।
+              अपने पूजनीय माता-पिता, पूर्वजों अथवा परिवार की पुण्यावली में मेली गाँव (सिवाना समदड़ी मार्ग) संकुल के धार्मिक व सामाजिक अंग निर्माण में स्थायी सहयोग कर सुवर्ण अक्षरों में नाम अंकन का लाभ लें।
             </>
           ) : (
             <>
@@ -232,7 +232,7 @@ export default function LabhChadhava({ currentLang, onAddLabhInquiry }: LabhChad
                     <input 
                       type="text" 
                       required 
-                      placeholder={currentLang === 'hi' ? "उदा. डूंगरी पुरा (बेंगलुरु)" : "e.g. Dungri Pura (Bengaluru)"} 
+                      placeholder={currentLang === 'hi' ? "उदा. मेली गाँव (बेंगलुरु)" : "e.g. Meli Gaon (Bengaluru)"} 
                       className="p-2.5 border-2 border-charcoal rounded-none bg-white text-xs outline-none font-bold" 
                       value={city}
                       onChange={(e) => setCity(e.target.value)}

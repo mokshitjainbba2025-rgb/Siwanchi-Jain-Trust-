@@ -7,6 +7,7 @@ import React, { useState } from 'react';
 import { Phone, Mail, MapPin, Send, MessageCircle, AlertTriangle, CheckCircle2, Map, Users, Calendar } from 'lucide-react';
 import { Language, ContactQuery } from '../types';
 import { staticTranslations } from '../data';
+import trustContactBanner from '../assets/images/trust_contact_banner_1781623752504.jpg';
 
 interface ContactTabProps {
   currentLang: Language;
@@ -20,11 +21,15 @@ export default function ContactTab({ currentLang, onAddContactQuery }: ContactTa
   const [subject, setSubject] = useState('');
   const [message, setMessage] = useState('');
   const [isSuccess, setIsSuccess] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const t = staticTranslations[currentLang];
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitError(null);
 
     const newQuery: ContactQuery = {
       id: "q_" + Date.now(),
@@ -37,15 +42,41 @@ export default function ContactTab({ currentLang, onAddContactQuery }: ContactTa
       createdAt: new Date().toISOString()
     };
 
-    onAddContactQuery(newQuery);
-    setIsSuccess(true);
-    
-    // Clear
-    setName('');
-    setMobile('');
-    setEmail('');
-    setSubject('');
-    setMessage('');
+    try {
+      const response = await fetch("https://formspree.io/f/xgobqzel", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify({
+          name,
+          mobile,
+          email,
+          subject,
+          message
+        })
+      });
+
+      if (response.ok) {
+        onAddContactQuery(newQuery);
+        setIsSuccess(true);
+        // Clear
+        setName('');
+        setMobile('');
+        setEmail('');
+        setSubject('');
+        setMessage('');
+      } else {
+        const data = await response.json().catch(() => ({}));
+        throw new Error(data.error || "Failed to submit form to Formspree");
+      }
+    } catch (err: any) {
+      console.error("Formspree submission error:", err);
+      setSubmitError(currentLang === 'hi' ? 'फॉर्म जमा करने में त्रुटि हुई। कृपया पुनः प्रयास करें।' : 'There was an error submitting the form. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -55,7 +86,7 @@ export default function ContactTab({ currentLang, onAddContactQuery }: ContactTa
       <div className="text-center max-w-2xl mx-auto space-y-2">
         <span className="text-gold-600 text-xs font-black uppercase tracking-widest block font-mono">Get in Touch with our team</span>
         <h2 className="font-display font-black text-3xl text-maroon-800 uppercase tracking-tight">संपर्क करें (Contact Office)</h2>
-        <p className="text-xs text-charcoal font-bold mt-1">डूंगरी पुरा तीर्थ संकुल में किसी भी प्रकार की धार्मिक जानकारी, धर्म सहयोग या विशेष बुकिंग सहायता के लिए संपर्क करें।</p>
+        <p className="text-xs text-charcoal font-bold mt-1">मेली गाँव (सिवाना समदड़ी मार्ग) तीर्थ संकुल में किसी भी प्रकार की धार्मिक जानकारी, धर्म सहयोग या विशेष बुकिंग सहायता के लिए संपर्क करें।</p>
         <div className="w-24 h-1 bg-charcoal mx-auto mt-2"></div>
       </div>
 
@@ -68,12 +99,22 @@ export default function ContactTab({ currentLang, onAddContactQuery }: ContactTa
               मुख्य प्रशासनिक कार्यालय (Trust HQ)
             </h3>
 
+            {/* Contact Office Visual Banner */}
+            <div className="border border-charcoal overflow-hidden aspect-video">
+              <img 
+                src={trustContactBanner} 
+                alt="Trust HQ Office Banner" 
+                className="w-full h-full object-cover"
+                referrerPolicy="no-referrer"
+              />
+            </div>
+
             <div className="space-y-4 text-xs font-black text-charcoal font-mono uppercase tracking-wide">
               <div className="flex items-start gap-3">
                 <MapPin className="w-5 h-5 text-gold-500 shrink-0 mt-0.5" />
                 <div>
                   <span className="text-maroon-800 block text-[11px] font-black uppercase">Address coordinates:</span>
-                  <span className="font-bold lowercase first-line:uppercase">डूंगरी पुरा (मेली), सिवाना-समदड़ी रोड, जिला बाड़मेर, राजस्थान, ३४४०४४</span>
+                  <span className="font-bold lowercase first-line:uppercase">मेली गाँव (सिवाना समदड़ी मार्ग), जिला बाड़मेर, राजस्थान, ३४४०४४</span>
                 </div>
               </div>
 
@@ -82,7 +123,6 @@ export default function ContactTab({ currentLang, onAddContactQuery }: ContactTa
                 <div>
                   <span className="text-maroon-800 block text-[11px] font-black">Helpline numbers:</span>
                   <a href="tel:+91 98225 38635" className="font-mono text-charcoal font-black hover:text-maroon-700 block">+91 98225 38635 (Chairman Rajmalji Bhansali)</a>
-                  <a href="tel:+919845033445" className="font-mono text-charcoal font-black hover:text-maroon-700 block">+91 98450 33445 (VP Manak Ji)</a>
                 </div>
               </div>
 
@@ -116,7 +156,7 @@ export default function ContactTab({ currentLang, onAddContactQuery }: ContactTa
           {/* Map wrapper frame */}
           <div className="bg-white border-3 border-charcoal p-2.5 rounded-none shadow-flat overflow-hidden aspect-video">
             <iframe 
-              title="Google Map location Dungri Pura Meli Rajasthan"
+              title="Google Map location Meli Gaon Rajasthan"
               src="https://www.google.com/search?sca_esv=2281bbf698677232&biw=1536&bih=695&sxsrf=ANbL-n4rmT_PfhixwkJn9ABSu3jyiALPVA%3A1781331629999&kgmid=%2Fg%2F11spplw10q&q=Sunanda%20keshav%20jinalay%20(vihardham)&shem=epsd1%2Crimspwouoe&shndl=30&source=sh%2Fx%2Floc%2Funi%2Fm1%2F1&kgs=36f866ed9cb0abb8" 
               className="w-full h-full border-0 rounded-none"
               allowFullScreen={false} 
@@ -195,12 +235,19 @@ export default function ContactTab({ currentLang, onAddContactQuery }: ContactTa
                 />
               </div>
 
+              {submitError && (
+                <div className="col-span-2 p-3 bg-red-50 border-2 border-red-500 text-red-700 font-bold font-mono text-center normal-case text-xs">
+                  ❌ {submitError}
+                </div>
+              )}
+
               <div className="col-span-2 pt-2">
                 <button
                   type="submit"
-                  className="w-full bg-maroon-gradient hover:bg-gold-550 hover:text-maroon-950 text-gold-300 font-extrabold py-4 rounded-none border-2 border-charcoal shadow-flat uppercase tracking-wider transition-all active:translate-y-0.5 cursor-pointer"
+                  disabled={isSubmitting}
+                  className="w-full bg-maroon-gradient hover:bg-gold-550 hover:text-maroon-950 text-gold-300 font-extrabold py-4 rounded-none border-2 border-charcoal shadow-flat uppercase tracking-wider transition-all active:translate-y-0.5 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Submit Inquiry Sheet
+                  {isSubmitting ? (currentLang === 'hi' ? 'जमा किया जा रहा है...' : 'Submitting Inquiry...') : (currentLang === 'hi' ? 'पूछताछ प्रपत्र भेजें' : 'Submit Inquiry Sheet')}
                 </button>
               </div>
 
