@@ -1271,7 +1271,7 @@ export default function App() {
 
         {/* Dedicated Pure Devotion Credit Statement */}
         <div className="max-w-7xl mx-auto mt-5 text-center text-[11px] sm:text-xs text-gold-400/75 font-medium tracking-wide border-t border-gold-500/10 pt-4 space-y-1.5">
-          <p>Website crafted and made by <span className="font-bold text-gold-300">Mokshit ratanji salecha</span> with pure devotion (+91 7096505331)</p>
+          <p>Website crafted and made by <span className="font-bold text-gold-300">Mokshit Ratanji Salecha</span> with pure devotion (+91 7096505331)</p>
           <p className="text-sm sm:text-base font-semibold text-gold-300">संकलन: मोक्षित सालेचा (भोरड़ा), सूरत</p>
         </div>
       </footer>
