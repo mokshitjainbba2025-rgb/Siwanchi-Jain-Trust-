@@ -43,49 +43,55 @@ export default function DonationSystem({ currentLang, onAddDonation }: DonationS
       alert(currentLang === 'hi' ? "कृपया एक मान्य सहयोग राशि दर्ज करें।" : "Please enter a valid contribution amount.");
       return;
     }
+    if (!donorName.trim()) {
+      alert(currentLang === 'hi' ? "कृपया सहयोगी/लाभार्थी का नाम दर्ज करें।" : "Please enter name of Sahyogi/Labharthi.");
+      return;
+    }
+    if (!mobile.trim() || mobile.trim().length < 10) {
+      alert(currentLang === 'hi' ? "कृपया 10 अंकों का मोबाइल नंबर दर्ज करें।" : "Please enter a 10-digit mobile number.");
+      return;
+    }
+    if (!city.trim()) {
+      alert(currentLang === 'hi' ? "कृपया मूल ग्राम / शहर दर्ज करें।" : "Please enter Native Town / City.");
+      return;
+    }
+
+    const receiptNo = "LBH" + Math.floor(100000 + Math.random() * 900000);
+    const txnId = "REG" + Math.floor(100000000000 + Math.random() * 900000000000);
+    setReceiptNumber(receiptNo);
+    setSimulatedTxnId(txnId);
+
+    const newDonation: Donation = {
+      id: "don_" + Date.now(),
+      receiptNumber: receiptNo,
+      donorName,
+      mobile,
+      email,
+      address: city,
+      panNumber: panNumber ? panNumber.toUpperCase() : undefined,
+      amount: Number(amount),
+      category,
+      paymentMethod: 'Bank Transfer',
+      transactionId: 'Offline Verification Pending',
+      is80GRequested,
+      createdAt: new Date().toISOString(),
+      city
+    };
+
+    onAddDonation(newDonation);
+    setGeneratedDonation(newDonation);
     setCheckingOut(true);
-    setPaymentStep('process');
-    
-    // Simulate payment transaction network delays
-    setTimeout(() => {
-      const receiptNo = "LBH" + Math.floor(100000 + Math.random() * 900000);
-      const txnId = "TXN" + Math.floor(100000000000 + Math.random() * 900000000000);
-      setReceiptNumber(receiptNo);
-      setSimulatedTxnId(txnId);
-
-      const newDonation: Donation = {
-        id: "don_" + Date.now(),
-        receiptNumber: receiptNo,
-        donorName,
-        mobile,
-        email,
-        address: city,
-        panNumber: panNumber ? panNumber.toUpperCase() : undefined,
-        amount: Number(amount),
-        category,
-        paymentMethod,
-        transactionId: txnId,
-        is80GRequested,
-        createdAt: new Date().toISOString(),
-        city
-      };
-
-      onAddDonation(newDonation);
-      setGeneratedDonation(newDonation);
-      setPaymentStep('done');
-    }, 2000);
   };
 
   const handleReset = () => {
     setCheckingOut(false);
-    setPaymentStep('details');
     setAmount('');
     setDonorName('');
     setMobile('');
     setEmail('');
     setCity('');
     setPanNumber('');
-    setCategory('General');
+    setCategory('General Account');
     setPaymentMethod('UPI');
     setIs80GRequested(false);
     setGeneratedDonation(null);
@@ -165,252 +171,262 @@ export default function DonationSystem({ currentLang, onAddDonation }: DonationS
           </div>
         </div>
 
-        {/* Right Side: Online Sponsoring Widget Form */}
-        <div className="lg:col-span-7 bg-white border-3 border-charcoal p-6 sm:p-8 rounded-none shadow-flat-lg">
-          <h3 className="font-display font-black text-xl text-maroon-800 flex items-center border-b-2 border-charcoal pb-4 mb-6 uppercase tracking-tight">
-            <Award className="w-5.5 h-5.5 mr-2 text-gold-500" />
-            <span>{currentLang === 'hi' ? "सुरक्षित धर्म सहयोग राशि प्रेषण" : "Direct Secure Dharma Sahyog Form"}</span>
-          </h3>
-
+        {/* Right Side: Interactive Interest Form and Payment Instructions */}
+        <div className="lg:col-span-7 space-y-6">
           {!checkingOut ? (
-            /* Sponsoring input form dashboard */
-            <form onSubmit={handleInitiateDonation} className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs font-bold text-charcoal">
-              
-              {/* Category selection */}
-              <div className="col-span-2 flex flex-col space-y-1 bg-cream-50 p-3 rounded-none border-2 border-charcoal">
-                <label className="text-maroon-800 uppercase tracking-wide font-mono text-[10px]">{currentLang === 'hi' ? "धर्म सहयोग / लाभ अवसर श्रेणी *" : "Select Dharma Sahyog Category *"}</label>
-                <select
-                  required
-                  className="p-2.5 border-2 border-charcoal rounded-none bg-white text-xs outline-none mt-1 font-bold"
-                  value={category}
-                  onChange={(e: any) => setCategory(e.target.value)}
-                >
-                  <option value="General Account">📍 {currentLang === 'hi' ? "साधारण खाता (General Account)" : "General Account"}</option>
-                  <option value="Dev Dravya">🪔 {currentLang === 'hi' ? "देव द्रव्य (Dev Dravya)" : "Dev Dravya"}</option>
-                  <option value="Jiv Daya">🌾 {currentLang === 'hi' ? "जीव दया (Jiv Daya)" : "Jiv Daya"}</option>
-                  <option value="Other Dharma Sahyog">❤️ {currentLang === 'hi' ? "अन्य धर्म सहयोग (Other Dharma Sahyog)" : "Other Dharma Sahyog"}</option>
-                </select>
-              </div>
+            /* Part 1: Dharma Sahyog Interest Registration Form */
+            <div className="bg-white border-3 border-charcoal p-6 sm:p-8 rounded-none shadow-flat-lg space-y-6">
+              <h3 className="font-display font-black text-lg sm:text-xl text-maroon-800 flex items-center border-b-2 border-charcoal pb-4 uppercase tracking-tight">
+                <FileText className="w-5.5 h-5.5 mr-2 text-gold-500" />
+                <span>{currentLang === 'hi' ? "धर्म सहयोग विवरण प्रविष्टि" : "Dharma Sahyog Interest Form"}</span>
+              </h3>
 
-              {/* Amount input & Quick selectors */}
-              <div className="col-span-2 flex flex-col space-y-1">
-                <label className="text-maroon-800 uppercase tracking-wide font-mono text-[10px]">{currentLang === 'hi' ? "सहयोग राशि * (₹ भारतीय रुपया)" : "Dharma Sahyog Amount * (INR)"}</label>
-                <div className="relative mt-1">
-                  <span className="absolute left-3.5 top-3 text-maroon-700 font-extrabold text-sm">₹</span>
-                  <input
-                    type="number"
+              <form onSubmit={handleInitiateDonation} className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs font-bold text-charcoal">
+                
+                {/* Category selection */}
+                <div className="col-span-2 flex flex-col space-y-1 bg-cream-50 p-3 rounded-none border-2 border-charcoal">
+                  <label className="text-maroon-800 uppercase tracking-wide font-mono text-[10px]">{currentLang === 'hi' ? "सहयोग / लाभ अवसर श्रेणी *" : "Select Sahyog / Labh Category *"}</label>
+                  <select
                     required
-                    min="10"
-                    placeholder={currentLang === 'hi' ? "राशि दर्ज करें (जैसे 51000)" : "Enter amount (e.g. 51000)"}
-                    className="w-full pl-8 pr-4 py-3 border-2 border-charcoal rounded-none bg-white text-sm outline-none font-bold"
-                    value={amount}
-                    onChange={(e) => setAmount(e.target.value === '' ? '' : Number(e.target.value))}
+                    className="p-2.5 border-2 border-charcoal rounded-none bg-white text-xs outline-none mt-1 font-bold"
+                    value={category}
+                    onChange={(e: any) => setCategory(e.target.value)}
+                  >
+                    <option value="General Account">📍 {currentLang === 'hi' ? "साधारण खाता (General Account)" : "General Account"}</option>
+                    <option value="Dev Dravya">🪔 {currentLang === 'hi' ? "देव द्रव्य (Dev Dravya)" : "Dev Dravya"}</option>
+                    <option value="Jiv Daya">🌾 {currentLang === 'hi' ? "जीव दया (Jiv Daya)" : "Jiv Daya"}</option>
+                    <option value="Other Dharma Sahyog">❤️ {currentLang === 'hi' ? "अन्य धर्म सहयोग (Other Dharma Sahyog)" : "Other Dharma Sahyog"}</option>
+                  </select>
+                </div>
+
+                {/* Amount input & Quick selectors */}
+                <div className="col-span-2 flex flex-col space-y-1">
+                  <label className="text-maroon-800 uppercase tracking-wide font-mono text-[10px]">{currentLang === 'hi' ? "सहयोग राशि * (₹ भारतीय रुपया)" : "Dharma Sahyog Amount * (INR)"}</label>
+                  <div className="relative mt-1">
+                    <span className="absolute left-3.5 top-3.5 text-maroon-700 font-extrabold text-sm">₹</span>
+                    <input
+                      type="number"
+                      required
+                      min="10"
+                      placeholder={currentLang === 'hi' ? "राशि दर्ज करें (जैसे 11000)" : "Enter amount (e.g. 11000)"}
+                      className="w-full pl-8 pr-4 py-3 border-2 border-charcoal rounded-none bg-white text-sm outline-none font-bold"
+                      value={amount}
+                      onChange={(e) => setAmount(e.target.value === '' ? '' : Number(e.target.value))}
+                    />
+                  </div>
+                  
+                  {/* Fast Select Buttons */}
+                  <div className="grid grid-cols-5 gap-2 pt-1 font-mono">
+                    {[2700, 5400, 11000, 27000, 54000].map((val) => (
+                      <button
+                        key={val}
+                        type="button"
+                        onClick={() => handleQuickAmount(val)}
+                        className={`border-2 border-charcoal hover:bg-maroon-700 hover:text-white transition-all p-2 rounded-none text-[10px] font-black cursor-pointer shadow-flat-sm active:translate-y-0.5 ${
+                          amount === val ? 'bg-maroon-800 text-gold-300' : 'bg-cream-50'
+                        }`}
+                      >
+                        ₹{val.toLocaleString('en-IN')}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Donor fields */}
+                <div className="flex flex-col space-y-1">
+                  <label className="text-maroon-800">{currentLang === 'hi' ? "सहयोगी / लाभार्थी का नाम *" : "Sahyogi / Labharthi Full Name *"}</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder={currentLang === 'hi' ? "उदा. शा. राजमलजी भंसाली" : "e.g. Sha Rajmalji Bhansali"}
+                    className="p-2.5 border-2 border-charcoal rounded-none bg-white text-xs outline-none font-semibold"
+                    value={donorName}
+                    onChange={(e) => setDonorName(e.target.value)}
                   />
                 </div>
-                
-                {/* Fast Select Buttons with culturally auspicious values */}
-                <div className="grid grid-cols-5 gap-2 pt-1 font-mono">
-                  {[2700, 5400, 11000, 27000, 54000].map((val) => (
-                    <button
-                      key={val}
-                      type="button"
-                      onClick={() => handleQuickAmount(val)}
-                      className="border-2 border-charcoal hover:bg-maroon-700 hover:text-white transition-all bg-cream-50 p-2 rounded-none text-[10px] font-black cursor-pointer shadow-flat-sm active:translate-y-0.5"
-                    >
-                      ₹{val.toLocaleString('en-IN')}
-                    </button>
-                  ))}
+
+                <div className="flex flex-col space-y-1">
+                  <label className="text-maroon-800">{currentLang === 'hi' ? "मोबाइल नंबर (WhatsApp विवरण हेतु) *" : "WhatsApp Mobile Number *"}</label>
+                  <input
+                    type="tel"
+                    required
+                    pattern="[0-9]{10}"
+                    maxLength={10}
+                    placeholder={currentLang === 'hi' ? "उदा. 9822538635" : "10-digit mobile"}
+                    className="p-2.5 border-2 border-charcoal rounded-none bg-white text-xs outline-none font-semibold text-charcoal font-mono"
+                    value={mobile}
+                    onChange={(e) => setMobile(e.target.value.replace(/\D/g, ''))}
+                  />
+                </div>
+
+                <div className="flex flex-col space-y-1">
+                  <label className="text-maroon-800">{currentLang === 'hi' ? "ईमेल आईडी (वैकल्पिक)" : "Email Address (Optional)"}</label>
+                  <input
+                    type="email"
+                    placeholder="name@domain.com"
+                    className="p-2.5 border-2 border-charcoal rounded-none bg-white text-xs outline-none font-semibold text-charcoal"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                </div>
+
+                <div className="flex flex-col space-y-1">
+                  <label className="text-maroon-800">{currentLang === 'hi' ? "मूल ग्राम / शहर एवं राज्य *" : "Native Town & State *"}</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder={currentLang === 'hi' ? "उदा. मेली (पुणे)" : "e.g. Meli (Pune)"}
+                    className="p-2.5 border-2 border-charcoal rounded-none bg-white text-xs outline-none font-semibold"
+                    value={city}
+                    onChange={(e) => setCity(e.target.value)}
+                  />
+                </div>
+
+                {/* Submit CTA */}
+                <div className="col-span-2 pt-4">
+                  <button
+                    type="submit"
+                    className="w-full bg-maroon-gradient hover:bg-gold-500 hover:text-maroon-950 text-gold-300 font-extrabold py-3.5 rounded-none border-2 border-charcoal shadow-flat transition-all cursor-pointer text-xs sm:text-sm uppercase tracking-wider"
+                  >
+                    {currentLang === 'hi' ? "विवरण सहेजें और भुगतान निर्देश देखें ➔" : "Submit Details & View Payment Modes ➔"}
+                  </button>
+                </div>
+
+              </form>
+            </div>
+          ) : (
+            /* Part 2: Secure Payment Modes Instruction Screen */
+            <div className="bg-white border-3 border-charcoal p-6 sm:p-8 rounded-none shadow-flat-lg space-y-6">
+              
+              {/* Submission Status Alert */}
+              <div className="bg-green-50 border-2 border-green-600 p-4 rounded-none space-y-1 animate-fade-in">
+                <div className="flex items-center space-x-2">
+                  <CheckCircle2 className="w-5 h-5 text-green-700 shrink-0" />
+                  <h4 className="font-display font-black text-sm uppercase text-green-900 leading-none">
+                    {currentLang === 'hi' ? "निवेदन विवरण सफलतापूर्वक प्राप्त हुआ!" : "Interest Registered Successfully!"}
+                  </h4>
+                </div>
+                <p className="text-[11px] text-charcoal/90 leading-relaxed font-semibold pl-7">
+                  {currentLang === 'hi'
+                    ? `सहयोगी परिवार: ${generatedDonation?.donorName}, राशि: ₹${generatedDonation?.amount?.toLocaleString('en-IN')} (पंजीकरण कोड: ${generatedDonation?.receiptNumber})। आपका विवरण सुरक्षित रूप से दर्ज कर लिया गया है। कृपया नीचे दी गई प्रणाली द्वारा दान प्रेषित करें।`
+                    : `Sahyogi: ${generatedDonation?.donorName}, Amount: ₹${generatedDonation?.amount?.toLocaleString('en-IN')} (Reg No: ${generatedDonation?.receiptNumber}). Your interest is recorded. Please proceed with payment below.`}
+                </p>
+              </div>
+
+              <h3 className="font-display font-black text-lg sm:text-xl text-maroon-800 flex items-center border-b-2 border-charcoal pb-4 uppercase tracking-tight">
+                <Award className="w-5.5 h-5.5 mr-2 text-gold-500" />
+                <span>{currentLang === 'hi' ? "भुगतान माध्यम एवं सहयोग निर्देश" : "Payment Modes & Instructions"}</span>
+              </h3>
+
+              {/* Crucial Announcement Banner */}
+              <div className="bg-[#FFFDF0] border-2 border-amber-500 p-4 rounded-none space-y-2 relative overflow-hidden">
+                <div className="flex items-start space-x-2.5">
+                  <ShieldAlert className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+                  <div className="space-y-1">
+                    <h4 className="font-bold text-xs text-maroon-900 uppercase">
+                      {currentLang === 'hi' ? "गेटवे सूचना (Gateway Notice)" : "Online Gateway Notice"}
+                    </h4>
+                    <p className="text-[11px] text-charcoal/90 leading-relaxed font-semibold">
+                      {currentLang === 'hi' 
+                        ? "सुरक्षा एवं पारदर्शिता के कारण सीधे ऑनलाइन भुगतान गेटवे वेबसाइट पर कनेक्टेड नहीं है। साधारण बैंक ट्रांसफर अथवा अन्य सभी भुगतान माध्यमों के लिए नीचे दिए गए अधिकृत निर्देशों का पालन करें।"
+                        : "The automated online payment gateway is currently not linked directly on the web application. Please follow the instructions below for secure manual bank transfers or other modes."}
+                    </p>
+                  </div>
                 </div>
               </div>
 
-              {/* Donor fields */}
-              <div className="flex flex-col space-y-1">
-                <label className="text-maroon-800">{currentLang === 'hi' ? "सहयोगी / लाभार्थी का पूरा नाम *" : "Sahyogi Parivar Full Name *"}</label>
-                <input
-                  type="text"
-                  required
-                  placeholder={currentLang === 'hi' ? "उदा. अशोक कुमार गुलेच्छा" : "e.g. Ashok Kumar Gulechha"}
-                  className="p-2.5 border-2 border-charcoal rounded-none bg-white text-xs outline-none"
-                  value={donorName}
-                  onChange={(e) => setDonorName(e.target.value)}
-                />
-              </div>
+              {/* Instruction Steps */}
+              <div className="space-y-4">
+                <div className="flex items-start space-x-3">
+                  <div className="w-6 h-6 bg-maroon-800 text-gold-300 font-black text-xs font-mono rounded-none border-2 border-charcoal flex items-center justify-center shrink-0 mt-0.5 shadow-flat-sm">
+                    1
+                  </div>
+                  <div className="space-y-1">
+                    <h5 className="font-display font-black text-xs uppercase text-maroon-850">
+                      {currentLang === 'hi' ? "सीधे बैंक खाता स्थानांतरण (Direct Bank Transfer)" : "Direct Bank Transfer & RTGS / NEFT"}
+                    </h5>
+                    <p className="text-[11px] text-charcoal/80 leading-relaxed font-semibold">
+                      {currentLang === 'hi'
+                        ? "आप बाईं ओर दिए गए स्टेट बैंक ऑफ़ इंडिया के अधिकृत खाते (IFSC: SBIN0031178) में नेट बैंकिंग, आरटीजीएस (RTGS), एनईएफटी (NEFT) या अपने मोबाइल बैंक ऐप से धर्म सहयोग राशि भेज सकते हैं और प्रविष्टि हेतु व्हाट्सएप्प करें।"
+                        : "Execute wire transfers, RTGS, IMPS, or NEFT directly into the State Bank of India account detailed on the left panel, and share confirmation."}
+                    </p>
+                  </div>
+                </div>
 
-              <div className="flex flex-col space-y-1">
-                <label className="text-maroon-800">{currentLang === 'hi' ? "मोबाइल नंबर (WhatsApp रसीद हेतु) *" : "WhatsApp Mobile Number *"}</label>
-                <input
-                  type="tel"
-                  required
-                  pattern="[0-9]{10}"
-                  placeholder={currentLang === 'hi' ? "उदा. 9845012345 (10 अंक)" : "10-digit mobile"}
-                  className="p-2.5 border-2 border-charcoal rounded-none bg-white text-xs outline-none"
-                  value={mobile}
-                  onChange={(e) => setMobile(e.target.value)}
-                />
-              </div>
-
-              <div className="flex flex-col space-y-1">
-                <label className="text-maroon-800">{currentLang === 'hi' ? "ईमेल आईडी (वैकल्पिक)" : "Email Address (Optional)"}</label>
-                <input
-                  type="email"
-                  placeholder="name@domain.com"
-                  className="p-2.5 border-2 border-charcoal rounded-none bg-white text-xs outline-none"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-              </div>
-
-              <div className="flex flex-col space-y-1">
-                <label className="text-maroon-800">{currentLang === 'hi' ? "मूल ग्राम / शहर एवं राज्य *" : "Native Town & State *"}</label>
-                <input
-                  type="text"
-                  required
-                  placeholder={currentLang === 'hi' ? "उदा. मेली (बेंगलुरु)" : "e.g. Meli (Bengaluru)"}
-                  className="p-2.5 border-2 border-charcoal rounded-none bg-white text-xs outline-none"
-                  value={city}
-                  onChange={(e) => setCity(e.target.value)}
-                />
-              </div>
-
-              {/* 80G details omitted per trust directives */}
-
-              {/* Payment methods */}
-              <div className="col-span-2 pt-2 space-y-2">
-                <label className="text-xs text-maroon-800 block uppercase tracking-wider font-mono text-[10px]">{currentLang === 'hi' ? "सुरक्षित नेटवर्क गेटवे चुनें *" : "Select Secure Gateway Mode *"}</label>
-                <div className="grid grid-cols-3 gap-2 text-center">
-                  {[
-                    { id: 'UPI', label: currentLang === 'hi' ? '📲 यूपीआई (जीपे/फ़ोनपे)' : '📲 UPI Apps (PhonePe, GPay)' },
-                    { id: 'Online', label: currentLang === 'hi' ? '💳 कार्ड / नेटबैंकिंग' : '💳 Cards / NetBanking' },
-                    { id: 'Bank Transfer', label: currentLang === 'hi' ? '🏛️ बैंक खाता ट्रान्सफर' : '🏛️ Manual Bank Transfer' }
-                  ].map((pay) => (
-                    <button
-                      key={pay.id}
-                      type="button"
-                      onClick={() => setPaymentMethod(pay.id as any)}
-                      className={`p-3 border-2 text-xs font-bold rounded-none transition-all cursor-pointer shadow-flat-sm active:translate-y-0.5 ${
-                        paymentMethod === pay.id
-                          ? 'bg-maroon-700 text-gold-300 border-charcoal scale-99 font-black'
-                          : 'bg-white border-charcoal text-charcoal hover:bg-cream-100'
-                      }`}
-                    >
-                      {pay.label}
-                    </button>
-                  ))}
+                <div className="flex items-start space-x-3">
+                  <div className="w-6 h-6 bg-maroon-800 text-gold-300 font-black text-xs font-mono rounded-none border-2 border-charcoal flex items-center justify-center shrink-0 mt-0.5 shadow-flat-sm">
+                    2
+                  </div>
+                  <div className="space-y-1">
+                    <h5 className="font-display font-black text-xs uppercase text-maroon-850">
+                      {currentLang === 'hi' ? "अन्य सभी भुगतान माध्यमों के लिए (नकद, चैक, ड्राफ्ट)" : "For All Other Payment Modes (Cash, Cheques & Drafts)"}
+                    </h5>
+                    <p className="text-[11px] text-charcoal/80 leading-relaxed font-semibold">
+                      {currentLang === 'hi'
+                        ? "अन्य भुगतान विकल्पों (नकद सहयोग, चेक प्रेषण, या रसीद प्रविष्टि) अथवा किसी भी धर्म सहयोग के संबंध में जानकारी के लिए कृपया पुणे में सीधे अध्यक्ष राजमलजी भंसाली से संपर्क करें।"
+                        : "For physical cash collection, local cheques, demand drafts, or physical receipt queries, please get in touch with Governing President Rajmalji Bhansali in Pune directly."}
+                    </p>
+                  </div>
                 </div>
               </div>
 
-              {/* Submit CTA */}
-              <div className="col-span-2 pt-4">
+              {/* President Contact Card */}
+              <div className="bg-cream-55 border-2 border-charcoal p-5 rounded-none relative overflow-hidden space-y-4 shadow-flat-sm">
+                <div className="absolute top-0 right-0 bg-maroon-800 text-gold-300 font-bold font-mono text-[9px] uppercase tracking-wider px-3 py-1 border-b border-l border-charcoal">
+                  {currentLang === 'hi' ? "अध्यक्ष" : "President"}
+                </div>
+
+                <div className="space-y-1.5 pt-2">
+                  <span className="text-[10px] text-gold-700 font-black uppercase tracking-widest font-mono block">
+                    {currentLang === 'hi' ? "अधिकृत संपर्क विवरण" : "AUTHORIZED CONTACT RECORD"}
+                  </span>
+                  <h4 className="font-display font-black text-sm text-maroon-900 uppercase">
+                    {currentLang === 'hi' ? "शा. संघवी राजमलजी मफतलालजी भंसाली (पुणे)" : "Sanghvi Rajmalji Mafatlalji Bhansali (Pune)"}
+                  </h4>
+                  <p className="text-[10px] text-charcoal/70 font-bold uppercase tracking-wider">
+                    {currentLang === 'hi' ? "श्री सिवांची जैन सेवा समिति ट्रस्ट" : "Shri Siwanchi Jain Seva Samiti Trust"}
+                  </p>
+                </div>
+
+                <div className="border-t border-charcoal/10 pt-3.5 grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs font-mono font-bold">
+                  <a 
+                    href="tel:+919822538635"
+                    className="flex items-center space-x-2 bg-white hover:bg-cream-100 p-2 border-2 border-charcoal rounded-none text-charcoal transition-all shadow-flat-sm active:translate-y-0.5 cursor-pointer"
+                  >
+                    <Phone className="w-4 h-4 text-maroon-700 shrink-0" />
+                    <span>+91 98225 38635</span>
+                  </a>
+                  <a 
+                    href="mailto:rajmal.bhansali@siwanchitrust.org"
+                    className="flex items-center space-x-2 bg-white hover:bg-cream-100 p-2 border-2 border-charcoal rounded-none text-charcoal transition-all shadow-flat-sm active:translate-y-0.5 select-all truncate cursor-pointer"
+                  >
+                    <FileText className="w-4 h-4 text-maroon-700 shrink-0" />
+                    <span className="truncate">rajmal.bhansali@siwanchitrust.org</span>
+                  </a>
+                </div>
+
+                <div className="pt-2">
+                  <a 
+                    href={`https://wa.me/919822538635?text=Jai%20Jinendra!%20My%20Dharma%20Sahyog%20Interest%20is%20submitted%20on%20website%20with%20Reg%20No%20${generatedDonation?.receiptNumber}.%20Name:%20${encodeURIComponent(generatedDonation?.donorName || '')},%20Amount:%20INR%20${generatedDonation?.amount}.%20Please%20guide%20me%20for%20transfer.`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full bg-green-700 hover:bg-green-600 text-gold-100 font-extrabold py-3 px-4 rounded-none border-2 border-charcoal text-center flex items-center justify-center space-x-2 transition-all shadow-flat active:translate-y-0.5 uppercase tracking-wide text-xs cursor-pointer"
+                  >
+                    <span>💬 {currentLang === 'hi' ? "व्हाट्सएप द्वारा सत्यापन हेतु संपर्क करें (पुणे)" : "WhatsApp Verification Desk (Pune)"}</span>
+                  </a>
+                </div>
+              </div>
+
+              {/* Reset flow to allow filling another interest */}
+              <div className="pt-2 border-t border-charcoal/10 flex justify-end">
                 <button
-                  type="submit"
-                  className="w-full bg-maroon-gradient hover:bg-gold-500 hover:text-maroon-950 text-gold-300 font-black py-4 rounded-none border-2 border-charcoal shadow-flat transition-all cursor-pointer text-sm uppercase tracking-wider"
+                  onClick={handleReset}
+                  className="bg-white hover:bg-cream-50 text-maroon-800 font-black border-2 border-charcoal px-5 py-2 text-xs uppercase tracking-wide cursor-pointer transition-all active:translate-y-0.5 shadow-flat-sm"
                 >
-                  {currentLang === 'hi' ? "पुष्टि करें और आगे बढ़ें (सुरक्षित भुगतान सिम्युलेटर)" : "Confirm Contribution (Simulate Secure Gateway)"}
+                  {currentLang === 'hi' ? "➔ नया सहयोग विवरण भरें" : "➔ Fill Another Interest Form"}
                 </button>
               </div>
 
-            </form>
-          ) : (
-            /* Simulated Processing Wizard */
-            <div className="text-center py-10 space-y-6">
-              {paymentStep === 'process' && (
-                <div className="space-y-4">
-                  <div className="w-16 h-16 rounded-none border-4 border-gold-450 border-t-maroon-700 animate-spin mx-auto"></div>
-                  <div className="space-y-1">
-                    <span className="text-xs text-charcoal/60 block font-bold">Connecting to state-approved safe bank routing...</span>
-                    <strong className="text-maroon-850 text-lg block">Simulating Transaction of ₹{amount}</strong>
-                  </div>
-                  <p className="text-[10px] text-charcoal/50">Please wait. Processing secured cryptographic ledger entries.</p>
-                </div>
-              )}
-
-              {paymentStep === 'done' && (
-                <div className="space-y-6 animate-fade-in">
-                  <div className="w-16 h-16 bg-green-100 text-green-700 rounded-none border-2 border-charcoal flex items-center justify-center text-3xl mx-auto shadow-flat animate-bounce">
-                    ✓
-                  </div>
-                  <div className="space-y-1">
-                    <h4 className="font-display font-black text-2xl text-maroon-850">अनुमोदन सफल • Record Registered!</h4>
-                    <span className="text-xs text-charcoal/60 block font-medium">Your righteous Dharma Sahyog has been logged in our secure archives. Shasan Prabhavna!</span>
-                  </div>
-
-                  {/* Certified legal 80G receipt rendering */}
-                  {generatedDonation && (
-                    <div id="receipt-print-80g" className="border-4 border-double border-charcoal bg-cream-55 p-6 sm:p-8 rounded-none text-left max-w-xl mx-auto text-charcoal relative overflow-hidden space-y-4 shadow-flat-lg">
-                      
-                      {/* Artistic background watermarks */}
-                      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[100px] font-bold text-gold-500/5 rotate-12 pointer-events-none select-none">
-                        VANDANA
-                      </div>
-
-                      <div className="flex justify-between border-b-2 border-charcoal pb-4">
-                        <div>
-                          <span className="font-display font-black text-base text-maroon-800 block">{t.trustName}</span>
-                          <span className="text-[9px] text-charcoal block uppercase font-black tracking-widest leading-none mt-1">Meli Gaon - Seva Mandir Trust</span>
-                          <span className="text-[8px] text-charcoal/60 block mt-0.5">Meli Gaon / Siwana Samdari Road, Rajasthan, India (Authorized Spiritual Receipt)</span>
-                        </div>
-                        <div className="text-right">
-                          <span className="bg-maroon-800 text-gold-300 font-extrabold text-[9px] px-2.5 py-1 rounded-none border border-charcoal block">DHARMIC RECEIPT</span>
-                          <span className="text-[9px] text-charcoal/80 font-mono mt-1 block font-black">LNo: {generatedDonation.receiptNumber}</span>
-                        </div>
-                      </div>
-
-                      <div className="space-y-3.5 text-xs font-bold">
-                        <p className="leading-relaxed">
-                          This is to appreciate and certify the spiritual generous contributions of <strong>{generatedDonation.donorName}</strong> resident of <strong>{generatedDonation.city}</strong> for sponsoring: 
-                          <span className="text-maroon-800 font-black"> {generatedDonation.category} Dharma Seva Fund</span>.
-                        </p>
-
-                        <div className="grid grid-cols-2 gap-3 bg-white p-3.5 rounded-none border-2 border-charcoal font-sans">
-                          <div>
-                            <span className="text-[10px] text-charcoal/50 block">Sahyog Amount:</span>
-                            <span className="text-green-700 text-base font-black">₹{generatedDonation.amount.toLocaleString('en-IN')}</span>
-                          </div>
-                          <div>
-                            <span className="text-[10px] text-charcoal/50 block">Payment Mode:</span>
-                            <span className="text-charcoal block">{generatedDonation.paymentMethod}</span>
-                          </div>
-                          <div className="col-span-2">
-                            <span className="text-[10px] text-charcoal/50 block font-medium">Transaction ID:</span>
-                            <span className="text-charcoal text-[11px] font-mono select-all truncate block">{generatedDonation.transactionId}</span>
-                          </div>
-                        </div>
-
-                        <div className="border-t-2 border-charcoal/30 pt-4 flex justify-between items-end text-[10px] text-charcoal/50">
-                          <div>
-                            <span className="block font-medium">Date Issued: {new Date(generatedDonation.createdAt).toLocaleDateString()}</span>
-                            <span className="block mt-0.5 font-mono">Seal: SIWANCHI-TRUST-MELE</span>
-                          </div>
-                          <div className="text-center font-bold">
-                            <div className="w-24 h-8 bg-gold-400/10 border border-charcoal flex items-center justify-center font-display italic text-[10px] text-maroon-800 rounded mb-1">
-                              R. M. Bhansali
-                            </div>
-                            <span className="block border-t border-charcoal pt-1 text-[8px] text-charcoal/80 uppercase font-black">Governing President</span>
-                          </div>
-                        </div>
-                      </div>
-
-                    </div>
-                  )}
-
-                  <div className="flex justify-center gap-3">
-                    <button
-                      onClick={() => window.print()}
-                      className="border-2 border-charcoal bg-white hover:bg-cream-100 text-maroon-800 font-black text-xs px-5 py-2.5 rounded-none flex items-center space-x-1.5 transition-all cursor-pointer shadow-flat-sm"
-                    >
-                      <Download className="w-4 h-4 text-gold-500" />
-                      <span>{currentLang === 'hi' ? "रसीद डाउनलोड पीडीएफ" : "Print Authorized Receipt"}</span>
-                    </button>
-                    <button
-                      onClick={handleReset}
-                      className="bg-maroon-700 text-gold-300 hover:bg-gold-500 hover:text-maroon-900 font-black text-xs px-5 py-2.5 rounded-none shadow-flat border-2 border-charcoal cursor-pointer transition-all"
-                    >
-                      {currentLang === 'hi' ? "धन्यवाद (वापस जाएं)" : "Done / Exit"}
-                    </button>
-                  </div>
-
-                </div>
-              )}
             </div>
           )}
         </div>

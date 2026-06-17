@@ -320,7 +320,7 @@ export const seedTrustees: Trustee[] = [
     id: "tr16",
     name: { hi: "शा. बाबुलालजी राजमलजी भंसाली", en: "Sha Babulalji Rajmalji Bhansali" },
     designation: { hi: "ट्रस्टी (Trustee)", en: "Trustee" },
-    city: { hi: "मुंबई (पाटी)", en: "Mumbai (Pati)" },
+    city: { hi: "मुंबई (पाती)", en: "Mumbai (Pati)" },
     message: { 
       hi: "नियमित धार्मिक सेवा एवं जन-कल्याण हमारी संस्था के मुख्य अंग हैं।", 
       en: "Regular religious services and public welfare are core organs of our institution."
@@ -522,16 +522,28 @@ export const seedLabhOpportunities: LabhOpportunity[] = [
   },
   {
     id: "olo_dmc",
-    title: { hi: "डाइनिंग हॉल मुख्य सहयोगी (Dining Hall Main Contributor)", en: "Dining Hall Main Contributor" },
-    description: { hi: "एक साथ सैकड़ों जनों की सात्विक स्वाध्याय भोजन पंगत हेतु मुख्य डाइनिंग हॉल निर्माण का भगीरथ सहयोग प्रसंग।", en: "Become a lead patron for the grand wedding and community dining hall under construction." },
+    title: { 
+      hi: "६००० SF शालिभद्र भोजन खंड (Shalibhadra Dining Hall) - २० सहयोगी (प्रति नाम: ₹11,00,000/-)", 
+      en: "6000 SF Shalibhadra Dining Hall - 20 Collaborators (₹11,00,000 per name)" 
+    },
+    description: { 
+      hi: "ओसवाल पैलेस में ६००० SF के शालिभद्र भोजन खंड (Shalibhadra Dining Hall) के सहयोगी में केवल २० नाम स्वीकृत किए जाएंगे, जिसमें प्रति नाम सहयोग राशि ₹11,00,000/- है।", 
+      en: "A beautiful opportunity to display your family name among just 20 elite collaborators for the 6000 SF grand Shalibhadra Dining Hall. Contribution per name: ₹11,00,000/-." 
+    },
     amount: 1100000,
     isAvailable: true,
     category: "Palace"
   },
   {
     id: "olo_fmc",
-    title: { hi: "लार्ज ए.सी. मुख्य समारोह गृह सहयोगी", en: "Function Hall Main Contributor" },
-    description: { hi: "विशाल एयरकंडीशंड उत्सव भवन के निर्माण में मुख्य सहयोगी बनने का सौभाग्य, जो भव्य विवाह एवं मांगलिक कार्यों को साकार करेगा।", en: "Gain prime recognition as a leading contributor to the massive central Air-Conditioned main celebration hall." },
+    title: { 
+      hi: "६००० SF मांगलिक फंक्शन हॉल (Mangalik Function Hall) - २० सहयोगी (प्रति नाम: ₹11,00,000/-)", 
+      en: "6000 SF Mangalik Function Hall - 20 Collaborators (₹11,00,000 per name)" 
+    },
+    description: { 
+      hi: "ओसवाल पैलेस में ६००० SF के मांगलिक फंक्शन हॉल (Mangalik Function Hall) के सहयोगी में केवल २० नाम स्वीकृत किए जाएंगे, जिसमें प्रति नाम सहयोग राशि ₹11,00,000/- है।", 
+      en: "A premium opportunity to write your auspicious name among the 20 co-sponsors/collaborators for the 6000 SF majestic Mangalik Function Hall. Contribution per name: ₹11,00,000/-." 
+    },
     amount: 1100000,
     isAvailable: true,
     category: "Palace"
