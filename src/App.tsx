@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Sparkles, Phone, Mail, Award, X, Heart, Shield, Globe } from 'lucide-react';
 
 // Data types & assets imports
@@ -141,6 +141,19 @@ export default function App() {
   const [contactQueries, setContactQueries] = useState<ContactQuery[]>([]);
   const [labhInquiries, setLabhInquiries] = useState<LabhInquiry[]>([]);
   const [auditLogs, setAuditLogs] = useState<AuditLog[]>([]);
+
+  // Serialization trackers to dynamically prevent duplicate Firestore writes (quota protection)
+  const loadedRoomBookingsRef = useRef<Record<string, string>>({});
+  const loadedPalaceBookingsRef = useRef<Record<string, string>>({});
+  const loadedDonationsRef = useRef<Record<string, string>>({});
+  const loadedVolunteersRef = useRef<Record<string, string>>({});
+  const loadedMembersRef = useRef<Record<string, string>>({});
+  const loadedAuditLogsRef = useRef<Record<string, string>>({});
+  const loadedGalleryItemsRef = useRef<Record<string, string>>({});
+  const loadedSlideshowImagesRef = useRef<Record<string, string>>({});
+  const loadedRoomCategoriesRef = useRef<Record<string, string>>({});
+
+  const [dbQuotaExceeded, setDbQuotaExceeded] = useState(false);
   const [galleryItems, setGalleryItems] = useState<GalleryItem[]>(() => {
     const local = localStorage.getItem('siwanchi_gallery');
     if (local) {
@@ -172,7 +185,12 @@ export default function App() {
   const safeFirestoreWrite = async (op: () => Promise<any>, opType: OperationType, path: string) => {
     try {
       await op();
-    } catch (err) {
+    } catch (err: any) {
+      const errStr = String(err?.message || err || '');
+      const errCode = String(err?.code || '');
+      if (errStr.includes('resource-exhausted') || errStr.includes('Quota exceeded') || errStr.includes('quota') || errCode.includes('resource-exhausted')) {
+        setDbQuotaExceeded(true);
+      }
       try {
         handleFirestoreError(err, opType, path);
       } catch (_) {}
@@ -282,12 +300,18 @@ export default function App() {
               const hasCustomInLocal = parsedLocal.some(s => !default12Ids.includes(s.id));
               if (hasCustomInLocal && isOnlyOldDefaultsInFirestore) {
                 hasCustomLocal = true;
+                parsedLocal.forEach(s => {
+                  loadedSlideshowImagesRef.current[s.id] = JSON.stringify(s);
+                });
                 setSlideshowImages(parsedLocal);
               }
             } catch (_) {}
           }
           if (!hasCustomLocal) {
             if (isOnlyOldDefaultsInFirestore) {
+              defaultSlideshow.forEach(s => {
+                loadedSlideshowImagesRef.current[s.id] = JSON.stringify(s);
+              });
               setSlideshowImages(defaultSlideshow);
               if (isAdminUser) {
                 for (const s of defaultSlideshow) {
@@ -295,10 +319,16 @@ export default function App() {
                 }
               }
             } else {
+              list.forEach(s => {
+                loadedSlideshowImagesRef.current[s.id] = JSON.stringify(s);
+              });
               setSlideshowImages(list);
             }
           }
         } else {
+          defaultSlideshow.forEach(s => {
+            loadedSlideshowImagesRef.current[s.id] = JSON.stringify(s);
+          });
           setSlideshowImages(defaultSlideshow);
           if (isAdminUser) {
             for (const s of defaultSlideshow) {
@@ -306,11 +336,21 @@ export default function App() {
             }
           }
         }
-      } catch (err) {
+      } catch (err: any) {
+        const errStr = String(err?.message || err || '');
+        if (errStr.includes('resource-exhausted') || errStr.includes('Quota exceeded') || errStr.includes('quota')) {
+          setDbQuotaExceeded(true);
+        }
         try { handleFirestoreError(err, OperationType.GET, 'slideshow_images'); } catch (_) {}
         const localSlideshow = localStorage.getItem('siwanchi_slideshow_images');
         if (localSlideshow) {
-          try { setSlideshowImages(JSON.parse(localSlideshow)); } catch (_) {}
+          try {
+            const parsed = JSON.parse(localSlideshow);
+            parsed.forEach((s: any) => {
+              loadedSlideshowImagesRef.current[s.id] = JSON.stringify(s);
+            });
+            setSlideshowImages(parsed);
+          } catch (_) {}
         }
       }
 
@@ -331,14 +371,23 @@ export default function App() {
               const parsedLocalGallery = JSON.parse(localGalleryStr) as GalleryItem[];
               if (parsedLocalGallery.length > list.length) {
                 hasCustomLocalGallery = true;
+                parsedLocalGallery.forEach(g => {
+                  loadedGalleryItemsRef.current[g.id] = JSON.stringify(g);
+                });
                 setGalleryItems(parsedLocalGallery);
               }
             } catch (_) {}
           }
           if (!hasCustomLocalGallery) {
+            list.forEach(g => {
+              loadedGalleryItemsRef.current[g.id] = JSON.stringify(g);
+            });
             setGalleryItems(list);
           }
         } else {
+          seedGallery.forEach(g => {
+            loadedGalleryItemsRef.current[g.id] = JSON.stringify(g);
+          });
           setGalleryItems(seedGallery);
           if (isAdminUser) {
             for (const g of seedGallery) {
@@ -346,12 +395,25 @@ export default function App() {
             }
           }
         }
-      } catch (err) {
+      } catch (err: any) {
+        const errStr = String(err?.message || err || '');
+        if (errStr.includes('resource-exhausted') || errStr.includes('Quota exceeded') || errStr.includes('quota')) {
+          setDbQuotaExceeded(true);
+        }
         try { handleFirestoreError(err, OperationType.GET, 'gallery_items'); } catch (_) {}
         const localGallery = localStorage.getItem('siwanchi_gallery');
         if (localGallery) {
-          try { setGalleryItems(JSON.parse(localGallery)); } catch (_) {}
+          try {
+            const parsed = JSON.parse(localGallery);
+            parsed.forEach((g: any) => {
+              loadedGalleryItemsRef.current[g.id] = JSON.stringify(g);
+            });
+            setGalleryItems(parsed);
+          } catch (_) {}
         } else {
+          seedGallery.forEach(g => {
+            loadedGalleryItemsRef.current[g.id] = JSON.stringify(g);
+          });
           setGalleryItems(seedGallery);
         }
       }
@@ -364,8 +426,14 @@ export default function App() {
           rcSnap.forEach(docSnap => {
             list.push({ id: docSnap.id, ...docSnap.data() } as RoomCategory);
           });
+          list.forEach(rc => {
+            loadedRoomCategoriesRef.current[rc.id] = JSON.stringify(rc);
+          });
           setRoomCategoriesList(list);
         } else {
+          roomCategories.forEach(rc => {
+            loadedRoomCategoriesRef.current[rc.id] = JSON.stringify(rc);
+          });
           setRoomCategoriesList(roomCategories);
           if (isAdminUser) {
             for (const rc of roomCategories) {
@@ -373,8 +441,15 @@ export default function App() {
             }
           }
         }
-      } catch (err) {
+      } catch (err: any) {
+        const errStr = String(err?.message || err || '');
+        if (errStr.includes('resource-exhausted') || errStr.includes('Quota exceeded') || errStr.includes('quota')) {
+          setDbQuotaExceeded(true);
+        }
         try { handleFirestoreError(err, OperationType.GET, 'room_categories'); } catch (_) {}
+        roomCategories.forEach(rc => {
+          loadedRoomCategoriesRef.current[rc.id] = JSON.stringify(rc);
+        });
         setRoomCategoriesList(roomCategories);
       }
 
@@ -384,19 +459,28 @@ export default function App() {
         const list: RoomBooking[] = [];
         roomsSnap.forEach(docSnap => {
           if (docSnap.id !== "rb_seed_1") {
-            list.push({ id: docSnap.id, ...docSnap.data() } as RoomBooking);
+            const item = { id: docSnap.id, ...docSnap.data() } as RoomBooking;
+            list.push(item);
+            loadedRoomBookingsRef.current[item.id] = JSON.stringify(item);
           } else {
             // Cleanup the default seed document from database
             safeFirestoreWrite(() => deleteDoc(doc(db, 'room_bookings', 'rb_seed_1')), OperationType.DELETE, 'room_bookings/rb_seed_1');
           }
         });
         setRoomBookings(list);
-      } catch (err) {
+      } catch (err: any) {
+        const errStr = String(err?.message || err || '');
+        if (errStr.includes('resource-exhausted') || errStr.includes('Quota exceeded') || errStr.includes('quota')) {
+          setDbQuotaExceeded(true);
+        }
         try { handleFirestoreError(err, OperationType.GET, 'room_bookings'); } catch (_) {}
         const localRooms = localStorage.getItem('siwanchi_rooms');
         if (localRooms) {
           try {
             const parsed = JSON.parse(localRooms).filter((r: any) => r.id !== "rb_seed_1");
+            parsed.forEach((r: any) => {
+              loadedRoomBookingsRef.current[r.id] = JSON.stringify(r);
+            });
             setRoomBookings(parsed);
           } catch (_) {}
         }
@@ -408,19 +492,28 @@ export default function App() {
         const list: PalaceBooking[] = [];
         palaceSnap.forEach(docSnap => {
           if (docSnap.id !== "pb_seed_1") {
-            list.push({ id: docSnap.id, ...docSnap.data() } as PalaceBooking);
+            const item = { id: docSnap.id, ...docSnap.data() } as PalaceBooking;
+            list.push(item);
+            loadedPalaceBookingsRef.current[item.id] = JSON.stringify(item);
           } else {
             // Cleanup the default seed document from database
             safeFirestoreWrite(() => deleteDoc(doc(db, 'palace_bookings', 'pb_seed_1')), OperationType.DELETE, 'palace_bookings/pb_seed_1');
           }
         });
         setPalaceBookings(list);
-      } catch (err) {
+      } catch (err: any) {
+        const errStr = String(err?.message || err || '');
+        if (errStr.includes('resource-exhausted') || errStr.includes('Quota exceeded') || errStr.includes('quota')) {
+          setDbQuotaExceeded(true);
+        }
         try { handleFirestoreError(err, OperationType.GET, 'palace_bookings'); } catch (_) {}
         const localPalace = localStorage.getItem('siwanchi_palace');
         if (localPalace) {
           try {
             const parsed = JSON.parse(localPalace).filter((p: any) => p.id !== "pb_seed_1");
+            parsed.forEach((p: any) => {
+              loadedPalaceBookingsRef.current[p.id] = JSON.stringify(p);
+            });
             setPalaceBookings(parsed);
           } catch (_) {}
         }
@@ -432,19 +525,28 @@ export default function App() {
         const list: Donation[] = [];
         donationSnap.forEach(docSnap => {
           if (docSnap.id !== "don_seed_1") {
-            list.push({ id: docSnap.id, ...docSnap.data() } as Donation);
+            const item = { id: docSnap.id, ...docSnap.data() } as Donation;
+            list.push(item);
+            loadedDonationsRef.current[item.id] = JSON.stringify(item);
           } else {
             // Cleanup the default seed document from database
             safeFirestoreWrite(() => deleteDoc(doc(db, 'donations', 'don_seed_1')), OperationType.DELETE, 'donations/don_seed_1');
           }
         });
         setDonations(list);
-      } catch (err) {
+      } catch (err: any) {
+        const errStr = String(err?.message || err || '');
+        if (errStr.includes('resource-exhausted') || errStr.includes('Quota exceeded') || errStr.includes('quota')) {
+          setDbQuotaExceeded(true);
+        }
         try { handleFirestoreError(err, OperationType.GET, 'donations'); } catch (_) {}
         const localDonations = localStorage.getItem('siwanchi_donations');
         if (localDonations) {
           try {
             const parsed = JSON.parse(localDonations).filter((d: any) => d.id !== "don_seed_1");
+            parsed.forEach((d: any) => {
+              loadedDonationsRef.current[d.id] = JSON.stringify(d);
+            });
             setDonations(parsed);
           } catch (_) {}
         }
@@ -456,7 +558,9 @@ export default function App() {
         if (!volSnap.empty) {
           const list: Volunteer[] = [];
           volSnap.forEach(docSnap => {
-            list.push({ id: docSnap.id, ...docSnap.data() } as Volunteer);
+            const item = { id: docSnap.id, ...docSnap.data() } as Volunteer;
+            list.push(item);
+            loadedVolunteersRef.current[item.id] = JSON.stringify(item);
           });
           setVolunteers(list);
         } else {
@@ -472,6 +576,9 @@ export default function App() {
               registeredAt: new Date().toISOString()
             }
           ];
+          seedVols.forEach(v => {
+            loadedVolunteersRef.current[v.id] = JSON.stringify(v);
+          });
           setVolunteers(seedVols);
           if (isAdminUser) {
             for (const v of seedVols) {
@@ -479,11 +586,21 @@ export default function App() {
             }
           }
         }
-      } catch (err) {
+      } catch (err: any) {
+        const errStr = String(err?.message || err || '');
+        if (errStr.includes('resource-exhausted') || errStr.includes('Quota exceeded') || errStr.includes('quota')) {
+          setDbQuotaExceeded(true);
+        }
         try { handleFirestoreError(err, OperationType.GET, 'volunteers'); } catch (_) {}
         const localVols = localStorage.getItem('siwanchi_vols');
         if (localVols) {
-          try { setVolunteers(JSON.parse(localVols)); } catch (_) {}
+          try {
+            const parsed = JSON.parse(localVols);
+            parsed.forEach((v: any) => {
+              loadedVolunteersRef.current[v.id] = JSON.stringify(v);
+            });
+            setVolunteers(parsed);
+          } catch (_) {}
         }
       }
 
@@ -493,7 +610,9 @@ export default function App() {
         if (!memberSnap.empty) {
           const list: TrustMember[] = [];
           memberSnap.forEach(docSnap => {
-            list.push({ id: docSnap.id, ...docSnap.data() } as TrustMember);
+            const item = { id: docSnap.id, ...docSnap.data() } as TrustMember;
+            list.push(item);
+            loadedMembersRef.current[item.id] = JSON.stringify(item);
           });
           setMembersList(list);
         } else {
@@ -508,6 +627,9 @@ export default function App() {
               registeredAt: new Date().toISOString()
             }
           ];
+          seedMembers.forEach(m => {
+            loadedMembersRef.current[m.id] = JSON.stringify(m);
+          });
           setMembersList(seedMembers);
           if (isAdminUser) {
             for (const m of seedMembers) {
@@ -515,11 +637,21 @@ export default function App() {
             }
           }
         }
-      } catch (err) {
+      } catch (err: any) {
+        const errStr = String(err?.message || err || '');
+        if (errStr.includes('resource-exhausted') || errStr.includes('Quota exceeded') || errStr.includes('quota')) {
+          setDbQuotaExceeded(true);
+        }
         try { handleFirestoreError(err, OperationType.GET, 'members'); } catch (_) {}
         const localMembers = localStorage.getItem('siwanchi_members');
         if (localMembers) {
-          try { setMembersList(JSON.parse(localMembers)); } catch (_) {}
+          try {
+            const parsed = JSON.parse(localMembers);
+            parsed.forEach((m: any) => {
+              loadedMembersRef.current[m.id] = JSON.stringify(m);
+            });
+            setMembersList(parsed);
+          } catch (_) {}
         }
       }
 
@@ -536,7 +668,9 @@ export default function App() {
           if (!auditSnap.empty) {
             const list: AuditLog[] = [];
             auditSnap.forEach(docSnap => {
-              list.push({ id: docSnap.id, ...docSnap.data() } as AuditLog);
+              const item = { id: docSnap.id, ...docSnap.data() } as AuditLog;
+              list.push(item);
+              loadedAuditLogsRef.current[item.id] = JSON.stringify(item);
             });
             setAuditLogs(list);
           } else {
@@ -550,12 +684,19 @@ export default function App() {
                 timestamp: new Date().toLocaleTimeString() + " " + new Date().toLocaleDateString()
               }
             ];
+            initialLogs.forEach(a => {
+              loadedAuditLogsRef.current[a.id] = JSON.stringify(a);
+            });
             setAuditLogs(initialLogs);
             for (const a of initialLogs) {
               await safeFirestoreWrite(() => setDoc(doc(db, 'audit_logs', a.id), a), OperationType.WRITE, `audit_logs/${a.id}`);
             }
           }
-        } catch (err) {
+        } catch (err: any) {
+          const errStr = String(err?.message || err || '');
+          if (errStr.includes('resource-exhausted') || errStr.includes('Quota exceeded') || errStr.includes('quota')) {
+            setDbQuotaExceeded(true);
+          }
           try { handleFirestoreError(err, OperationType.GET, 'audit_logs'); } catch (_) {}
           const localAudit = localStorage.getItem('siwanchi_audit');
           if (localAudit) {
@@ -598,7 +739,11 @@ export default function App() {
       safeSaveLocal('siwanchi_rooms', roomBookings);
       if (isAdminUser) {
         roomBookings.forEach(async (item) => {
-          await safeFirestoreWrite(() => setDoc(doc(db, 'room_bookings', item.id), item), OperationType.WRITE, `room_bookings/${item.id}`);
+          const serialized = JSON.stringify(item);
+          if (loadedRoomBookingsRef.current[item.id] !== serialized) {
+            loadedRoomBookingsRef.current[item.id] = serialized;
+            await safeFirestoreWrite(() => setDoc(doc(db, 'room_bookings', item.id), item), OperationType.WRITE, `room_bookings/${item.id}`);
+          }
         });
       }
     }
@@ -609,7 +754,11 @@ export default function App() {
       safeSaveLocal('siwanchi_palace', palaceBookings);
       if (isAdminUser) {
         palaceBookings.forEach(async (item) => {
-          await safeFirestoreWrite(() => setDoc(doc(db, 'palace_bookings', item.id), item), OperationType.WRITE, `palace_bookings/${item.id}`);
+          const serialized = JSON.stringify(item);
+          if (loadedPalaceBookingsRef.current[item.id] !== serialized) {
+            loadedPalaceBookingsRef.current[item.id] = serialized;
+            await safeFirestoreWrite(() => setDoc(doc(db, 'palace_bookings', item.id), item), OperationType.WRITE, `palace_bookings/${item.id}`);
+          }
         });
       }
     }
@@ -620,7 +769,11 @@ export default function App() {
       safeSaveLocal('siwanchi_donations', donations);
       if (isAdminUser) {
         donations.forEach(async (item) => {
-          await safeFirestoreWrite(() => setDoc(doc(db, 'donations', item.id), item), OperationType.WRITE, `donations/${item.id}`);
+          const serialized = JSON.stringify(item);
+          if (loadedDonationsRef.current[item.id] !== serialized) {
+            loadedDonationsRef.current[item.id] = serialized;
+            await safeFirestoreWrite(() => setDoc(doc(db, 'donations', item.id), item), OperationType.WRITE, `donations/${item.id}`);
+          }
         });
       }
     }
@@ -631,7 +784,11 @@ export default function App() {
       safeSaveLocal('siwanchi_vols', valunteers);
       if (isAdminUser) {
         valunteers.forEach(async (item) => {
-          await safeFirestoreWrite(() => setDoc(doc(db, 'volunteers', item.id), item), OperationType.WRITE, `volunteers/${item.id}`);
+          const serialized = JSON.stringify(item);
+          if (loadedVolunteersRef.current[item.id] !== serialized) {
+            loadedVolunteersRef.current[item.id] = serialized;
+            await safeFirestoreWrite(() => setDoc(doc(db, 'volunteers', item.id), item), OperationType.WRITE, `volunteers/${item.id}`);
+          }
         });
       }
     }
@@ -642,7 +799,11 @@ export default function App() {
       safeSaveLocal('siwanchi_members', membersList);
       if (isAdminUser) {
         membersList.forEach(async (item) => {
-          await safeFirestoreWrite(() => setDoc(doc(db, 'members', item.id), item), OperationType.WRITE, `members/${item.id}`);
+          const serialized = JSON.stringify(item);
+          if (loadedMembersRef.current[item.id] !== serialized) {
+            loadedMembersRef.current[item.id] = serialized;
+            await safeFirestoreWrite(() => setDoc(doc(db, 'members', item.id), item), OperationType.WRITE, `members/${item.id}`);
+          }
         });
       }
     }
@@ -653,7 +814,11 @@ export default function App() {
       safeSaveLocal('siwanchi_audit', auditLogs);
       if (isAdminUser) {
         auditLogs.forEach(async (item) => {
-          await safeFirestoreWrite(() => setDoc(doc(db, 'audit_logs', item.id), item), OperationType.WRITE, `audit_logs/${item.id}`);
+          const serialized = JSON.stringify(item);
+          if (loadedAuditLogsRef.current[item.id] !== serialized) {
+            loadedAuditLogsRef.current[item.id] = serialized;
+            await safeFirestoreWrite(() => setDoc(doc(db, 'audit_logs', item.id), item), OperationType.WRITE, `audit_logs/${item.id}`);
+          }
         });
       }
     }
@@ -666,11 +831,15 @@ export default function App() {
         if (isAdminUser) {
           await safeFirestoreWrite(async () => {
             const promises = galleryItems.map(async (item) => {
-              try {
-                await setDoc(doc(db, 'gallery_items', item.id), item);
-              } catch (e: any) {
-                console.error(`Failed to sync gallery doc ${item.id}:`, e);
-                throw new Error(`Media "${item.title.hi || item.title.en || 'Untitled'}" (Error: ${e.message || String(e)})`);
+              const serialized = JSON.stringify(item);
+              if (loadedGalleryItemsRef.current[item.id] !== serialized) {
+                try {
+                  await setDoc(doc(db, 'gallery_items', item.id), item);
+                  loadedGalleryItemsRef.current[item.id] = serialized;
+                } catch (e: any) {
+                  console.error(`Failed to sync gallery doc ${item.id}:`, e);
+                  throw new Error(`Media "${item.title.hi || item.title.en || 'Untitled'}" (Error: ${e.message || String(e)})`);
+                }
               }
             });
             const results = await Promise.allSettled(promises);
@@ -680,11 +849,13 @@ export default function App() {
               alert(`⚠️ Some gallery items failed to sync with the database server:\n\n${errors}\n\nTry using more compressed images under 1MB.`);
             }
 
-            const snap = await getDocs(collection(db, 'gallery_items'));
-            for (const fDoc of snap.docs) {
-              if (!galleryItems.some(x => x.id === fDoc.id)) {
+            // Sync deletes cleanly without redundant server reads
+            const currentIds = galleryItems.map(x => x.id);
+            for (const id of Object.keys(loadedGalleryItemsRef.current)) {
+              if (!currentIds.includes(id)) {
                 try {
-                  await deleteDoc(doc(db, 'gallery_items', fDoc.id));
+                  await deleteDoc(doc(db, 'gallery_items', id));
+                  delete loadedGalleryItemsRef.current[id];
                 } catch (e) {
                   console.error("Delete failed:", e);
                 }
@@ -704,11 +875,15 @@ export default function App() {
         if (isAdminUser) {
           await safeFirestoreWrite(async () => {
             const promises = slideshowImages.map(async (item) => {
-              try {
-                await setDoc(doc(db, 'slideshow_images', item.id), item);
-              } catch (e: any) {
-                console.error(`Failed to sync slideshow doc ${item.id}:`, e);
-                throw new Error(`Slide "${item.title.hi || item.title.en || 'Untitled'}" (Error: ${e.message || String(e)})`);
+              const serialized = JSON.stringify(item);
+              if (loadedSlideshowImagesRef.current[item.id] !== serialized) {
+                try {
+                  await setDoc(doc(db, 'slideshow_images', item.id), item);
+                  loadedSlideshowImagesRef.current[item.id] = serialized;
+                } catch (e: any) {
+                  console.error(`Failed to sync slideshow doc ${item.id}:`, e);
+                  throw new Error(`Slide "${item.title.hi || item.title.en || 'Untitled'}" (Error: ${e.message || String(e)})`);
+                }
               }
             });
             const results = await Promise.allSettled(promises);
@@ -718,11 +893,13 @@ export default function App() {
               alert(`⚠️ Some slideshow items failed to sync with the database server:\n\n${errors}\n\nTypical原因 is that image file size exceeds 1MB limit. Try using internet image URLs or more compressed files.`);
             }
 
-            const snap = await getDocs(collection(db, 'slideshow_images'));
-            for (const fDoc of snap.docs) {
-              if (!slideshowImages.some(x => x.id === fDoc.id)) {
+            // Sync deletes cleanly without redundant server reads
+            const currentIds = slideshowImages.map(x => x.id);
+            for (const id of Object.keys(loadedSlideshowImagesRef.current)) {
+              if (!currentIds.includes(id)) {
                 try {
-                  await deleteDoc(doc(db, 'slideshow_images', fDoc.id));
+                  await deleteDoc(doc(db, 'slideshow_images', id));
+                  delete loadedSlideshowImagesRef.current[id];
                 } catch (e) {
                   console.error("Delete failed:", e);
                 }
@@ -735,75 +912,21 @@ export default function App() {
     }
   }, [slideshowImages, isAdminUser]);
 
-  // Auto-compressor for existing large custom images in local storage/state to prevent Firestore write limit failures (1MB)
-  useEffect(() => {
-    const compressLargeImages = async () => {
-      let changed = false;
-      const updatedSlidesList = await Promise.all(
-        slideshowImages.map(async (slide) => {
-          if (slide.url && slide.url.startsWith('data:image/') && slide.url.length > 250000) {
-            console.log(`Auto-compressing large slideshow image to stay under Firestore limit: ${slide.id}`);
-            try {
-              const compressed = await compressBase64Image(slide.url);
-              if (compressed !== slide.url) {
-                changed = true;
-                return { ...slide, url: compressed };
-              }
-            } catch (e) {
-              console.error(e);
-            }
-          }
-          return slide;
-        })
-      );
 
-      if (changed) {
-        setSlideshowImages(updatedSlidesList);
-      }
-    };
+  // Note: Background image compression is removed since AdminDashboard compresses images perfectly on manual upload,
+  // which avoids infinite reactivity/re-render loops and quota-exhaustion issues on client load.
 
-    if (slideshowImages.length > 0) {
-      compressLargeImages();
-    }
-  }, [slideshowImages]);
-
-  useEffect(() => {
-    const compressLargeGallery = async () => {
-      let changed = false;
-      const updatedGalleryList = await Promise.all(
-        galleryItems.map(async (item) => {
-          if (item.imageUrl && item.imageUrl.startsWith('data:image/') && item.imageUrl.length > 250000) {
-            console.log(`Auto-compressing large gallery image to stay under Firestore limit: ${item.id}`);
-            try {
-              const compressed = await compressBase64Image(item.imageUrl);
-              if (compressed !== item.imageUrl) {
-                changed = true;
-                return { ...item, imageUrl: compressed };
-              }
-            } catch (e) {
-              console.error(e);
-            }
-          }
-          return item;
-        })
-      );
-
-      if (changed) {
-        setGalleryItems(updatedGalleryList);
-      }
-    };
-
-    if (galleryItems.length > 0) {
-      compressLargeGallery();
-    }
-  }, [galleryItems]);
 
   useEffect(() => {
     safeSaveLocal('siwanchi_room_categories', roomCategoriesList);
     if (roomCategoriesList.length > 0) {
       if (isAdminUser) {
         roomCategoriesList.forEach(async (item) => {
-          await safeFirestoreWrite(() => setDoc(doc(db, 'room_categories', item.id), item), OperationType.WRITE, `room_categories/${item.id}`);
+          const serialized = JSON.stringify(item);
+          if (loadedRoomCategoriesRef.current[item.id] !== serialized) {
+            loadedRoomCategoriesRef.current[item.id] = serialized;
+            await safeFirestoreWrite(() => setDoc(doc(db, 'room_categories', item.id), item), OperationType.WRITE, `room_categories/${item.id}`);
+          }
         });
       }
     }
@@ -974,6 +1097,39 @@ export default function App() {
         setActiveTab={setActiveTab} 
       />
 
+      {/* Database Quota Information Notice */}
+      {dbQuotaExceeded && (
+        <div className="bg-amber-50 border-y-3 border-amber-500 text-amber-900 py-3 px-4 sm:px-6 lg:px-8 text-xs sm:text-sm font-medium shadow-sm">
+          <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+            <div className="flex items-start md:items-center space-x-2">
+              <span className="text-lg">📢</span>
+              <div>
+                <p className="font-bold">
+                  {currentLang === 'hi' 
+                    ? "सर्वर कोटा सीमा समाप्त (कल ठीक हो जाएगी)" 
+                    : "Database Quota Limit Exceeded (Will Auto-Reset Tomorrow)"}
+                </p>
+                <p className="text-amber-800 text-xs mt-0.5 font-normal leading-relaxed">
+                  {currentLang === 'hi'
+                    ? "हमारे क्लाउड डेटाबेस (Firestore) पर दैनिक मुफ़्त राइट कोटा समाप्त हो गया है। कृपया चिंता न करें: आपकी कोई भी नई प्रविष्टि, सुधार और परिवर्तन आपके ब्राउज़र में सुरक्षित रूप से सहेजे गए हैं और पूरी तरह से काम कर रहे हैं। कोटा कल दोपहर पुनः सक्रिय हो जाएगा!"
+                    : "The Daily Free Read/Write limit on Google Firestore database has been reached. No data is lost: all your edits, image uploads, slot bookings, and slideshow additions are actively preserved in your browser and will synch automatically. Quotas restore in 24 hours."}
+                </p>
+              </div>
+            </div>
+            {isAdminUser && (
+              <a 
+                href="https://console.firebase.google.com/" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="inline-flex items-center justify-center px-3 py-1.5 border border-amber-600 bg-amber-100 hover:bg-amber-200 text-amber-900 rounded font-bold text-xs uppercase tracking-wide transition-colors shrink-0"
+              >
+                {currentLang === 'hi' ? "फायरबेस कंसोल खोलें" : "Open Firebase Console"} →
+              </a>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* Main Dynamic View Content */}
       <main className="flex-grow">
         {renderActiveTabContent()}
@@ -1050,8 +1206,9 @@ export default function App() {
         </div>
 
         {/* Dedicated Pure Devotion Credit Statement */}
-        <div className="max-w-7xl mx-auto mt-5 text-center text-[11px] sm:text-xs text-gold-400/75 font-medium tracking-wide border-t border-gold-500/10 pt-4">
-          <p>Website crafted and made by <span className="font-bold text-gold-300">Mokshit ratanji salecha</span> with pure devotion</p>
+        <div className="max-w-7xl mx-auto mt-5 text-center text-[11px] sm:text-xs text-gold-400/75 font-medium tracking-wide border-t border-gold-500/10 pt-4 space-y-1.5">
+          <p>Website crafted and made by <span className="font-bold text-gold-300">Mokshit ratanji salecha</span> with pure devotion (+91 7096505331)</p>
+          <p className="text-sm sm:text-base font-semibold text-gold-300">संकलन: मोक्षित सालेचा (भोरदा), सूरत</p>
         </div>
       </footer>
 
