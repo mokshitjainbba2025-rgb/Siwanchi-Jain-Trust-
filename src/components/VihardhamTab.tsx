@@ -254,7 +254,7 @@ export default function VihardhamTab({ currentLang, onAddRoomBooking, roomCatego
                 {currentLang === 'hi' ? "★ भोजन व्यवस्था ★" : "★ SACRED CATERING ★"}
               </span>
               <h4 className="font-display font-black text-maroon-900 text-base sm:text-lg uppercase tracking-tight block">
-                {currentLang === 'hi' ? "संघवी शान्ताबाय जैन भोजनशाला" : "Sanghvi Shantaba Jain Bhojanshala"}
+                {currentLang === 'hi' ? "संघवी शान्ताबा जैन भोजनशाला" : "Sanghvi Shantaba Jain Bhojanshala"}
               </h4>
               <p className="text-[10px] text-amber-900 font-bold bg-amber-100 px-2 py-0.5 inline-block font-mono">
                 {currentLang === 'hi' ? "दिनांक : 01 फरवरी 2026 से प्रभावी" : "Effective Date: From 01 February 2026"}

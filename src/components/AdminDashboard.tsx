@@ -328,7 +328,7 @@ export default function AdminDashboard({
           const canvas = document.createElement('canvas');
           let width = img.width;
           let height = img.height;
-          const MAX_DIM = 1200;
+          const MAX_DIM = 900;
           if (width > MAX_DIM || height > MAX_DIM) {
             if (width > height) {
               height = Math.round((height * MAX_DIM) / width);
@@ -343,7 +343,7 @@ export default function AdminDashboard({
           const ctx = canvas.getContext('2d');
           if (ctx) {
             ctx.drawImage(img, 0, 0, width, height);
-            const compressedBase64 = canvas.toDataURL('image/jpeg', 0.75);
+            const compressedBase64 = canvas.toDataURL('image/jpeg', 0.65);
             setSlideUrl(compressedBase64);
           } else {
             setSlideUrl(e.target?.result as string);
@@ -392,7 +392,7 @@ export default function AdminDashboard({
   };
 
   const handleResetSlideshow = () => {
-    if (window.confirm("Are you sure you want to restore the default 4-image slideshow (Vihardham Layout, Temple, Wedding Hall & Monk sanctuary)? This will override any custom uploads.")) {
+    if (window.confirm("Are you sure you want to restore the default 12-image slideshow (Vihardham Layout, Temple, Wedding Hall, Monk sanctuary, and other beautiful scenes)? This will override any custom uploads.")) {
       localStorage.removeItem('siwanchi_slideshow_images');
       window.location.reload();
     }
@@ -1322,7 +1322,7 @@ export default function AdminDashboard({
               onClick={handleResetSlideshow}
               className="bg-gold-500 hover:bg-gold-450 text-maroon-900 font-extrabold px-3.5 py-2 border border-charcoal/30 flex items-center space-x-1 uppercase text-[10px] hover:scale-[1.01] active:translate-y-0.5 transition-transform shadow-flat cursor-pointer"
             >
-              🔄 Restore 4 Default Slides
+              🔄 Restore 12 Default Slides
             </button>
           </div>
 

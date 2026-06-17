@@ -29,6 +29,48 @@ import AdminDashboard from './components/AdminDashboard';
 import ProjectVideoPlayer from './components/ProjectVideoPlayer';
 import GalleryVideosTab from './components/GalleryVideosTab';
 
+// Helper function to compress large custom base64 uploaded files to prevent Firestore write limit failures (1MB)
+function compressBase64Image(base64Str: string, maxDim = 900, quality = 0.6): Promise<string> {
+  return new Promise((resolve) => {
+    if (!base64Str || !base64Str.startsWith('data:image/')) {
+      resolve(base64Str);
+      return;
+    }
+    const img = new Image();
+    img.onload = () => {
+      try {
+        const canvas = document.createElement('canvas');
+        let width = img.width;
+        let height = img.height;
+        if (width > maxDim || height > maxDim) {
+          if (width > height) {
+            height = Math.round((height * maxDim) / width);
+            width = maxDim;
+          } else {
+            width = Math.round((width * maxDim) / height);
+            height = maxDim;
+          }
+        }
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+          ctx.drawImage(img, 0, 0, width, height);
+          resolve(canvas.toDataURL('image/jpeg', quality));
+        } else {
+          resolve(base64Str);
+        }
+      } catch (e) {
+        resolve(base64Str);
+      }
+    };
+    img.onerror = () => {
+      resolve(base64Str);
+    };
+    img.src = base64Str;
+  });
+}
+
 export default function App() {
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [isAdminUser, setIsAdminUser] = useState<boolean>(false);
@@ -99,8 +141,26 @@ export default function App() {
   const [contactQueries, setContactQueries] = useState<ContactQuery[]>([]);
   const [labhInquiries, setLabhInquiries] = useState<LabhInquiry[]>([]);
   const [auditLogs, setAuditLogs] = useState<AuditLog[]>([]);
-  const [galleryItems, setGalleryItems] = useState<GalleryItem[]>([]);
-  const [slideshowImages, setSlideshowImages] = useState<SlideshowImage[]>([]);
+  const [galleryItems, setGalleryItems] = useState<GalleryItem[]>(() => {
+    const local = localStorage.getItem('siwanchi_gallery');
+    if (local) {
+      try {
+        const parsed = JSON.parse(local);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      } catch (_) {}
+    }
+    return [];
+  });
+  const [slideshowImages, setSlideshowImages] = useState<SlideshowImage[]>(() => {
+    const local = localStorage.getItem('siwanchi_slideshow_images');
+    if (local) {
+      try {
+        const parsed = JSON.parse(local);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      } catch (_) {}
+    }
+    return [];
+  });
   const [roomCategoriesList, setRoomCategoriesList] = useState<RoomCategory[]>(() => {
     const localCat = localStorage.getItem('siwanchi_room_categories');
     return localCat ? JSON.parse(localCat) : roomCategories;
@@ -125,39 +185,120 @@ export default function App() {
       // 1. Slideshow images
       try {
         const slideshowSnap = await getDocs(collection(db, 'slideshow_images'));
+        
+        // Define our grand 12 default slides
+        const defaultSlideshow: SlideshowImage[] = [
+          {
+            id: "slide_1",
+            url: campusPanoramicLayout,
+            title: { hi: "विहारधाम जैन मंदिर एवं ओसवाल पैलेस संकुल", en: "Vihardham Jain Temple & Oswal Palace Complex" },
+            caption: { hi: "मेली गाँव (सिवाना समदड़ी मार्ग) जैन मंदिर संकुल का विहंगम दृश्य - अध्यात्म एवं संस्कृति का संगम", en: "Panoramic layout overview of the divine spiritual and wedding venue campus" }
+          },
+          {
+            id: "slide_2",
+            url: "https://images.unsplash.com/photo-1545232979-8bf34eb9757b?auto=format&fit=crop&q=80&w=1200",
+            title: { hi: "भव्य श्री आदिनाथ शिखरबद्ध जिनालय", en: "The Grand Shikharbandh Adinath Temple" },
+            caption: { hi: "नवानीर्मित पावन जैन मंदिर - भक्ति, शांति और ध्यान का पावन धाम", en: "Newly built sacred Jain Temple - A hub of devotion, peace, and mindfulness" }
+          },
+          {
+            id: "slide_3",
+            url: "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?auto=format&fit=crop&q=80&w=1200",
+            title: { hi: "ओसवाल पैलेस आलीशान वेडिंग हॉल", en: "Oswal Palace Luxurious Hall" },
+            caption: { hi: "सामाजिक सम्मेलनों, मांगलिक प्रसंगों एवं दिव्य विवाह आयोजनों के लिए उत्कृष्ट स्थल", en: "A premium multi-purpose venue equipped with all modern amenities for marriages" }
+          },
+          {
+            id: "slide_4",
+            url: "https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?auto=format&fit=crop&q=80&w=1200",
+            title: { hi: "साधु-साध्वी पावन विहारधाम परिसर", en: "Vihardham Spiritual Sanctuary" },
+            caption: { hi: "पूज्य जैन संतों के लिए वातानुकूलित कमरे, व्याख्यान हॉल एवं नि:शुल्क सेवाएं", en: "Comfortable air-conditioned rooms, large discourse halls, and free facilities for monks" }
+          },
+          {
+            id: "slide_5",
+            url: "https://images.unsplash.com/photo-1609137882641-59ac9d3bf30a?auto=format&fit=crop&q=80&w=1200",
+            title: { hi: "साधना भवन एवं आध्यात्मिक आराधना", en: "Sadhana Bhavan & Spiritual Aradhana" },
+            caption: { hi: "परम शांति की खोज में ध्यान, प्राणायाम एवं सात्विक स्वाध्याय साधना शिविर", en: "Spiritual discourse rooms, yoga spaces and peace-seeking self-realization chambers" }
+          },
+          {
+            id: "slide_6",
+            url: "https://images.unsplash.com/photo-1555244162-803834f70033?auto=format&fit=crop&q=80&w=1200",
+            title: { hi: "विशाल रसोड़ा एवं नवकारसी भोजनशाला", en: "Grand Dining Hall & Pure Rasoda" },
+            caption: { hi: "यात्रियों के लिए शुद्ध सात्विक घी युक्त उत्तम जैन भोजन की सुचारू व्यवस्था", en: "Exquisite pure traditional Jain food served under pristine hygienic standards" }
+          },
+          {
+            id: "slide_7",
+            url: "https://images.unsplash.com/photo-1501379900244-479cf85a97bc?auto=format&fit=crop&q=80&w=1200",
+            title: { hi: "नयनाभिराम गुरुकृपा वाटिका एवं उद्यान", en: "Gurukrupa Nature Gardens" },
+            caption: { hi: "चारों ओर हरी-भरी सुंदर वाटिकाओं से सुसज्जित शांत प्राकृतिक और आध्यात्मिक वातावरण", en: "Relaxing lush green surroundings offering fresh breeze and beautiful meditation spots" }
+          },
+          {
+            id: "slide_8",
+            url: "https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&q=80&w=1200",
+            title: { hi: "आधुनिक  डीलक्स धर्मशाला वातानुकूलित रूम", en: "Comfortable AC Dharamshala Lodging" },
+            caption: { hi: "दूर-दराज से पधारे श्रावक-श्राविकाओं के सुखद आरामदायक निवास हेतु स्वच्छ  डीलक्स कमरे", en: "High quality AC rooms equipped with modern attach bathrooms and pristine quality linen" }
+          },
+          {
+            id: "slide_9",
+            url: "https://images.unsplash.com/photo-1598977123418-45f04b61b49e?auto=format&fit=crop&q=80&w=1200",
+            title: { hi: "राजपूताना मारवाड़ी भव्य पाषाण नक्काशी", en: "Traditional Pink Stone Architecture" },
+            caption: { hi: "कला संस्कृति की धरोहर संजोए बेजोड़ गुलाबी शिल्पकारों की अनुपम कलाकृति", en: "Beautiful hand-carved pillars and custom arches demonstrating stunning Rajasthani architecture" }
+          },
+          {
+            id: "slide_10",
+            url: "https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&q=80&w=1200",
+            title: { hi: "स्वाध्याय ज्ञान केंद्र पुस्तकालय", en: "Swadhyay Jain Literature Library" },
+            caption: { hi: "जैन आगम, इतिहास, दर्शन एवं धर्म ग्रंथों का अध्ययन करने हेतु शांत स्वाध्याय भवन", en: "A peaceful air-conditioned room housing historic literature, spiritual scriptures and texts" }
+          },
+          {
+            id: "slide_11",
+            url: "https://images.unsplash.com/photo-1469571486040-0b3b27574b7c?auto=format&fit=crop&q=80&w=1200",
+            title: { hi: "अनुकंपा जीवदया एवं परोपकार गतिविधियां", en: "Jivdaya & Community Compassion Projects" },
+            caption: { hi: "अहिंसा परमो धर्म के सिद्धांत पर जरूरतमंदों की सेवा, चिकित्सा एवं परमार्थ सेवा", en: "Regular free health diagnosis camps and relief operations supporting our core values" }
+          },
+          {
+            id: "slide_12",
+            url: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&q=80&w=1200",
+            title: { hi: "संध्या कालीन आकर्षक विद्युत सज्जा", en: "Magical Light Illumination Ceremony" },
+            caption: { hi: "रात्रि के पावन समय विद्युत दीपों व रोशनी की चकाचौंध से जगमगाता मंदिर", en: "Stunning night setup of the whole compound shining with celestial spiritual lights" }
+          }
+        ];
+
         if (!slideshowSnap.empty) {
           const list: SlideshowImage[] = [];
           slideshowSnap.forEach(docSnap => {
             list.push({ id: docSnap.id, ...docSnap.data() } as SlideshowImage);
           });
-          setSlideshowImages(list);
-        } else {
-          const defaultSlideshow: SlideshowImage[] = [
-            {
-              id: "slide_1",
-              url: campusPanoramicLayout,
-              title: { hi: "विहारधाम जैन मंदिर एवं ओसवाल पैलेस संकुल", en: "Vihardham Jain Temple & Oswal Palace Complex" },
-              caption: { hi: "मेली गाँव (सिवाना समदड़ी मार्ग) जैन मंदिर संकुल का विहंगम दृश्य - अध्यात्म एवं संस्कृति का संगम", en: "Panoramic layout overview of the divine spiritual and wedding venue campus" }
-            },
-            {
-              id: "slide_2",
-              url: "https://images.unsplash.com/photo-1545232979-8bf34eb9757b?auto=format&fit=crop&q=80&w=1200",
-              title: { hi: "भव्य श्री आदिनाथ शिखरबद्ध जिनालय", en: "The Grand Shikharbandh Adinath Temple" },
-              caption: { hi: "नवानीर्मित पावन जैन मंदिर - भक्ति, शांति और ध्यान का पावन धाम", en: "Newly built sacred Jain Temple - A hub of devotion, peace, and mindfulness" }
-            },
-            {
-              id: "slide_3",
-              url: "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?auto=format&fit=crop&q=80&w=1200",
-              title: { hi: "ओसवाल पैलेस आलीशान वेडिंग हॉल", en: "Oswal Palace Luxurious Hall" },
-              caption: { hi: "सामाजिक सम्मेलनों, मांगलिक प्रसंगों एवं दिव्य विवाह आयोजनों के लिए उत्कृष्ट स्थल", en: "A premium multi-purpose venue equipped with all modern amenities for marriages" }
-            },
-            {
-              id: "slide_4",
-              url: "https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?auto=format&fit=crop&q=80&w=1200",
-              title: { hi: "साधु-साध्वी पावन विहारधाम परिसर", en: "Vihardham Spiritual Sanctuary" },
-              caption: { hi: "पूज्य जैन संतों के लिए वातानुकूलित कमरे, व्याख्यान हॉल एवं नि:शुल्क सेवाएं", en: "Comfortable air-conditioned rooms, large discourse halls, and free facilities for monks" }
+          
+          // Check if firestore is holding ONLY the old 4 default slides
+          const oldDefaultIds = ['slide_1', 'slide_2', 'slide_3', 'slide_4'];
+          const isOnlyOldDefaultsInFirestore = list.length <= 4 && list.every(s => oldDefaultIds.includes(s.id));
+
+          // PROTECT LOCAL CUSTOM IMAGES FROM OVERWRITE BY STALE DB DEFAULTS
+          const localStr = localStorage.getItem('siwanchi_slideshow_images');
+          let hasCustomLocal = false;
+          if (localStr) {
+            try {
+              const parsedLocal = JSON.parse(localStr) as SlideshowImage[];
+              const default12Ids = defaultSlideshow.map(s => s.id);
+              const hasCustomInLocal = parsedLocal.some(s => !default12Ids.includes(s.id));
+              if (hasCustomInLocal && isOnlyOldDefaultsInFirestore) {
+                hasCustomLocal = true;
+                setSlideshowImages(parsedLocal);
+              }
+            } catch (_) {}
+          }
+          if (!hasCustomLocal) {
+            if (isOnlyOldDefaultsInFirestore) {
+              setSlideshowImages(defaultSlideshow);
+              if (isAdminUser) {
+                for (const s of defaultSlideshow) {
+                  await safeFirestoreWrite(() => setDoc(doc(db, 'slideshow_images', s.id), s), OperationType.WRITE, `slideshow_images/${s.id}`);
+                }
+              }
+            } else {
+              setSlideshowImages(list);
             }
-          ];
+          }
+        } else {
           setSlideshowImages(defaultSlideshow);
           if (isAdminUser) {
             for (const s of defaultSlideshow) {
@@ -181,7 +322,22 @@ export default function App() {
           gallerySnap.forEach(docSnap => {
             list.push({ id: docSnap.id, ...docSnap.data() } as GalleryItem);
           });
-          setGalleryItems(list);
+          
+          // PROTECT LOCAL GALLERY FROM OVERWRITE BY LATE INITIALIZATIONS
+          const localGalleryStr = localStorage.getItem('siwanchi_gallery');
+          let hasCustomLocalGallery = false;
+          if (localGalleryStr) {
+            try {
+              const parsedLocalGallery = JSON.parse(localGalleryStr) as GalleryItem[];
+              if (parsedLocalGallery.length > list.length) {
+                hasCustomLocalGallery = true;
+                setGalleryItems(parsedLocalGallery);
+              }
+            } catch (_) {}
+          }
+          if (!hasCustomLocalGallery) {
+            setGalleryItems(list);
+          }
         } else {
           setGalleryItems(seedGallery);
           if (isAdminUser) {
@@ -367,7 +523,13 @@ export default function App() {
         }
       }
 
-      // 10. Audit Logs
+    }
+    loadAllFromFirestore();
+  }, []);
+
+  // 10. Load Audit Logs when admin resolves securely
+  useEffect(() => {
+    async function loadAuditLogs() {
       if (isAdminUser) {
         try {
           const auditSnap = await getDocs(collection(db, 'audit_logs'));
@@ -418,7 +580,7 @@ export default function App() {
         }
       }
     }
-    loadAllFromFirestore();
+    loadAuditLogs();
   }, [isAdminUser]);
 
   // Safe localStorage helper to avoid crashing on QuotaExceededError or empty arrays
@@ -498,18 +660,34 @@ export default function App() {
   }, [auditLogs, isAdminUser]);
 
   useEffect(() => {
-    safeSaveLocal('siwanchi_gallery', galleryItems);
     if (galleryItems.length > 0) {
+      safeSaveLocal('siwanchi_gallery', galleryItems);
       const syncGallery = async () => {
         if (isAdminUser) {
           await safeFirestoreWrite(async () => {
-            for (const item of galleryItems) {
-              await setDoc(doc(db, 'gallery_items', item.id), item);
+            const promises = galleryItems.map(async (item) => {
+              try {
+                await setDoc(doc(db, 'gallery_items', item.id), item);
+              } catch (e: any) {
+                console.error(`Failed to sync gallery doc ${item.id}:`, e);
+                throw new Error(`Media "${item.title.hi || item.title.en || 'Untitled'}" (Error: ${e.message || String(e)})`);
+              }
+            });
+            const results = await Promise.allSettled(promises);
+            const failures = results.filter(r => r.status === 'rejected') as PromiseRejectedResult[];
+            if (failures.length > 0) {
+              const errors = failures.map(f => f.reason.message).join('\n');
+              alert(`⚠️ Some gallery items failed to sync with the database server:\n\n${errors}\n\nTry using more compressed images under 1MB.`);
             }
+
             const snap = await getDocs(collection(db, 'gallery_items'));
             for (const fDoc of snap.docs) {
               if (!galleryItems.some(x => x.id === fDoc.id)) {
-                await deleteDoc(doc(db, 'gallery_items', fDoc.id));
+                try {
+                  await deleteDoc(doc(db, 'gallery_items', fDoc.id));
+                } catch (e) {
+                  console.error("Delete failed:", e);
+                }
               }
             }
           }, OperationType.WRITE, 'gallery_items');
@@ -520,18 +698,34 @@ export default function App() {
   }, [galleryItems, isAdminUser]);
 
   useEffect(() => {
-    safeSaveLocal('siwanchi_slideshow_images', slideshowImages);
     if (slideshowImages.length > 0) {
+      safeSaveLocal('siwanchi_slideshow_images', slideshowImages);
       const syncSlideshow = async () => {
         if (isAdminUser) {
           await safeFirestoreWrite(async () => {
-            for (const item of slideshowImages) {
-              await setDoc(doc(db, 'slideshow_images', item.id), item);
+            const promises = slideshowImages.map(async (item) => {
+              try {
+                await setDoc(doc(db, 'slideshow_images', item.id), item);
+              } catch (e: any) {
+                console.error(`Failed to sync slideshow doc ${item.id}:`, e);
+                throw new Error(`Slide "${item.title.hi || item.title.en || 'Untitled'}" (Error: ${e.message || String(e)})`);
+              }
+            });
+            const results = await Promise.allSettled(promises);
+            const failures = results.filter(r => r.status === 'rejected') as PromiseRejectedResult[];
+            if (failures.length > 0) {
+              const errors = failures.map(f => f.reason.message).join('\n');
+              alert(`⚠️ Some slideshow items failed to sync with the database server:\n\n${errors}\n\nTypical原因 is that image file size exceeds 1MB limit. Try using internet image URLs or more compressed files.`);
             }
+
             const snap = await getDocs(collection(db, 'slideshow_images'));
             for (const fDoc of snap.docs) {
               if (!slideshowImages.some(x => x.id === fDoc.id)) {
-                await deleteDoc(doc(db, 'slideshow_images', fDoc.id));
+                try {
+                  await deleteDoc(doc(db, 'slideshow_images', fDoc.id));
+                } catch (e) {
+                  console.error("Delete failed:", e);
+                }
               }
             }
           }, OperationType.WRITE, 'slideshow_images');
@@ -540,6 +734,69 @@ export default function App() {
       syncSlideshow();
     }
   }, [slideshowImages, isAdminUser]);
+
+  // Auto-compressor for existing large custom images in local storage/state to prevent Firestore write limit failures (1MB)
+  useEffect(() => {
+    const compressLargeImages = async () => {
+      let changed = false;
+      const updatedSlidesList = await Promise.all(
+        slideshowImages.map(async (slide) => {
+          if (slide.url && slide.url.startsWith('data:image/') && slide.url.length > 250000) {
+            console.log(`Auto-compressing large slideshow image to stay under Firestore limit: ${slide.id}`);
+            try {
+              const compressed = await compressBase64Image(slide.url);
+              if (compressed !== slide.url) {
+                changed = true;
+                return { ...slide, url: compressed };
+              }
+            } catch (e) {
+              console.error(e);
+            }
+          }
+          return slide;
+        })
+      );
+
+      if (changed) {
+        setSlideshowImages(updatedSlidesList);
+      }
+    };
+
+    if (slideshowImages.length > 0) {
+      compressLargeImages();
+    }
+  }, [slideshowImages]);
+
+  useEffect(() => {
+    const compressLargeGallery = async () => {
+      let changed = false;
+      const updatedGalleryList = await Promise.all(
+        galleryItems.map(async (item) => {
+          if (item.imageUrl && item.imageUrl.startsWith('data:image/') && item.imageUrl.length > 250000) {
+            console.log(`Auto-compressing large gallery image to stay under Firestore limit: ${item.id}`);
+            try {
+              const compressed = await compressBase64Image(item.imageUrl);
+              if (compressed !== item.imageUrl) {
+                changed = true;
+                return { ...item, imageUrl: compressed };
+              }
+            } catch (e) {
+              console.error(e);
+            }
+          }
+          return item;
+        })
+      );
+
+      if (changed) {
+        setGalleryItems(updatedGalleryList);
+      }
+    };
+
+    if (galleryItems.length > 0) {
+      compressLargeGallery();
+    }
+  }, [galleryItems]);
 
   useEffect(() => {
     safeSaveLocal('siwanchi_room_categories', roomCategoriesList);
