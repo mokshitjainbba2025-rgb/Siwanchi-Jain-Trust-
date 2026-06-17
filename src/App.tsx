@@ -10,7 +10,7 @@ import { Sparkles, Phone, Mail, Award, X, Heart, Shield, Globe } from 'lucide-re
 import { RoomCategory, Language, RoomBooking, PalaceBooking, Donation, Volunteer, TrustMember, AuditLog, ContactQuery, LabhInquiry, GalleryItem, SlideshowImage } from './types';
 import { roomCategories, staticTranslations, seedNews, seedEvents, seedGallery } from './data';
 import { db, auth, OperationType, handleFirestoreError } from './firebase';
-import { collection, getDocs, doc, setDoc, deleteDoc } from 'firebase/firestore';
+import { collection, getDocs as firestoreGetDocs, doc, setDoc, deleteDoc, Query, QuerySnapshot } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
 // @ts-ignore
 import campusPanoramicLayout from './assets/images/campus_panoramic_layout_1781257618429.jpg';
@@ -153,7 +153,39 @@ export default function App() {
   const loadedSlideshowImagesRef = useRef<Record<string, string>>({});
   const loadedRoomCategoriesRef = useRef<Record<string, string>>({});
 
-  const [dbQuotaExceeded, setDbQuotaExceeded] = useState(false);
+  const [dbQuotaExceeded, setDbQuotaExceeded] = useState(() => {
+    try {
+      const today = new Date().toISOString().split('T')[0];
+      return localStorage.getItem('siwanchi_quota_exceeded_day') === today;
+    } catch (_) {
+      return false;
+    }
+  });
+
+  const handleQuotaError = () => {
+    try {
+      const today = new Date().toISOString().split('T')[0];
+      localStorage.setItem('siwanchi_quota_exceeded_day', today);
+    } catch (_) {}
+    setDbQuotaExceeded(true);
+  };
+
+  const getDocs = async <T, U>(colRef: Query<T, U>): Promise<QuerySnapshot<T, U>> => {
+    const today = new Date().toISOString().split('T')[0];
+    if (dbQuotaExceeded || localStorage.getItem('siwanchi_quota_exceeded_day') === today) {
+      throw new Error('resource-exhausted: Quota limit exceeded');
+    }
+    try {
+      return await firestoreGetDocs(colRef);
+    } catch (err: any) {
+      const errStr = String(err?.message || err || '');
+      const errCode = String(err?.code || '');
+      if (errStr.includes('resource-exhausted') || errStr.includes('Quota exceeded') || errStr.includes('quota') || errCode.includes('resource-exhausted')) {
+        handleQuotaError();
+      }
+      throw err;
+    }
+  };
   const [galleryItems, setGalleryItems] = useState<GalleryItem[]>(() => {
     const local = localStorage.getItem('siwanchi_gallery');
     if (local) {
@@ -183,13 +215,14 @@ export default function App() {
 
   // Safe utility to handle Firestore writes without crashing the app flow
   const safeFirestoreWrite = async (op: () => Promise<any>, opType: OperationType, path: string) => {
+    if (dbQuotaExceeded) return;
     try {
       await op();
     } catch (err: any) {
       const errStr = String(err?.message || err || '');
       const errCode = String(err?.code || '');
       if (errStr.includes('resource-exhausted') || errStr.includes('Quota exceeded') || errStr.includes('quota') || errCode.includes('resource-exhausted')) {
-        setDbQuotaExceeded(true);
+        handleQuotaError();
       }
       try {
         handleFirestoreError(err, opType, path);
@@ -200,8 +233,13 @@ export default function App() {
   // Load Seed Database from Firestore (or fallback to LocalStorage/static seeds)
   useEffect(() => {
     async function loadAllFromFirestore() {
+      const today = new Date().toISOString().split('T')[0];
+      const isQuotaExceededToday = dbQuotaExceeded || localStorage.getItem('siwanchi_quota_exceeded_day') === today;
       // 1. Slideshow images
       try {
+        if (isQuotaExceededToday) {
+          throw new Error('resource-exhausted: Quota limit exceeded');
+        }
         const slideshowSnap = await getDocs(collection(db, 'slideshow_images'));
         
         // Define our grand 12 default slides
@@ -356,6 +394,9 @@ export default function App() {
 
       // 2. Gallery items
       try {
+        if (isQuotaExceededToday) {
+          throw new Error('resource-exhausted: Quota limit exceeded');
+        }
         const gallerySnap = await getDocs(collection(db, 'gallery_items'));
         if (!gallerySnap.empty) {
           const list: GalleryItem[] = [];
@@ -420,6 +461,9 @@ export default function App() {
 
       // 3. Room categories
       try {
+        if (isQuotaExceededToday) {
+          throw new Error('resource-exhausted: Quota limit exceeded');
+        }
         const rcSnap = await getDocs(collection(db, 'room_categories'));
         if (!rcSnap.empty) {
           const list: RoomCategory[] = [];
@@ -455,6 +499,9 @@ export default function App() {
 
       // 4. Room bookings
       try {
+        if (isQuotaExceededToday) {
+          throw new Error('resource-exhausted: Quota limit exceeded');
+        }
         const roomsSnap = await getDocs(collection(db, 'room_bookings'));
         const list: RoomBooking[] = [];
         roomsSnap.forEach(docSnap => {
@@ -488,6 +535,9 @@ export default function App() {
 
       // 5. Palace bookings
       try {
+        if (isQuotaExceededToday) {
+          throw new Error('resource-exhausted: Quota limit exceeded');
+        }
         const palaceSnap = await getDocs(collection(db, 'palace_bookings'));
         const list: PalaceBooking[] = [];
         palaceSnap.forEach(docSnap => {
@@ -521,6 +571,9 @@ export default function App() {
 
       // 6. Donations
       try {
+        if (isQuotaExceededToday) {
+          throw new Error('resource-exhausted: Quota limit exceeded');
+        }
         const donationSnap = await getDocs(collection(db, 'donations'));
         const list: Donation[] = [];
         donationSnap.forEach(docSnap => {
@@ -554,6 +607,9 @@ export default function App() {
 
       // 8. Volunteers
       try {
+        if (isQuotaExceededToday) {
+          throw new Error('resource-exhausted: Quota limit exceeded');
+        }
         const volSnap = await getDocs(collection(db, 'volunteers'));
         if (!volSnap.empty) {
           const list: Volunteer[] = [];
@@ -606,6 +662,9 @@ export default function App() {
 
       // 9. Members
       try {
+        if (isQuotaExceededToday) {
+          throw new Error('resource-exhausted: Quota limit exceeded');
+        }
         const memberSnap = await getDocs(collection(db, 'members'));
         if (!memberSnap.empty) {
           const list: TrustMember[] = [];
@@ -663,7 +722,12 @@ export default function App() {
   useEffect(() => {
     async function loadAuditLogs() {
       if (isAdminUser) {
+        const today = new Date().toISOString().split('T')[0];
+        const isQuotaExceededToday = dbQuotaExceeded || localStorage.getItem('siwanchi_quota_exceeded_day') === today;
         try {
+          if (isQuotaExceededToday) {
+            throw new Error('resource-exhausted: Quota limit exceeded');
+          }
           const auditSnap = await getDocs(collection(db, 'audit_logs'));
           if (!auditSnap.empty) {
             const list: AuditLog[] = [];
@@ -1208,7 +1272,7 @@ export default function App() {
         {/* Dedicated Pure Devotion Credit Statement */}
         <div className="max-w-7xl mx-auto mt-5 text-center text-[11px] sm:text-xs text-gold-400/75 font-medium tracking-wide border-t border-gold-500/10 pt-4 space-y-1.5">
           <p>Website crafted and made by <span className="font-bold text-gold-300">Mokshit ratanji salecha</span> with pure devotion (+91 7096505331)</p>
-          <p className="text-sm sm:text-base font-semibold text-gold-300">संकलन: मोक्षित सालेचा (भोरदा), सूरत</p>
+          <p className="text-sm sm:text-base font-semibold text-gold-300">संकलन: मोक्षित सालेचा (भोरड़ा), सूरत</p>
         </div>
       </footer>
 
