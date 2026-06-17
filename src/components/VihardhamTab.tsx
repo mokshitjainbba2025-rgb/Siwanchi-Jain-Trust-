@@ -383,17 +383,20 @@ export default function VihardhamTab({ currentLang, onAddRoomBooking, roomCatego
                 key={rc.id} 
                 className="bg-white border-3 border-charcoal rounded-none shadow-flat hover:shadow-flat-lg hover:-translate-y-0.5 transition-all flex flex-col justify-between group"
               >
-                <RoomSlideshow images={rc.images} currentLang={currentLang} type={rc.type} />
-
                 <div className="p-4 flex-1 flex flex-col justify-between space-y-3">
                   <div>
-                    <div className="flex justify-between items-start gap-2 border-b border-charcoal/10 pb-2">
+                    <div className="border-b border-charcoal/10 pb-2">
+                      <div className="flex justify-between items-center mb-1.5">
+                        <span className="bg-maroon-800 text-gold-300 font-bold text-[9px] px-2 py-0.5 border border-charcoal uppercase shadow-flat-sm font-mono tracking-wider">
+                          {rc.type}
+                        </span>
+                        <span className="text-maroon-900 font-black text-xs sm:text-sm font-mono shrink-0 bg-gold-400/30 px-2 py-0.5 rounded">
+                          ₹{rc.ratePerDay}{rc.id === 'rc2' ? '/Bed' : '/Day'}
+                        </span>
+                      </div>
                       <h4 className="font-display font-black text-sm text-maroon-800 uppercase tracking-tight">
                         {rc.name[currentLang]}
                       </h4>
-                      <span className="text-maroon-900 font-black text-xs sm:text-sm font-mono shrink-0 bg-gold-400/30 px-2 py-0.5 rounded">
-                        ₹{rc.ratePerDay}{rc.id === 'rc2' ? '/Bed' : '/Day'}
-                      </span>
                     </div>
                     <p className="text-charcoal text-[11px] mt-2 leading-relaxed font-semibold">
                       {rc.description[currentLang]}
