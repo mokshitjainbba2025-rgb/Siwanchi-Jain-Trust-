@@ -130,7 +130,7 @@ export const seedTrustees: Trustee[] = [
       hi: "ट्रस्ट का उद्देश्य समाज को सुदृढ़ बनाना, मन्दिर निर्माण पूर्ण करना और संघ सेवा में समर्पित रहना है।", 
       en: "Dedicated to strengthening the Samaj, completing temple constructions, and serving our holy congregation with utmost devotion."
     },
-    phone: "+91 98225 38635",
+    phone: "",
     email: "rajmal.bhansali@siwanchitrust.org",
     photoUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=300"
   },
@@ -143,7 +143,7 @@ export const seedTrustees: Trustee[] = [
       hi: "मेली गाँव (सिवाना समदड़ी मार्ग) परिसर हमारे संपूर्ण सिवांची समाज की आस्था और गौरव शाली ऐतिहासिक धरोहर का जीवंत रूप है।", 
       en: "The Meli Gaon / Siwana Samdari Road complex represents the heart of our spiritual heritage and the collective power of the Siwanchi community."
     },
-    phone: "+91 98221 18776",
+    phone: "",
     email: "mangilal.n@siwanchitrust.org",
     photoUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=300"
   },
@@ -156,7 +156,7 @@ export const seedTrustees: Trustee[] = [
       hi: "पारदर्शिता, निस्वार्थ सेवा और प्रत्येक धर्म कार्य में श्रेष्ठ प्रबंधन ही हमारे ट्रस्ट की पहचान व निरंतर संकल्प है।", 
       en: "Transparency, selfless devotion, and efficient administrative execution constitute the foundation of our trust's mission."
     },
-    phone: "+91 94220 12213",
+    phone: "",
     email: "ashok.salecha@siwanchitrust.org",
     photoUrl: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=300"
   },
@@ -169,15 +169,15 @@ export const seedTrustees: Trustee[] = [
       hi: "दान की एक-एक पाई का प्रभु भक्ति, साधु विहार और समाज हित के पुनीत कार्यों में अधिकतम सदुपयोग हमारी निष्ठा है।", 
       en: "Ensuring proper utilization and strict accountability of each devotional contribution for temple expansion and pilgrim services."
     },
-    phone: "+91 98605 58835",
+    phone: "",
     email: "manak.bokadia@siwanchitrust.org",
     photoUrl: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=300"
   },
   {
     id: "tr5",
     name: { hi: "शा. भंवरलालजी हरकचंदजी जीरावला", en: "Sha Bhanwarlalji Harakchandji Jirawala" },
-    designation: { hi: "ट्रस्टी (Trustee)", en: "Trustee" },
-    city: { hi: "पुणे (गढ़ सिवाना)", en: "Pune (Garh Siwana)" },
+    designation: { hi: "सहकोषाध्यक्ष (Joint Treasurer)", en: "Joint Treasurer" },
+    city: { hi: "पुणे (समदड़ी)", en: "Pune (Samdari)" },
     message: { 
       hi: "ट्रस्ट के सेवा कार्य निस्वार्थ रूप से समाज के हर वर्ग तक पहुँचे, यही हमारा ध्येय है।", 
       en: "Our ultimate goal is to ensure every pilgrim visiting Meli Gaon / Siwana Samdari Road experiences profound peace."
@@ -187,10 +187,23 @@ export const seedTrustees: Trustee[] = [
     photoUrl: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=300"
   },
   {
+    id: "tr6",
+    name: { hi: "शा. राजेन्द्रकुमारजी केशवलालजी जीरावला", en: "Sha Rajendrakumarji Keshavlalji Jirawala" },
+    designation: { hi: "सहमंत्री (Joint Secretary)", en: "Joint Secretary" },
+    city: { hi: "पुणे (गढ़ सिवाना)", en: "Pune (Garh Siwana)" },
+    message: { 
+      hi: "पारस्परिक सहयोग, साधना व सेवा ही हमारे जीवन के आभूषण हैं।", 
+      en: "Mutual support, meditation, and service are the ornaments of our lives."
+    },
+    phone: "",
+    email: "",
+    photoUrl: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=300"
+  },
+  {
     id: "tr7",
-    name: { hi: "शा. मीठालालजी जेठाजी भंसाली", en: "Sha Mithalalji Jethaji Bhansali" },
+    name: { hi: "शा. संघवी मिठालालजी नेमीचंदजी जीरावला", en: "Sanghvi Mithalalji Nemichandji Jirawala" },
     designation: { hi: "ट्रस्टी (Trustee)", en: "Trustee" },
-    city: { hi: "पुणे", en: "Pune" },
+    city: { hi: "समदड़ी डीसा (अहमदाबाद)", en: "Samdari Deesa (Ahmedabad)" },
     message: {
       hi: "साधु-साध्वी विहार सेवा और पदयात्रियों की भक्ति हमारी संस्कृति का मुख्य स्तंभ है।",
       en: "Serving the holy monks and walking pilgrimages is our highest luck."
@@ -226,6 +239,45 @@ export const seedTrustees: Trustee[] = [
     photoUrl: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=300"
   },
   {
+    id: "tr11",
+    name: { hi: "शा. कांतीलालजी चिमनलालजी ढेलडिया मुथा", en: "Sha Kantilalji Chimanlalji Dheldia Mutha" },
+    designation: { hi: "ट्रस्टी (Trustee)", en: "Trustee" },
+    city: { hi: "पुणे (गढ़ सिवाना)", en: "Pune (Garh Siwana)" },
+    message: { 
+      hi: "परम भक्ति, स्वाध्याय व शुद्ध संयमपूर्ण समाज निर्माण ही जीवन का सार है।", 
+      en: "Supreme devotion, study of self, and building a disciplined society is the essence of life."
+    },
+    phone: "",
+    email: "",
+    photoUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=300"
+  },
+  {
+    id: "tr12",
+    name: { hi: "शा. मांगीलालजी गुलाबचंदजी विनायकीया", en: "Sha Mangilalji Gulabchandji Vinaykiya" },
+    designation: { hi: "ट्रस्टी (Trustee)", en: "Trustee" },
+    city: { hi: "हैदराबाद (धानेरा)", en: "Hyderabad (Dhanera)" },
+    message: { 
+      hi: "साधु सेवा और तीर्थोद्धार के पावन कार्यों से जुड़कर धन्यता की अनुभूति होती है।", 
+      en: "Feeling blessed by engaging in holy tasks of monastic service and temple elevation."
+    },
+    phone: "",
+    email: "",
+    photoUrl: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=300"
+  },
+  {
+    id: "tr13",
+    name: { hi: "शा. सोहनलालजी मिश्रीमलजी जीरावला", en: "Sha Sohanlalji Mishrishmalji Jirawala" },
+    designation: { hi: "ट्रस्टी (Trustee)", en: "Trustee" },
+    city: { hi: "सूरत (समदड़ी)", en: "Surat (Samdari)" },
+    message: { 
+      hi: "साधार्मिक सेवा और धर्म प्रभावना धर्म का वास्तविक मर्म है।", 
+      en: "Serving fellow brothers and glorifying the dharma is the real essence of religion."
+    },
+    phone: "",
+    email: "",
+    photoUrl: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=300"
+  },
+  {
     id: "tr10",
     name: { hi: "शा. संघवी अमृतलालजी धुडाजी भंसाली", en: "Sanghvi Amritlalji Dhudaji Bhansali" },
     designation: { hi: "ट्रस्टी (Trustee)", en: "Trustee" },
@@ -255,10 +307,36 @@ export const seedTrustees: Trustee[] = [
     id: "tr15",
     name: { hi: "शा. संघवी बाबुलालजी चिमनलालजी लुंकड", en: "Sanghvi Babulalji Chimanlalji Lunkad" },
     designation: { hi: "ट्रस्टी (Trustee)", en: "Trustee" },
-    city: { hi: "पुणे (डीसा)", en: "Pune (Deesa)" },
+    city: { hi: "पुणे (डीसा) (सिवाना)", en: "Pune (Deesa) (Siwana)" },
     message: { 
       hi: "समाज सेवा में समर्पित हर एक क्षण प्रभु सुमिरन के समान है। हम सबको मिलकर इस धर्म ध्वज को बढ़ाना है।", 
       en: "Every single breath spent in humanistic service matches prayer itself. May we all hold this flag of truth high."
+    },
+    phone: "",
+    email: "",
+    photoUrl: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=300"
+  },
+  {
+    id: "tr16",
+    name: { hi: "शा. बाबुलालजी राजमलजी भंसाली", en: "Sha Babulalji Rajmalji Bhansali" },
+    designation: { hi: "ट्रस्टी (Trustee)", en: "Trustee" },
+    city: { hi: "मुंबई (पाटी)", en: "Mumbai (Pati)" },
+    message: { 
+      hi: "नियमित धार्मिक सेवा एवं जन-कल्याण हमारी संस्था के मुख्य अंग हैं।", 
+      en: "Regular religious services and public welfare are core organs of our institution."
+    },
+    phone: "",
+    email: "",
+    photoUrl: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=300"
+  },
+  {
+    id: "tr17",
+    name: { hi: "शा. भंवरलालजी मगनीरामजी सिंघवी", en: "Sha Bhanwarlalji Maganiramji Singhvi" },
+    designation: { hi: "ट्रस्टी (Trustee)", en: "Trustee" },
+    city: { hi: "हैदराबाद (राखी)", en: "Hyderabad (Rakhi)" },
+    message: { 
+      hi: "समाज उत्थान और संघ सेवा हमारे जीवन के सर्वोच्च लक्ष्य हैं।", 
+      en: "Social upliftment and congregation service are the highest milestones of our lives."
     },
     phone: "",
     email: "",

@@ -349,7 +349,7 @@ export default function AboutTab({ currentLang }: AboutTabProps) {
             </div>
 
             {/* Quick action Contacts */}
-            {['tr1', 'tr2', 'tr3', 'tr4'].includes(trustees[activeIdx].id) && (
+            {(trustees[activeIdx].phone || trustees[activeIdx].email) && (
               <div className="flex flex-wrap items-center justify-center gap-4 pt-2 font-mono text-xs font-black">
                 {trustees[activeIdx].phone && (
                   <a 
