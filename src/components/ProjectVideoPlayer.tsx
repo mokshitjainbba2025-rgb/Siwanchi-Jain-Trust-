@@ -30,7 +30,7 @@ export default function ProjectVideoPlayer({
   const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
 
   const shareText = currentLang === 'hi'
-    ? `राजशाही विहारधाम और ओसवाल पैलेस परियोजना का भव्य वीडियो ट्यूर देखें: ${videoUrl}`
+    ? `राजाशाही विहारधाम और ओसवाल पैलेस परियोजना का भव्य वीडियो ट्यूर देखें: ${videoUrl}`
     : `Watch the majestic video tour of Vihardham & Oswal Palace Project: ${videoUrl}`;
 
   const handleCopyLink = () => {

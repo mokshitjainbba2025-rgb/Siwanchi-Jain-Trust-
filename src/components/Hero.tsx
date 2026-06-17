@@ -65,7 +65,7 @@ export default function Hero({ currentLang, onNavigate, onOpenVideoModal, slides
   const stats = [
     { value: '12 Acres', label: t.statArea, icon: '🏛️' },
     { value: '250+', label: currentLang === 'hi' ? '250+ लाभार्थी परिवार' : '250+ labharthi families', icon: '📜' },
-    { value: '600+', label: currentLang === 'hi' ? '600+ लोगों के लिए बिस्तर सहित सुविधा' : '600+ people bed sahit suvidha', icon: '🛏️' }
+    { value: '600+', label: currentLang === 'hi' ? '600+ लोगों के लिए बेड सहित सुविधा' : '600+ people bed sahit suvidha', icon: '🛏️' }
   ];
 
   return (

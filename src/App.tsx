@@ -1132,7 +1132,7 @@ export default function App() {
                   currentLang={currentLang}
                   videoId="Cwyn5LCGd0c"
                   title={{
-                    hi: "राजशाही विहारधाम और ओसवाल पैलेस परियोजना",
+                    hi: "राजाशाही विहारधाम और ओसवाल पैलेस परियोजना",
                     en: "Vihardham & Oswal Palace Project Tour"
                   }}
                   description={{
